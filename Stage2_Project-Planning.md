@@ -1,4 +1,4 @@
-# HAVEN — Stage 2 Report
+# HAVEN  Stage 2 Report
 ### Project Portfolio | Holberton School — Cohort C28
 
 **Team:** Ainy Ourzik · Benjamin Bommier · Cyril Iglesias
@@ -9,26 +9,26 @@
 
 ## Table of Contents
 
-1. [Project Objectives — SMART Method](#1-project-objectives--smart-method)
+1. [Project Objectives  SMART Method](#1-project-objectives--smart-method)
 2. [Project Scope](#2-project-scope)
 3. [Risk Identification](#3-risk-identification)
 4. [High-Level Plan & Timeline](#4-high-level-plan--timeline)
 
 ---
 
-## 1. Project Objectives — SMART Method
+## 1. Project Objectives  SMART Method
 
 Rather than listing isolated criteria, the team formulated the project objectives as a structured set of commitments, each grounded in the SMART framework.
 
-**Specific —** Haven aims to provide students across all educational levels with a secure, private, and accessible platform to report bullying situations — whether as a victim or a witness — within their institution. The platform will guide users through the reporting process via a conversational interface and automatically notify the appropriate school staff upon submission.
+**Specific ** Haven aims to provide students across all educational levels with a secure, private, and accessible platform to report bullying situations (whether as a victim or a witness) within their institution. The platform will guide users through the reporting process via a conversational interface and automatically notify the appropriate school staff upon submission.
 
-**Measurable —** The project will be considered successful if the following are delivered by mid-July 2025: a functional and accessible reporting flow, a working integration with the chatbot provided by Haven Lab, a notification system reaching designated staff members, and a tested, deployable MVP validated by the team and Holberton School.
+**Measurable ** The project will be considered successful if the following are delivered by mid-July 2025: a functional and accessible reporting flow, a working integration with the chatbot provided by Haven Lab, a notification system reaching designated staff members, and a tested, deployable MVP validated by the team and Holberton School.
 
-**Achievable —** The scope has been deliberately kept focused. The team consists of three fullstack developers with complementary strengths, and the technology stack — React, Node.js, Express, and MongoDB — reflects tools the team is confident working with. The chatbot component will be provided by Haven Lab, removing a significant technical uncertainty from the MVP scope.
+**Achievable ** The scope has been deliberately kept focused. The team consists of three fullstack developers with complementary strengths, and the technology stack (React, Node.js, Express, and MongoDB) reflects tools the team is confident working with. The chatbot component will be provided by Haven Lab, removing a significant technical uncertainty from the MVP scope.
 
-**Relevant —** School bullying is a documented and widespread issue in France. Haven directly addresses a gap in how institutions currently handle reporting — most rely on informal or in-person channels that students may find intimidating or inaccessible. The partnership with the French National Education system (l'Académie) gives the project real institutional grounding and a genuine deployment context.
+**Relevant —** School bullying is a documented and widespread issue in France. Haven directly addresses a gap in how institutions currently handle reporting — most rely on informal or in-person channels that students may find intimidating or inaccessible. The partnership with the French National Education system ("l'Académie Française") gives the project real institutional grounding and a genuine deployment context.
 
-**Time-bound —** The project runs from April 27 to mid-July 2025, spanning approximately 11 weeks. Each stage has a defined timeframe, and the team has established internal checkpoints to monitor progress and adjust if needed.
+**Time-bound ** The project runs from April 27 to mid-July 2025, spanning approximately 11 weeks. Each stage has a defined timeframe, and the team has established internal checkpoints to monitor progress and adjust if needed.
 
 ---
 
@@ -96,11 +96,11 @@ Risks have been categorized by criticality level to help the team prioritize mit
 
 | Phase | Stage | Key Deliverables | Status |
 |---|---|---|---|
-| **Phase 1** | Stage 1 — Idea Development | Team formation, brainstorming, MVP selection, Stage 1 Report | ✅ Completed |
-| **Phase 2** | Stage 2 — Project Planning | SMART objectives, scope, risk assessment, timeline | 🔄 In Progress |
-| **Phase 3** | Stage 3 — Technical Documentation | Architecture diagram, database schema, API design, user flows | ⏳ Upcoming |
-| **Phase 4** | Stage 4 — MVP Development | Functional application: auth, reporting flow, chatbot integration, staff notifications | ⏳ Upcoming |
-| **Phase 5** | Stage 5 — Project Closure | Testing, bug fixes, final presentation, project retrospective | ⏳ Upcoming |
+| **Phase 1** | Stage 1 : Idea Development | Team formation, brainstorming, MVP selection, Stage 1 Report | ✅ Completed |
+| **Phase 2** | Stage 2 : Project Planning | SMART objectives, scope, risk assessment, timeline | 🔄 In Progress |
+| **Phase 3** | Stage 3 : Technical Documentation | Architecture diagram, database schema, API design, user flows | ⏳ Upcoming |
+| **Phase 4** | Stage 4 : MVP Development | Functional application: auth, reporting flow, chatbot integration, staff notifications | ⏳ Upcoming |
+| **Phase 5** | Stage 5 : Project Closure | Testing, bug fixes, final presentation, project retrospective | ⏳ Upcoming |
 
 ---
 
@@ -128,16 +128,16 @@ Legend: ██ Active   ░░ Inactive
 
 | Weeks | Period | Focus |
 |---|---|---|
-| Week 1–2 | Apr 27 — May 11 | Team formation, brainstorming, MVP selection *(Stage 1)* |
-| Week 3 | May 12 — May 18 | Project planning, scope definition, risk assessment *(Stage 2)* |
-| Week 4–5 | May 19 — Jun 1 | Architecture design, database schema, API documentation *(Stage 3)* |
-| Week 6–9 | Jun 2 — Jun 29 | MVP development: authentication, reporting flow, chatbot integration, staff interface *(Stage 4)* |
-| Week 10–11 | Jun 30 — Jul 13 | Testing, bug fixes, final presentation preparation *(Stage 5)* |
+| Week 1-2 | Apr 27 - May 11 | Team formation, brainstorming, MVP selection *(Stage 1)* |
+| Week 3 | May 12 - May 18 | Project planning, scope definition, risk assessment *(Stage 2)* |
+| Week 4-5 | May 19 - Jun 1 | Architecture design, database schema, API documentation *(Stage 3)* |
+| Week 6-9 | Jun 2 - Jun 29 | MVP development: authentication, reporting flow, chatbot integration, staff interface *(Stage 4)* |
+| Week 10-11 | Jun 30 - Jul 13 | Testing, bug fixes, final presentation preparation *(Stage 5)* |
 
 ---
 
-> *This document reflects the team's planning as of Stage 2. Certain elements — particularly those related to the chatbot integration and stakeholder requirements — remain subject to revision pending confirmation from Thomas Spitz (Haven Lab). The team has attempted to make decisions based on the best available information and will update this document accordingly.*
+> *This document reflects the team's planning as of Stage 2. Certain elements ( particularly those related to the chatbot integration and stakeholder requirements) remain subject to revision pending confirmation from Thomas Spitz (Haven Lab). The team has attempted to make decisions based on the best available information and will update this document accordingly.*
 
 ---
 
-*End of Stage 2 Report — Haven Project | Holberton School Cohort C28*
+*End of Stage 2 Report - Haven Project | Holberton School Cohort C28*
