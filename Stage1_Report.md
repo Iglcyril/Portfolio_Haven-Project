@@ -1,5 +1,5 @@
-# HAVEN — Stage 1 Report
-### Project Portfolio | Holberton School — Cohort C28
+# HAVEN  Stage 1 Report
+### Project Portfolio | Holberton School  Cohort C28
 
 **Team:** Ainy Ourzik · Benjamin Bommier · Cyril Iglesias
 **Academic Year:** 2025–2026
@@ -14,8 +14,8 @@
    - 1.3 [Collaboration Strategy](#13-collaboration-strategy)
    - 1.4 [Stakeholders](#14-stakeholders)
 2. [Ideas Explored](#2-ideas-explored)
-   - 2.1 [Idea 1 — InternLink (Rejected)](#21-idea-1--internlink-rejected)
-   - 2.2 [Idea 2 — Haven (Selected)](#22-idea-2--haven-selected)
+   - 2.1 [Idea 1  InternLink (Rejected)](#21-idea-1--internlink-rejected)
+   - 2.2 [Idea 2  Haven (Selected)](#22-idea-2--haven-selected)
 3. [Selected MVP Concept](#3-selected-mvp-concept)
    - 3.1 [Project Summary](#31-project-summary)
    - 3.2 [Reasons for Selection](#32-reasons-for-selection)
@@ -66,7 +66,7 @@ The Haven project is a tutored project proposed and supervised within the Holber
 
 Before committing to the Haven project, the team engaged in a structured brainstorming session to evaluate multiple possible directions. Two main concepts were considered and assessed against criteria including feasibility, social impact, technical complexity, and alignment with team skills.
 
-### 2.1 Idea 1 — InternLink (Rejected)
+### 2.1 Idea 1  InternLink (Rejected)
 
 **Concept:** A LinkedIn-style web platform exclusively dedicated to free internship and work-study (*alternance*) listings, designed to reduce friction for job-seeking students.
 
@@ -85,7 +85,7 @@ Before committing to the Haven project, the team engaged in a structured brainst
 
 ---
 
-### 2.2 Idea 2 — Haven (Selected)
+### 2.2 Idea 2  Haven (Selected)
 
 **Concept:** A mobile-first platform enabling students across all educational levels to safely report bullying incidents, with AI-assisted intake and escalation to trained professionals.
 
@@ -104,7 +104,7 @@ This idea was proposed as a tutored project by Holberton School in partnership w
 
 ### 3.1 Project Summary
 
-Haven is a **mobile-first web application** designed to provide students — from middle school through university — with a safe, private, and accessible channel to report bullying situations they are experiencing or witnessing within their educational institution.
+Haven is a **mobile-first web application** designed to provide students (from middle school through university) with a safe, private, and accessible channel to report bullying situations they are experiencing or witnessing within their educational institution.
 
 **Core MVP User Journey:**
 
