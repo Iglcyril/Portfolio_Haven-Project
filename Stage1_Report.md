@@ -47,7 +47,7 @@ The team established the following communication and collaboration norms during 
 - **Weekly synchronous check-ins** to review progress and blockers
 - **Asynchronous updates** posted daily in a `#wrap-up` channel
 - **Shared documentation** managed via Google Docs for accessibility and version control
-- **Decision-making:** consensus-based; in case of disagreement, the PM holds a casting vote
+- **Decision-making:** consensus-based in case of disagreement, the PM holds a casting vote
 - **Version control:** GitHub each team member works on a dedicated branch, merged into a shared `dev` branch, which is then merged into `main` upon validation.
 ### 1.4 Stakeholders
 
@@ -55,10 +55,10 @@ The Haven project is a tutored project proposed and supervised within the Holber
 
 | Stakeholder | Type | Role | Impact |
 |---|---|---|---|
-| Holberton School | Internal / Academic | Project sponsor & evaluator | **High** — validates MVP scope and grades deliverables |
-| L'Académie (National Education) | External / Institutional | Partner & end-user authority | **High** — provides domain requirements and deployment context |
-| School Psychologists & Pedagogical Staff | End User / Operator | Receive and handle reports | **High** — must trust the system to act on alerts effectively |
-| Haven Lab (havenlab.fr) | External / Technical | Vision holder & original project initiator | **Medium** — shapes product direction and branding |
+| Holberton School | Internal / Academic | Project sponsor & evaluator | **High**  validates MVP scope and grades deliverables |
+| L'Académie (National Education) | External / Institutional | Partner & end-user authority | **High**  provides domain requirements and deployment context |
+| School Psychologists & Pedagogical Staff | End User / Operator | Receive and handle reports | **High**  must trust the system to act on alerts effectively |
+| Haven Lab (havenlab.fr) | External / Technical | Vision holder & original project initiator | **Medium**  shapes product direction and branding |
 
 ---
 
@@ -92,7 +92,7 @@ Before committing to the Haven project, the team engaged in a structured brainst
 This idea was proposed as a tutored project by Holberton School in partnership with Haven Lab and the French National Education system (l'Académie). The team chose to position on this project following its presentation to the full C28 cohort, motivated by its clear social value, well-defined scope, and institutional backing.
 
 **Why Haven over InternLink:**
-- Addresses a **critical and underserved social problem** — school bullying affects millions of students
+- Addresses a **critical and underserved social problem** : school bullying affects millions of students
 - Institutional partnership with l'Académie provides a **real deployment context** and end-user base
 - Clearer MVP scope with a defined user journey *(report → AI triage → professional alert)*
 - Higher innovation potential through **AI-assisted chatbot** and anonymous reporting mechanisms
