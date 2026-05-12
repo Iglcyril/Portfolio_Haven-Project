@@ -43,7 +43,7 @@
 
 ---
 
-## 0 User stories and Mockups
+## 0. User stories and Mockups
 
 ### 0.1 User Stories
 
@@ -99,3 +99,36 @@ We design simple wireframes for the MVP :
 - **Dashboard**, summary of all datas and reports.
 
 [➤ Interactive Mockups](./Assets)
+
+---
+
+## 1. Design System Architecture
+
+graph TD
+    subgraph "1. Design Tokens (Styles)"
+        T1[Colors: #00A176, #0A2724, #F9F6F1]
+        T2[Typography: Fraunces & Manrope]
+        T3[Geometry: Border-Radius 25px]
+    end
+
+    subgraph "2. Atomic Components"
+        C1[Buttons: Primary, Witness, Victim]
+        C2[Inputs: Safe-Entry Fields]
+        C3[Icons: Right Arrow ➤, Avatars]
+    end
+
+    subgraph "3. Feature Components"
+        F1[Chatbot Interface: Bubble System]
+        F2[Dashboard Cards: Gravity Color Code]
+        F3[Timeline: Report Status Tracker]
+    end
+
+    subgraph "4. Theme Engine"
+        TH1[Light Mode: White & Green]
+        TH2[Dark Mode: Dark Green Primary]
+    end
+
+    %% Connections
+    T1 & T2 & T3 --> C1 & C2 & C3
+    C1 & C2 & C3 --> F1 & F2 & F3
+    F1 & F2 & F3 --> TH1 & TH2
