@@ -64,7 +64,6 @@
 - As a **perent**, I want to **have the school phone number**, to cal them if I need informations.
 
 #### Should Have (important but not critical for MVP)
-
 - As a **student**, I want to **have a progress timeline**, to see my report progress
 - As a **student**, I want to **delete my report** if I need/want to.
 
@@ -73,15 +72,13 @@
 - As a **supervisor**, I want to **see live notifications** in case of emergency reports.
 
 #### Could Have (nice to have, next update)
-
 - As a **student**, I want to **upload pictures or videos** to argue my report
 - As a **student**, I want to **change color mode** so I can adapt the screen to my needs.
 
 - As a **supervisor**, I want to **write team suggestion**, so I can handle situations safely
 - As a **supervisor**, I want to **know probable peaks**, so I can schedule teams based on that.
 
-#### Wn't Have (what Haven don't do)
-
+#### Won't Have (what Haven don't do)
 - As a **student**, I don't want **chatbot take decision for me**, it's too dangerous
 - As a **student**, I don't want **to forget the emergency numbers**, if I'm in danger I have to use them
 
