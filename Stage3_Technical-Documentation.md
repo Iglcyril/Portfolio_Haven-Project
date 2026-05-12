@@ -98,4 +98,4 @@ We design simple wireframes for the MVP :
 - **Report Page**, explain the situation with the chatbot.
 - **Dashboard**, summary of all datas and reports.
 
-[Interactive Mockups ➤](https://ton-lien-ici.com)
+[➤ Interactive Mockups](https://ton-lien-ici.com)
