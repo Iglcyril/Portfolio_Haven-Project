@@ -103,3 +103,8 @@ We design simple wireframes for the MVP :
 ---
 
 ## 1. Design System Architecture
+
+<p align="center">
+  <img src="/Templates/DesignSystemDiagram.png" alt="Flowchart Documentation Architecture" width="1200" />
+</p>
+
