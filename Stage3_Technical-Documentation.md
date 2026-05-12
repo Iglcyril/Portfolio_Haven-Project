@@ -125,6 +125,7 @@ Stores all persistent data (users, reports...).
 ---
 
 **➤ Shortly :** 
+
 The **student** writes a report -> the **backend** processes it -> data is stored in the **database** -> from it **updates** can be made -> it changes the datas in **database**.
 
 **➤ Step-by-step :**
