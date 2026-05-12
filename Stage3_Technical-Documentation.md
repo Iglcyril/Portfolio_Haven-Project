@@ -111,3 +111,28 @@ We design simple wireframes for the MVP :
 What this diagram says ? 
 
 - **Front-End (Flutter)**
+The student web app and the Admin Dashboard communicate with the backend using HTTPS.
+
+- **Backend API (Bun.js + ElysiaJS)**
+This is the core of the application. It contains three main services : 
+    - **Auth Service** -> manages user login and authentification (JWT, passwords).
+    - **Reports Management** -> enter harassment reports and track the progress of the case.
+    - **Chtbot Service** -> retrieves the first reports and issues alerts based on the severity of the report.
+
+- **DataBase (PostgreSQL via Prisma)**
+Stores all persistent data (users, reports...).
+
+---
+
+**➤ Shortly :** 
+The **student** writes a report -> the **backend** processes it -> data is stored in the **database** -> from it **updates** can be made -> it changes the datas in **database**.
+
+**➤ Step-by-step :**
+1. Student report (HTTPS) -> Backend API
+2. Backend Validates & routes -> Auth/Report/Chatbot
+3. Services read/write -> PostgreSQL (via Prisma)
+4. Supervisor updates report status (HTTPS) -> Backend API
+5. Services read/write -> PostgreSQL (via Prisma) -> Student and Supervisor see result.
+
+---
+
