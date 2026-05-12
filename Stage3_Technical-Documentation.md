@@ -117,7 +117,7 @@ The student web app and the Admin Dashboard communicate with the backend using H
 This is the core of the application. It contains three main services : 
     - **Auth Service** -> manages user login and authentification (JWT, passwords).
     - **Reports Management** -> enter harassment reports and track the progress of the case.
-    - **Chtbot Service** -> retrieves the first reports and issues alerts based on the severity of the report.
+    - **Chatbot Service** -> retrieves the first reports and issues alerts based on the severity of the report.
 
 - **DataBase (PostgreSQL via Prisma)**
 Stores all persistent data (users, reports...).
