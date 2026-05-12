@@ -1,6 +1,6 @@
 <div style="display: flex; justify-content: center; align-items: center; gap: 40px;">
-  <img src="/Templates/logo_holberton.jpg" alt="Logo 1" style="width: 300px; border-radius: 25px; border: 5px solid red;">
-  <img src="/Templates/logo_haven.png" alt="Logo 2" style="width: 300px; border-radius: 25px; border: 5px solid red;">
+  <img src="/Templates/logo_holberton.jpg" alt="Logo 1" style="width: 350px; border-radius: 25px;">
+  <img src="/Templates/logo_haven.png" alt="Logo 2" style="width: 350px; border-radius: 25px;">
 </div>
 
 ## Table of content
@@ -39,4 +39,5 @@
 
 <p align="center">
   <b>Bun.js</b> • <b>Flutter</b> • <b>PostgreSQL</b> • <b>Prisma</b> • <b>ElysiaJS</b>
+
 </p>
