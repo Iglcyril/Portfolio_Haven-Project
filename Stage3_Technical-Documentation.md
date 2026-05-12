@@ -41,6 +41,8 @@
   <b>Bun.js</b> • <b>Flutter</b> • <b>PostgreSQL</b> • <b>Prisma</b> • <b>ElysiaJS</b>
 </p>
 
+---
+
 ## 0 User stories and Mockups
 
 ### 0.1 User Stories
@@ -85,4 +87,4 @@
 - As a **supervisor**, I don't want **to replace the pHARE protocol**, Haven is a complementary tool
 - As a **supervisor**, I don't want to **make a medical diagnosis**, Haven is an alert tool.
 
-
+---
