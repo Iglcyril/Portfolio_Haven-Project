@@ -88,3 +88,14 @@
 - As a **supervisor**, I don't want to **make a medical diagnosis**, Haven is an alert tool.
 
 ---
+
+### 0.2 Mockups (Main Screens)
+
+We design simple wireframes for the MVP :
+- **Home Page** -> choose if you're student or admin.
+- **Login/Register Page** -> fields for email and password.
+- **Menu Page** -> two options, report an harassment as victim or witness.
+- **Report Page**, explain the situation with the chatbot.
+- **Dashboard**, summary of all datas and reports.
+
+[![Interactive mockups](https://img.icons8.com/m_sharp/512/RIGHT.png)](ton_lien_ici)
