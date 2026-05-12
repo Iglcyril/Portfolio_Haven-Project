@@ -108,3 +108,6 @@ We design simple wireframes for the MVP :
   <img src="/Templates/DesignSystemDiagram.png" alt="Flowchart Documentation Architecture" width="1200" />
 </p>
 
+What this diagram says ? 
+
+- **Front-End (Flutter)**
