@@ -1,6 +1,9 @@
 <div style="display: flex; justify-content: center; align-items: center; gap: 40px;">
-  <img src="/Templates/logo_holberton.jpg" alt="Logo 1" style="width: 400px; border-radius: 25px;">
-  <img src="/Templates/logo_haven.png" alt="Logo 2" style="width: 400px; border-radius: 25px;">
+  <img src="/Templates/logo_holberton.jpg" alt="Logo 1" 
+       style="width: 400px; height: auto; border-radius: 25px; object-fit: cover; display: block;">
+  
+  <img src="/Templates/logo_haven.png" alt="Logo 2" 
+       style="width: 400px; height: auto; border-radius: 25px; object-fit: cover; display: block;">
 </div>
 
 ## Table of content
@@ -29,13 +32,19 @@
 
 </p>
 
-<p align="center">
-  <img src="/Templates/logo_bun.png" alt="Bun.js" width="80" height="80"/>
-  <img src="/Templates/logo_flutter.png" alt="Flutter" width="80" height="80"/>
-  <img src="/Templates/logo_postgre.png" alt="PostgreSQL" width="80" height="80"/>
-  <img src="/Templates/logo_prisma.jpg" alt="Prisma" width="80" height="80"/>
-  <img src="Templates/logo_elysia.png" alt="ElysiaJS" width="80" height="80"/>
-</p>
+<div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+  
+  <img src="/Templates/logo_bun.png" alt="Bun.js" style="width: 80px; height: 80px; object-fit: contain;">
+  
+  <img src="/Templates/logo_flutter.png" alt="Flutter" style="width: 80px; height: 80px; object-fit: contain;">
+  
+  <img src="/Templates/logo_postgre.png" alt="PostgreSQL" style="width: 80px; height: 80px; object-fit: contain;">
+  
+  <img src="/Templates/logo_prisma.jpg" alt="Prisma" style="width: 80px; height: 80px; object-fit: contain;">
+  
+  <img src="Templates/logo_elysia.png" alt="ElysiaJS" style="width: 80px; height: 80px; object-fit: contain;">
+  
+</div>
 
 <p align="center">
   <b>Bun.js</b> • <b>Flutter</b> • <b>PostgreSQL</b> • <b>Prisma</b> • <b>ElysiaJS</b>
