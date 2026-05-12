@@ -94,8 +94,8 @@
 We design simple wireframes for the MVP :
 - **Home Page** -> choose if you're student or admin.
 - **Login/Register Page** -> fields for email and password.
-- **Menu Page** -> two options, report an harassment as victim or witness.
+- **Main Page** -> two options, report an harassment as victim or witness.
 - **Report Page**, explain the situation with the chatbot.
 - **Dashboard**, summary of all datas and reports.
 
-[➤ Interactive Mockups](https://ton-lien-ici.com)
+[➤ Interactive Mockups](./Assets)
