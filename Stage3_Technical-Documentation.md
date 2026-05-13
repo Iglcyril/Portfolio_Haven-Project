@@ -297,3 +297,13 @@ In the case of the Haven App, we identified three common scenarios that users wi
 
 ## 4. API & Methods
 
+### 4.1 External APIs Used
+
+| API Name | Provider | Type | Purpose in Haven MVP |
+| :--- | :--- | :--- | :--- |
+| **Perspective API** | Google / Jigsaw | NLP / Moderation | Scans free-text inputs from students to instantly flag high-risk keywords (self-harm, critical crisis) and trigger emergency contact overlays. |
+| **Firebase Cloud Messaging** | Google | Push Notifications | Dispatches real-time, instant alerts to the Supervisor Dashboard when urgent reports are submitted. |
+| **Google Fonts API** | Google | Asset Delivery | Dynamically serves 'Fraunces' and 'Manrope' typographies to ensure Design System consistency across all platforms. |
+
+### 4.2 Internal API Endpoints (MVP)
+
