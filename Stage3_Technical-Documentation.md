@@ -342,3 +342,14 @@ All internal routes are served by **ElysiaJS** and expect/return JSON payloads. 
 
 ## 5. SCM & QA Strategy
 
+### 5.1 Source Control Management (SCM)
+
+We use **Git** for version control.
+
+- `main` → only contains production and ready code.
+- `dev` → contains nearly ready and global code but not in production.
+- `developer's name` → contains nearly ready code for each developers. 
+- `issue's name` → each new feature is linked to a specific issue. Every open issue requires opening a new feature branch. Once the feature is complete, it is pushed to the `developer's name` branch, and as soon as it is ready, it is merged into the `dev` branch. 
+
+---
+
