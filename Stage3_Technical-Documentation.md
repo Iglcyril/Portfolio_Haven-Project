@@ -307,3 +307,32 @@ In the case of the Haven App, we identified three common scenarios that users wi
 
 ### 4.2 Internal API Endpoints (MVP)
 
+### 4.2 Internal API Endpoints (MVP)
+
+All internal routes are served by **ElysiaJS** and expect/return JSON payloads. Protected routes require a valid `Bearer <JWT_TOKEN>` in the HTTP Authorization header.
+
+#### Authentication Services (`/api/auth`)
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/register` | Public | Registers a new user account (Student, Supervisor, Parent). Hashes the password. |
+| `POST` | `/api/auth/login` | Public | Validates credentials and returns a secure JWT token, user role, and profile data. |
+| `GET` | `/api/auth/profile` | Private (JWT) | Retrieves the currently logged-in user's profile details. |
+
+#### Report Management (`/api/reports`)
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/reports` | Private (JWT) | Creates a new harassment report (Victim/Witness, anonymity choice) and generates a unique tracking ID (e.g., `#HV-8829`). |
+| `GET` | `/api/reports` | Private (JWT) | **For Students:** Fetches their personal report history.<br>**For Supervisors:** Fetches all reports for the dashboard grid. |
+| `GET` | `/api/reports/:id` | Private (JWT) | Fetches the full details of a specific report (including its status and severity badge). |
+| `PATCH` | `/api/reports/:id/status` | Private (Supervisor Only) | Updates the report progress status (`PENDING` ➔ `UNDER_REVIEW` ➔ `RESOLVED`) to advance the timeline. |
+| `PATCH` | `/api/reports/:id/severity` | Private (Supervisor Only) | Updates the gravity rating (`LOW`, `MEDIUM`, `HIGH`) which updates the color code. |
+
+#### Chatbot Conversation Flow (`/api/chat`)
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/chat/:reportId/history` | Private (JWT) | Recharges the conversation history between the student and the chatbot. |
+| `POST` | `/api/chat/message` | Private (JWT) | Submits a new text message from the student. Triggers the rule-based next question, checks text with Perspective API, and logs both messages in the DB. |
+
