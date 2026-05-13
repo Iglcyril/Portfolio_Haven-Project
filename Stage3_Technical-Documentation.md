@@ -230,3 +230,30 @@ Let us give you some explanations about this relational database.
 
 ---
 
+## 3. High-Level Sequence Diagrams (MVP)
+
+In the case of the Haven App, we identified three common scenarios that users will encounter. 
+
+- **First scenario** : [`User Login`](#31-user-login-jwt)
+- **Second scenario** : [`User Report`](#32-user-report)
+- **Third scenario** : [`Chatbot Consultation`](#33-chatbot-consultation)
+
+--- 
+
+### 3.1 User Login (JWT)
+
+<p align="center">
+  <img src="/Templates/UserLogin.png" alt="UserLogin" width="800" />
+  </p>
+
+  ### Explanation
+
+1. **User Input** : User enters their mail and password and clicks the `Login` button.
+2. **API Request** : Front end sends a secure request to the ElysiaJS back end.
+3. **Database Check** : Backend asks database to look up the user by their email address.
+4. **Data Retrieval** : Database returns the user's profile, including thei securely hashed password. 
+5. **Security Verification** : `Auth Service` compares the submitted password with the stored hash and generates a unique, secure JWT token if they match.
+6. **Success / Error Handling** : 
+  *If valid* = The backend returns an `HTTP 200 OK` status with the token. The app saves the token locally and opens the home dashboard.
+  *If invalid* = The backend returns an `HTTP 401 Unauthorized` status, and the app displays an error message to the user.
+
