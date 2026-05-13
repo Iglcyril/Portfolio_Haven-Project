@@ -334,3 +334,11 @@ All internal routes are served by **ElysiaJS** and expect/return JSON payloads. 
 | `GET` | `/api/chat/:reportId/history` | Private (JWT) | Recharges the conversation history between the student and the chatbot. |
 | `POST` | `/api/chat/message` | Private (JWT) | Submits a new text message from the student. Triggers the rule-based next question, checks text with Perspective API, and logs both messages in the DB. |
 
+**➤ Shortly :**
+- **External API** : help to scan risks keywords and dispatch real-time alerts.
+- **Internal API** : REST endpoints for `Auth`, `Reports` & `Chatbot`.
+
+---
+
+## 5. SCM & QA Strategy
+
