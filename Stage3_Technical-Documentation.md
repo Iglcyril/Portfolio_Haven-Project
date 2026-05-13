@@ -202,3 +202,31 @@ I’ll give some clear explanations of this diagram right below, presented in a 
 - **Report Service** = manager, delagating tasks to `Chatbot`,`Auth` & `Stats`.
 - **PostgreSQL Database** = filing cabinet of each assistant.
 
+### Relational Database (MVP)
+
+For the relational database we did a relational diagram on Mermaid. *Notice that it can change in the future with future implementations*. 
+
+<p align="center">
+  <img src="/Templates/ERdiagram.png" alt="Diagram Back end Classes" width="1200" />
+</p>
+
+Let us give you some explanations about this relational database. 
+
+### 🔍 Database Relationships Overview
+
+| Relationship | Type | Logic & Business Rules |
+| :--- | :--- | :--- |
+| **USER ➔ REPORT** | One-to-Many (`\|\|--o{`) | A user (student, parent, or supervisor) can create or manage **zero or more** reports. Conversely, a report must be linked to **one and only one** user for traceability purposes, even if the `is_anonymous` flag is enabled on the front-end. |
+| **REPORT ➔ CHAT_MESSAGE** | One-to-Many (`\|\|--o{`) | A report contains its own discussion history made of **zero or more** chatbot messages. Each individual message is anchored to a single, specific report via the `report_id` foreign key. |
+| **REPORT ➔ ANALYTICS_DATA** | Optional One-to-One (`\|\|--o\|`) | Each report can automatically generate **zero or one** analytics entry. This allows the Stats Service to detect risk trends or clusters without compromising the student's personal data or anonymity. |
+
+
+**➤ Shortly :**
+
+- User = who you are
+- Report = the situation
+- Chat Message = all messages about the situation
+- Analytics Data = data about the reports for stats
+
+---
+
