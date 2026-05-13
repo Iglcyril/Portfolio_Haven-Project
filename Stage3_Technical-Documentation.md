@@ -29,11 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="/Templates/logo_bun.png" alt="Bun.js" width="80" height="80"/>
-  <img src="/Templates/logo_flutter.png" alt="Flutter" width="80" height="80"/>
-  <img src="/Templates/logo_postgre.png" alt="PostgreSQL" width="80" height="80"/>
-  <img src="/Templates/logo_prisma.jpg" alt="Prisma" width="80" height="80"/>
-  <img src="Templates/logo_elysia.png" alt="ElysiaJS" width="80" height="80"/>
+  <img src="/Templates/logo_stack.png" alt="Bun.js"/>
 </p>
 
 <p align="center">
