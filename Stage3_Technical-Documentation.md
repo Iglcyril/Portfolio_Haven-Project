@@ -181,6 +181,6 @@ For this part, I will do a simple example of illustration to make sure you will 
 I’ll give some clear explanations of this diagram right below, presented in a table.
 
 <p align="center">
-  <img src="/Templates/diagramclassBack.svg" alt="Diagram Back end Classes" width="1200" />
+  <img src="/Templates/diagramclassBack.png" alt="Diagram Back end Classes" width="1200" />
 </p>
 
