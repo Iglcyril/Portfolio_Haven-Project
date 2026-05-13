@@ -43,43 +43,38 @@
 ### 0.1 User Stories
 
 #### ➤ Must Have (MVP)
-- As a **student**, I want to **register and log in** to have my own account and report safely
-- As a **student**, I want to **choose my level of anonymity**, so I can report harassment safely
-- As a **student**, I want to **report harassment**, as a victim or a witness
-- As a **student**, I want to **chat with chatbot**, so I can explain safely what I experienced or saw
-- As a **student**, I want to **find emergency numbers**, so I can find solutions to my problems
+- As a **student**, I want to **register and log in** to have my own account and report safely.
+- As a **student**, I want to **choose my level of anonymity**, so I can report harassment safely.
+- As a **student**, I want to **report harassment**, as a victim or a witness.
+- As a **student**, I want to **chat with a chatbot**, so I can explain safely what I experienced or saw.
+- As a **student**, I want to **find emergency numbers**, so I can find solutions to my problems.
 - As a **student**, I want to **see my previous reports**, so I can see the progress.
-
-- As a **supervisor**, I want to **register and log in** to have my own account and manage the reports
-- As a **supervisor**, I want to **see the dashbord** to manage safely all the reports
-- As a **supervisor**, I want to **see the progress of reports** with color rating
-- As a **supervisor**, I want to **manage my teams** to handle reports safely
-- As a **supervisor**, I want to **have an access to the onitoring of the situations**
-- As a **supervisor**, I want to **have statistical analysis**, to detect trends, clusters or predict risks.
-
-- As a **parent**, I want to **see the progess of my child reports**
-- As a **parent**, I want to **have the school phone number**, to cal them if I need informations.
+- As a **supervisor**, I want to **register and log in** to have my own account and manage the reports.
+- As a **supervisor**, I want to **see the dashboard** to manage safely all the reports.
+- As a **supervisor**, I want to **see the progress of reports** with a color rating.
+- As a **supervisor**, I want to **manage my teams** to handle reports safely.
+- As a **supervisor**, I want to **have access to the monitoring of the situations**.
+- As a **supervisor**, I want to **have statistical analysis** to detect trends, clusters, or predict risks.
+- As a **parent**, I want to **see the progress of my child's reports**.
+- As a **parent**, I want to **have the school phone number** to call them if I need information.
 
 #### ➤ Should Have (important but not critical for MVP)
-- As a **student**, I want to **have a progress timeline**, to see my report progress
+- As a **student**, I want to **have a progress timeline** to see my report progress.
 - As a **student**, I want to **delete my report** if I need/want to.
-
-- As a **supervisor**, I want to **download closed reports** to archive them
-- As a **supervisor**, I want to **filter reports** to quickly find what I want
+- As a **supervisor**, I want to **download closed reports** to archive them.
+- As a **supervisor**, I want to **filter reports** to quickly find what I want.
 - As a **supervisor**, I want to **see live notifications** in case of emergency reports.
 
 #### ➤ Could Have (nice to have, next update)
-- As a **student**, I want to **upload pictures or videos** to argue my report
+- As a **student**, I want to **upload pictures or videos** to argue my report.
 - As a **student**, I want to **change color mode** so I can adapt the screen to my needs.
-
-- As a **supervisor**, I want to **write team suggestion**, so I can handle situations safely
+- As a **supervisor**, I want to **write team suggestions**, so I can handle situations safely.
 - As a **supervisor**, I want to **know probable peaks**, so I can schedule teams based on that.
 
-#### ➤ Won't Have (what Haven don't do)
-- As a **student**, I don't want **chatbot take decision for me**, it's too dangerous
-- As a **student**, I don't want **to forget the emergency numbers**, if I'm in danger I have to use them
-
-- As a **supervisor**, I don't want **to replace the pHARE protocol**, Haven is a complementary tool
+#### ➤ Won't Have (what Haven doesn't do)
+- As a **student**, I don't want the **chatbot to take decisions for me**, it's too dangerous.
+- As a **student**, I don't want **to forget the emergency numbers**; if I'm in danger I have to use them.
+- As a **supervisor**, I don't want **to replace the pHARE protocol**, Haven is a complementary tool.
 - As a **supervisor**, I don't want to **make a medical diagnosis**, Haven is an alert tool.
 
 ---
