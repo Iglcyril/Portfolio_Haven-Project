@@ -235,7 +235,7 @@ Let us give you some explanations about this relational database.
 In the case of the Haven App, we identified three common scenarios that users will encounter. 
 
 - **First scenario** : [`User Login`](#31-user-login-jwt)
-- **Second scenario** : [`User Report`](#32-user-report)
+- **Second scenario** : [`Incident Reporting Process`](#32-incident-reporting-process)
 - **Third scenario** : [`Chatbot Consultation`](#33-chatbot-consultation)
 
 --- 
@@ -256,4 +256,24 @@ In the case of the Haven App, we identified three common scenarios that users wi
 6. **Success / Error Handling** : 
   *If valid* = The backend returns an `HTTP 200 OK` status with the token. The app saves the token locally and opens the home dashboard.
   *If invalid* = The backend returns an `HTTP 401 Unauthorized` status, and the app displays an error message to the user.
+
+--- 
+
+### 3.2 Incident Reporting Process
+
+<p align="center">
+  <img src="/Templates/UserReport.png" alt="UserLogin" width="800" />
+  </p>
+
+  ### Explanation
+
+1. **Trigger**: The student selects their reporting type (Victim or Witness) and clicks the `Report` button.
+2. **Payload Preparation**: The **Flutter Front-end** packages the report details (facts, anonymity choice) and automatically attaches the user's secure **JWT token** in the header.
+3. **API Request**: The app sends a `POST /api/reports` request to the **ElysiaJS Backend**.
+4. **Authentication & Generation**: The backend verifies the token to ensure the request is safe, then generates a human-readable unique tracking ID (e.g., `#HV-8829`).
+5. **Database Storage**: The backend orders **PostgreSQL** to create a new record in the `REPORT` table.
+6. **Confirmation**: The database confirms successful saving, and the backend sends back an `HTTP 201 Created` response.
+7. **UI Update**: The front-end displays a success message showing the incident tracking ID and the progress timeline.
+
+---
 
