@@ -307,8 +307,6 @@ In the case of the Haven App, we identified three common scenarios that users wi
 
 ### 4.2 Internal API Endpoints (MVP)
 
-### 4.2 Internal API Endpoints (MVP)
-
 All internal routes are served by **ElysiaJS** and expect/return JSON payloads. Protected routes require a valid `Bearer <JWT_TOKEN>` in the HTTP Authorization header.
 
 #### Authentication Services (`/api/auth`)
