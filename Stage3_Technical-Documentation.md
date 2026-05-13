@@ -92,11 +92,11 @@
 ### 0.2 Mockups (Main Screens)
 
 We design simple wireframes for the MVP :
-- **Home Page** -> choose if you're student or admin.
-- **Login/Register Page** -> fields for email and password.
-- **Main Page** -> two options, report an harassment as victim or witness.
-- **Report Page** -> explain the situation with the chatbot.
-- **Dashboard** -> summary of all datas and reports.
+- **Home Page** → choose if you're student or admin.
+- **Login/Register Page** → fields for email and password.
+- **Main Page** → two options, report an harassment as victim or witness.
+- **Report Page** → explain the situation with the chatbot.
+- **Dashboard** → summary of all datas and reports.
 
 [➤ Interactive Mockups](./Templates/HavenMockups.pdf)
 
@@ -115,9 +115,9 @@ The student web app and the Admin Dashboard communicate with the backend using H
 
 - **Backend API (Bun.js + ElysiaJS)**
 This is the core of the application. It contains three main services : 
-    - **Auth Service** -> manages user login and authentification (JWT, passwords).
-    - **Reports Management** -> enter harassment reports and track the progress of the case.
-    - **Chatbot Service** -> retrieves the first reports and issues alerts based on the severity of the report.
+    - **Auth Service** → manages user login and authentification (JWT, passwords).
+    - **Reports Management** → enter harassment reports and track the progress of the case.
+    - **Chatbot Service** → retrieves the first reports and issues alerts based on the severity of the report.
 
 - **DataBase (PostgreSQL via Prisma)**
 Stores all persistent data (users, reports...).
@@ -126,14 +126,14 @@ Stores all persistent data (users, reports...).
 
 **➤ Shortly :** 
 
-The **student** writes a report -> the **backend** processes it -> data is stored in the **database** -> from it **updates** can be made -> it changes the datas in **database**.
+The **student** writes a report → the **backend** processes it → data is stored in the **database** → from it **updates** can be made → it changes the datas in **database**.
 
 **➤ Step-by-step :**
-1. Student report (HTTPS) -> Backend API
-2. Backend Validates & routes -> Auth/Report/Chatbot
-3. Services read/write -> PostgreSQL (via Prisma)
-4. Supervisor updates report status (HTTPS) -> Backend API
-5. Services read/write -> PostgreSQL (via Prisma) -> Student and Supervisor see result.
+1. Student report (HTTPS) → Backend API
+2. Backend Validates & routes → Auth/Report/Chatbot
+3. Services read/write → PostgreSQL (via Prisma)
+4. Supervisor updates report status (HTTPS) → Backend API
+5. Services read/write → PostgreSQL (via Prisma) → Student and Supervisor see result.
 
 ---
 
@@ -160,3 +160,27 @@ The **student** writes a report -> the **backend** processes it -> data is store
 | `SeverityBadger`   | UI Component| Colored visual indicator of the severity of the situation.              |
 | `TreatmentTimeline`| UI Component| timeline of the progress of handling the situation.                     |
 | `AuthGuard`        | Utility     | Redirects user to login if not authenticated (JWT required).            |
+
+---
+
+**Interaction examples:**
+- Clicking **Report as Victim** → send to the chatbot.  
+- **Login/Register** → calls backend `/auth` API and stores JWT.  
+- Cliking **Emergency** → Open the list of emergency numbers.
+
+---
+
+### 2.2 Back-end Classes (Bun.js + ElysiaJS)
+
+We group backend logic into services and tables.
+Services = contain the business logic.
+Tables = store the database records.
+
+For this part, I will do a simple example of illustration to make sure you will understand how the back end is working. I did something more illustrative and less technical which looks like a map of responsibilities. This diagram provides a simple representation of how my back end works.
+
+I’ll give some clear explanations of this diagram right below, presented in a table.
+
+<p align="center">
+  <img src="/Templates/diagramclassBack.svg" alt="Diagram Back end Classes" width="1200" />
+</p>
+
