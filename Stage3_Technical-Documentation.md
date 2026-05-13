@@ -353,3 +353,40 @@ We use **Git** for version control.
 
 ---
 
+### 5.2 QA (Quality Assurance)
+
+We want to make sure the code works and is easy to maintain.
+
+**Testing strategy:**
+- `Unit tests` → check small pieces of code (with **Jest**).  
+- `API tests` → check endpoints like `/auth/login` (with **Jest + Supertest**).  
+- `Manual tests` → check important flows manually (with **Postman**).  
+
+**Tools:**
+- `Jest` → run automated tests.  
+- `Postman` → test API calls manually.  
+- `ESLint + Prettier` → keep the code clean and formatted.  
+
+---
+
+### 5.3 Deployment Pipeline
+
+- **Development** → Local machines (Flutter emulator & Bun local server), quick features development and manual testing.  
+- **Staging** → Test environment deployed on a cloud platform (e.g., Vercel) with a real staging PostgreSQL database to test the rule-based chatbot flow.  
+- **Production** → Live application for students, parents, and supervisors, connected to the official production database. *(Targeted for later, not active for the MVP)*
+
+**Steps:**
+1. Push code from feature branches to `dev`.  
+2. CI (GitHub Actions) runs automated backend and frontend tests.  
+3. If all tests pass ➔ Automatically deploy to the **Staging** environment.  
+4. Manual QA checks (Test user login, submit dummy reports, verify chatbot responses, check supervisor dashboard).  
+5. Open a Pull Request to merge `dev` into `main` ➔ Deploy to **Production**.  
+
+---
+
+**➤ Shortly :** 
+- Use structured Git branches (`feature branch ➔ developer branch ➔ dev ➔ main`).  
+- Write descriptive commits + perform peer code reviews.  
+- Run automated backend tests using **Bun Test** and frontend tests with Flutter.  
+- Test internal API endpoints using **Postman** or **Bruno**.  
+- Deploy safely to staging first, then promote to production.
