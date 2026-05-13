@@ -16,8 +16,8 @@
   - [Relational Database (MVP)](#relational-database-mvp)  
 - [3. High-Level Sequence Diagrams (MVP)](#3-high-level-sequence-diagrams-mvp)  
   - [3.1 User Login (JWT)](#31-user-login-jwt)  
-  - [3.2 Report Harassment](#32-Report-an-harassment)  
-  - [3.3 Chatbot conversation](#33-Chatbot-conversation)  
+  - [3.2 Incident Reporting Process](#32-incident-reporting-process)  
+  - [3.3 Chatbot Consultation](#33-chatbot-consultation)  
 - [4. API & Methods](#4-api--methods)  
   - [4.1 External APIs Used](#41-external-apis-used)  
   - [4.2 Internal API Endpoints (MVP)](#42-internal-api-endpoints-mvp)  
@@ -276,4 +276,24 @@ In the case of the Haven App, we identified three common scenarios that users wi
 7. **UI Update**: The front-end displays a success message showing the incident tracking ID and the progress timeline.
 
 ---
+
+### 3.3 Chatbot Consultation
+
+<p align="center">
+  <img src="/Templates/ChatbotConsultation.png" alt="UserLogin" width="800" />
+  </p>
+
+  ### Explanation
+
+1. **User Message**: The student types a description of the event into the chat window and hits send.
+2. **API Request**: The **Flutter Front-end** sends a `POST /api/chat/message` request to the backend with the current Report ID and text content.
+3. **Processing Logic**: The **Chatbot Service** analyzes the student's message and calculates the most appropriate, supportive, and safe response question.
+4. **Data Persistence**: To ensure no data is lost, the backend saves **both** the student's message and the chatbot's answer into the `CHAT_MESSAGE` table using Prisma.
+5. **Database Confirmation**: **PostgreSQL** confirms that the exchange is safely logged.
+6. **API Response**: The backend sends the text response back to the application (`HTTP 200 OK`).
+7. **Display**: The front-end receives the text and instantly displays a new chat bubble in the student's conversation window.
+
+---
+
+## 4. API & Methods
 
