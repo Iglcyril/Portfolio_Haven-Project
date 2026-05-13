@@ -3,7 +3,7 @@
   <img src="/Templates/logo_haven.png" alt="Logo 2" style="width: 400px;">
 </div>
 
-## Table of content
+## Table of Contents
 
 - [0. User Stories and Mockups](#0-user-stories-and-mockups)  
   - [0.1 User Stories](#01-user-stories)  
@@ -47,7 +47,7 @@
 
 ### 0.1 User Stories
 
-#### Must Have (MVP)
+#### ➤ Must Have (MVP)
 - As a **student**, I want to **register and log in** to have my own account and report safely
 - As a **student**, I want to **choose my level of anonymity**, so I can report harassment safely
 - As a **student**, I want to **report harassment**, as a victim or a witness
@@ -63,9 +63,9 @@
 - As a **supervisor**, I want to **have statistical analysis**, to detect trends, clusters or predict risks.
 
 - As a **parent**, I want to **see the progess of my child reports**
-- As a **perent**, I want to **have the school phone number**, to cal them if I need informations.
+- As a **parent**, I want to **have the school phone number**, to cal them if I need informations.
 
-#### Should Have (important but not critical for MVP)
+#### ➤ Should Have (important but not critical for MVP)
 - As a **student**, I want to **have a progress timeline**, to see my report progress
 - As a **student**, I want to **delete my report** if I need/want to.
 
@@ -73,14 +73,14 @@
 - As a **supervisor**, I want to **filter reports** to quickly find what I want
 - As a **supervisor**, I want to **see live notifications** in case of emergency reports.
 
-#### Could Have (nice to have, next update)
+#### ➤ Could Have (nice to have, next update)
 - As a **student**, I want to **upload pictures or videos** to argue my report
 - As a **student**, I want to **change color mode** so I can adapt the screen to my needs.
 
 - As a **supervisor**, I want to **write team suggestion**, so I can handle situations safely
 - As a **supervisor**, I want to **know probable peaks**, so I can schedule teams based on that.
 
-#### Won't Have (what Haven don't do)
+#### ➤ Won't Have (what Haven don't do)
 - As a **student**, I don't want **chatbot take decision for me**, it's too dangerous
 - As a **student**, I don't want **to forget the emergency numbers**, if I'm in danger I have to use them
 
@@ -95,10 +95,10 @@ We design simple wireframes for the MVP :
 - **Home Page** -> choose if you're student or admin.
 - **Login/Register Page** -> fields for email and password.
 - **Main Page** -> two options, report an harassment as victim or witness.
-- **Report Page**, explain the situation with the chatbot.
-- **Dashboard**, summary of all datas and reports.
+- **Report Page** -> explain the situation with the chatbot.
+- **Dashboard** -> summary of all datas and reports.
 
-[➤ Interactive Mockups](./Assets)
+[➤ Interactive Mockups](./Templates/HavenMockups.pdf)
 
 ---
 
@@ -137,3 +137,26 @@ The **student** writes a report -> the **backend** processes it -> data is store
 
 ---
 
+## 2. Components, Classes, & Database Design (MVP)
+
+### 2.1 Front-end Components (Flutter)
+
+| Component / Page   | Type        | Purpose                                                                 |
+|--------------------|-------------|-------------------------------------------------------------------------|
+| `HomePage`         | Page        | Landing page choose if you're student or admin.                         |
+| `LoginPage`        | Page        | User login with email and password.                                     |
+| `MainPage`         | Page        | Shows two options, report an harassment as victim or witness.           |
+| `ReportPage/:id`   | Page        | Shows a chatbot to explain the situation.                               |
+| `RegisterPage`     | Page        | User registration (create account).                                     |
+| `Dashboard`        | Page        | Shows a summary of all datas and reports.                               |
+| `AdminDashboard`   | Page        | Protected area for staff.                                               |
+| `Header`           | UI Component| Displays user's identity, access to the profile, and the logout button. |
+| `EmergencyButton`  | UI Component| Quick access to emergency numbers.                                      |
+| `PortalSelector`   | UI Component| Allows you to choose between the Student space and the Supervisor space.|
+| `LoginForm`        | UI Component| Email and password entry form.                                          |
+| `ActionCard`       | UI Component| Two push buttons for reports.                                           |
+| `ChatWindow`       | UI Component| Main exchange area with the chatbot with `ChatBubble`.                  |
+| `ReportStatusCard` | UI Component| Dashboard map summarizing the reports.                                  |
+| `SeverityBadger`   | UI Component| Colored visual indicator of the severity of the situation.              |
+| `TreatmentTimeline`| UI Component| timeline of the progress of handling the situation.                     |
+| `AuthGuard`        | Utility     | Redirects user to login if not authenticated (JWT required).            |
