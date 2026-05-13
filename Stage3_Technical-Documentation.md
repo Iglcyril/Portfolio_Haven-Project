@@ -1,6 +1,5 @@
 <div style="display: flex; justify-content: center; align-items: center; gap: 40px;">
-  <img src="/Templates/logo_holberton.jpg" alt="Logo 1" style="width: 400px;">
-  <img src="/Templates/logo_haven.png" alt="Logo 2" style="width: 400px;">
+  <img src="/Templates/logo_holberton_haven.jpg" alt="Logo 1"">
 </div>
 
 ## Table of Contents
