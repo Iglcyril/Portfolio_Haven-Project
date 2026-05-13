@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="/Templates/logo_stack.png" alt="Bun.js"/>
+  <img src="/Templates/logo_stack.png" alt="Bun.js" />
 </p>
 
 <p align="center">
