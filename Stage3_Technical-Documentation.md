@@ -371,9 +371,9 @@ We want to make sure the code works and is easy to maintain.
 
 ### 5.3 Deployment Pipeline
 
-- ``**Development**`` → Local machines (Flutter emulator & Bun local server), quick features development and manual testing.  
-- ``**Staging**``→ Test environment deployed on a cloud platform (e.g., Vercel) with a real staging PostgreSQL database to test the rule-based chatbot flow.  
-- ``**Production**`` → Live application for students, parents, and supervisors, connected to the official production database. *(Targeted for later, not active for the MVP)*
+- ``Development`` → Local machines (Flutter emulator & Bun local server), quick features development and manual testing.  
+- ``Staging``→ Test environment deployed on a cloud platform (e.g., Vercel) with a real staging PostgreSQL database to test the rule-based chatbot flow.  
+- ``Production`` → Live application for students, parents, and supervisors, connected to the official production database. *(Targeted for later, not active for the MVP)*
 
 **Steps:**
 1. Push code from feature branches to `dev`.  
