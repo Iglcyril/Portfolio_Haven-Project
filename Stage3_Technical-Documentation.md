@@ -172,9 +172,10 @@ The **student** writes a report → the **backend** processes it → data is sto
 
 ### 2.2 Back-end Classes (Bun.js + ElysiaJS)
 
-We group backend logic into services and tables.
-Services = contain the business logic.
-Tables = store the database records.
+We group backend logic into **services** and **tables**.
+
+**Services** = contain the business logic.
+**Tables** = store the database records.
 
 For this part, I will do a simple example of illustration to make sure you will understand how the back end is working. I did something more illustrative and less technical which looks like a map of responsibilities. This diagram provides a simple representation of how my back end works.
 
@@ -183,4 +184,21 @@ I’ll give some clear explanations of this diagram right below, presented in a 
 <p align="center">
   <img src="/Templates/diagramclassBack.png" alt="Diagram Back end Classes" width="1200" />
 </p>
+
+### Backend Components Overview
+
+| Component/Table           | Type                      | Role & Responsability                                                                                       |
+|---------------------------|---------------------------|-------------------------------------------------------------------------------------------------------------|
+| **Report Service**        | Service                   | Main orchestrator. Receives user reports, manages workflow status and coordinates with other services.      |
+| **Chatbot Service**       | Service                   | Handles the automated conversation logic, guiding students through a safe reporting process step-by-step.   | 
+| **Auth Service**          | Service                   | Manages user registration, password hashing, and issues secure JWT tokens to protect the application.       |
+| **Stats Service**         | Service                   | Analyzes anonymized data to generate trends, clusters, and risk predictions for the supervisor dashboard.   |
+| **Report Table**          | Database Table            | Stores global report details (ID, status, severity levels, anonymity preferences).                          |
+| **Chat Messages Table**   | Database Table            | Logs the history of conversation bubbles between students and the chatbot.                                  | 
+| **Users Table**           | Database Table            | Securely stores user credentials, profiles, and access roles (Student, Supervisor, Parent).                 |
+| **Analytics Table**       | Database Table            | Stores aggregated metrics used by the Stats Service to render dashboard graphs.                             |
+
+**➤ Shortly :**
+- **Report Service** = manager, delagating tasks to `Chatbot`,`Auth` & `Stats`.
+- **PostgreSQL Database** = filing cabinet of each assistant.
 
