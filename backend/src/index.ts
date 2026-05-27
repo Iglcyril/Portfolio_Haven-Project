@@ -1,7 +1,7 @@
 import { Elysia } from "elysia"
 import { swagger } from "@elysiajs/swagger"
 import { cors } from "@elysiajs/cors"
-export const reportsRoutes = new Elysia({ prefix: "/reports" })
+import { reportsRoutes } from "./routes/reports"
 
 const app = new Elysia()
   .use(cors())
@@ -14,7 +14,7 @@ const app = new Elysia()
 		}
 	}
   }))
-
+  .use(reportsRoutes)
   .get("/",() => ({
 	Message: "Haven API is running",
 	version: "0.1.0"
