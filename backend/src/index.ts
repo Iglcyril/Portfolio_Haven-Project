@@ -1,6 +1,7 @@
 import { Elysia } from "elysia"
 import { swagger } from "@elysiajs/swagger"
 import { cors } from "@elysiajs/cors"
+export const reportsRoutes = new Elysia({ prefix: "/reports" })
 
 const app = new Elysia()
   .use(cors())
