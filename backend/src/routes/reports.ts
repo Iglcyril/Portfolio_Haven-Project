@@ -1,7 +1,7 @@
 import { Elysia, t } from "elysia"
 
 // creation of tracking number
-function trackingNumberCode(): string {
+function generateTrackingCode(): string {
 	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	const randomPart = (length: number) =>
     Array.from({ length }, () =>
@@ -23,3 +23,31 @@ function containsAlertKeywords(message: string): boolean {
 	return alertKeywords.some(keyword => lowerCaseMessage.includes(keyword))
 }
 
+// création route POST/reports
+const reportType = t.Union([
+	t.Literal("victime"),
+	t.Literal("temoin"),
+])
+
+// création route POST/anonymat
+const anonymatLevel = t.Union([
+	t.Literal("total"),
+	t.Literal("partiel"),
+	t.Literal("pas_anonyme"),
+])
+
+// création route POST/catégories
+const reportCategories = t.Union([
+	t.Literal("harcelement_scolaire"),
+	t.Literal("violence_physique"),
+	t.Literal("violence_verbale"),
+	t.Literal("cyberharcelement"),
+	t.Literal("discrimination"),
+	t.Literal("mal_etre"),
+	t.Literal("autre"),
+])
+
+export const reportsRoutes = new Elysia({ prefix: "/reports" })
+  .post("/", ({ body }) => {
+    
+  })
