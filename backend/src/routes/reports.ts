@@ -46,8 +46,9 @@ const reportCategories = t.Union([
 	t.Literal("mal_etre"),
 	t.Literal("autre"),
 ])
-
+// traitement d'un nouveau signalement avec génération du suivi et détection mots clés
 export const reportsRoutes = new Elysia({ prefix: "/reports" })
   .post("/", ({ body }) => {
-    
+    const trackingCode = generateTrackingCode()
+	const crisisAlert = containsAlertKeywords (body.contenu)
   })
