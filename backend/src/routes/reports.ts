@@ -69,4 +69,13 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 			}
 		})
 	}
-  },
+  },{
+    // Validation des données entrantes
+    body: t.Object({
+      type: reportType,
+      anonymat_level: anonymatLevel,
+      contenu: t.String({ minLength: 10 }),
+      categorie: reportCategories,
+      etablissement_id: t.String()
+    })
+  })
