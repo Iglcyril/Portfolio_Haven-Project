@@ -51,4 +51,22 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
   .post("/", ({ body }) => {
     const trackingCode = generateTrackingCode()
 	const crisisAlert = containsAlertKeywords (body.contenu)
-  })
+	 return {
+	trackingCode,
+	statut: "recu",
+	crisisDetected: crisisAlert,
+	createdAt: new Date().toISOString(),
+	// si mots clés détectés, on ajoute numéro urgence avec message réconfortant
+	...(crisisAlert && {
+		urgence: {
+			message: "Tu n'es pas seul (e), Contacte immédiatement :",
+			numero: [
+				{ nom: "Prévention suicide", numero: "3114" },
+				{ nom: "Enfance en danger", numero: "119" },
+				{ nom: "Cyberharcèlement", numero: "3018" },
+				{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
+				]
+			}
+		})
+	}
+  },
