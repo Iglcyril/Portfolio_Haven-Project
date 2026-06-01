@@ -1,0 +1,101 @@
+// schema.prisma
+// --------------
+// Schéma de base de données Haven.
+// C'est la source de vérité de votre base — toute modification
+// de la structure passe par ici, jamais directement en SQL.
+//
+// Après chaque modification :
+//   1. bunx prisma migrate dev --name nom_de_la_modif
+//   2. bunx prisma generate
+//
+// Pour visualiser la base dans un navigateur :
+//   bunx prisma studio
+//
+// Note Prisma v7 : la connexion DATABASE_URL est gérée
+// dans prisma.config.ts — ne pas remettre url ici.
+
+// Configuration du client Prisma généré
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Connexion PostgreSQL — l'URL est dans prisma.config.ts
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Enums ---
+// Les enums garantissent qu'une valeur ne peut être
+// que l'une des options définies — pas de valeur libre possible.
+
+// Rôles utilisateurs de l'application
+enum Role {
+  STUDENT     // Élève — peut créer et voir ses rapports
+  SUPERVISOR  // Psychologue / staff pédagogique — gère tous les rapports
+  PARENT      // Parent — peut suivre les rapports de son enfant
+}
+
+// Cycle de vie d'un rapport
+enum ReportStatus {
+  PENDING       // Rapport soumis, pas encore traité
+  UNDER_REVIEW  // Un superviseur a pris en charge le rapport
+  RESOLVED      // Situation traitée et clôturée
+}
+
+// Niveau de gravité évalué par le superviseur
+enum Severity {
+  LOW     // Badge vert sur le dashboard
+  MEDIUM  // Badge orange sur le dashboard
+  HIGH    // Badge rouge — priorité maximale
+}
+
+// --- Tables ---
+
+// Utilisateurs de l'application (élèves, superviseurs, parents)
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String                          // Jamais le mot de passe en clair
+  role         Role      @default(STUDENT)
+  createdAt    DateTime  @default(now())
+
+  reports      Report[]  // Un utilisateur peut avoir plusieurs rapports
+}
+
+// Rapport de harcèlement soumis par un élève
+model Report {
+  id          String        @id @default(cuid())
+  trackingId  String        @unique  // Identifiant lisible ex: HV-8829
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  type        String        // VICTIM ou WITNESS
+  isAnonymous Boolean       @default(false)
+  status      ReportStatus  @default(PENDING)
+  severity    Severity      @default(LOW)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt  // Mis à jour automatiquement
+
+  messages    ChatMessage[] // Historique de la conversation chatbot
+  analytics   Analytics?    // Données analytiques optionnelles (1 rapport = 0 ou 1 entrée)
+}
+
+// Messages échangés entre l'élève et le chatbot pendant la saisie du rapport
+model ChatMessage {
+  id        String   @id @default(uuid())
+  reportId  String
+  report    Report   @relation(fields: [reportId], references: [id])
+  sender    String   // USER (l'élève) ou BOT (le chatbot Haven Lab)
+  content   String
+  createdAt DateTime @default(now())
+}
+
+// Données anonymisées générées à partir d'un rapport pour les statistiques.
+// Permet au Stats Service de détecter des tendances sans exposer les données personnelles.
+model Analytics {
+  id        String   @id @default(uuid())
+  reportId  String   @unique          // Un rapport génère au maximum une entrée analytics
+  report    Report   @relation(fields: [reportId], references: [id])
+  keywords  String[]                  // Mots-clés détectés (ex: ["intimidation", "récréation"])
+  riskScore Float    @default(0)      // Score de risque calculé par le Stats Service (0.0 → 1.0)
+  createdAt DateTime @default(now())
+}

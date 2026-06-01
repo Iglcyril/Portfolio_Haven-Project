@@ -1,0 +1,34 @@
+# dependencies (bun install)
+node_modules
+
+# output
+out
+dist
+*.tgz
+
+# code coverage
+coverage
+*.lcov
+
+# logs
+# Dépendances
+node_modules/
+
+# Variables d'environnement — contient les mots de passe et secrets
+.env
+.env.local
+.env.production
+
+# Prisma — généré automatiquement, inutile de versionner
+prisma/migrations/dev.db
+
+# Bun
+bun.lockb
+
+# Build
+dist/
+build/
+
+# VS Code
+.vscode/node_modules/
+node_modules/
