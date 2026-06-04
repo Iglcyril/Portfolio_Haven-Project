@@ -1,7 +1,7 @@
 // schema.prisma
 // --------------
 // Schéma de base de données Haven.
-// C'est la source de vérité de votre base — toute modification
+// C'est la source de vérité de votre base - toute modification
 // de la structure passe par ici, jamais directement en SQL.
 //
 // Après chaque modification :
@@ -12,27 +12,28 @@
 //   bunx prisma studio
 //
 // Note Prisma v7 : la connexion DATABASE_URL est gérée
-// dans prisma.config.ts — ne pas remettre url ici.
+// dans prisma.config.ts - ne pas remettre url ici.
 
 // Configuration du client Prisma généré
 generator client {
   provider = "prisma-client-js"
 }
 
-// Connexion PostgreSQL — l'URL est dans prisma.config.ts
+// Connexion PostgreSQL - l'URL est dans prisma.config.ts
 datasource db {
   provider = "postgresql"
 }
 
 // --- Enums ---
 // Les enums garantissent qu'une valeur ne peut être
-// que l'une des options définies — pas de valeur libre possible.
+// que l'une des options définies - pas de valeur libre possible.
 
 // Rôles utilisateurs de l'application
 enum Role {
-  STUDENT     // Élève — peut créer et voir ses rapports
-  SUPERVISOR  // Psychologue / staff pédagogique — gère tous les rapports
-  PARENT      // Parent — peut suivre les rapports de son enfant
+  STUDENT     // Élève - peut créer et voir ses rapports
+  SUPERVISOR  // Psychologue / staff pédagogique - gère tous les rapports
+  PARENT      // Parent - peut suivre les rapports de son enfant
+  ADMIN       // Admin - Administrateur de la platforme
 }
 
 // Cycle de vie d'un rapport
@@ -46,7 +47,7 @@ enum ReportStatus {
 enum Severity {
   LOW     // Badge vert sur le dashboard
   MEDIUM  // Badge orange sur le dashboard
-  HIGH    // Badge rouge — priorité maximale
+  HIGH    // Badge rouge - priorité maximale
 }
 
 // --- Tables ---
@@ -65,7 +66,7 @@ model User {
 // Rapport de harcèlement soumis par un élève
 model Report {
   id          String        @id @default(cuid())
-  trackingId  String        @unique  // Identifiant lisible ex: HV-8829
+  trackingId  String        @unique  // Identifiant lisible ex: HVN-XXXX-XXXX
   userId      String
   user        User          @relation(fields: [userId], references: [id])
   type        String        // VICTIM ou WITNESS

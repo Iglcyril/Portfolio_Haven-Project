@@ -10,6 +10,7 @@
  *   - requireAuth       → autorise tous les rôles (juste connecté)
  *   - requireStudent    → autorise Student uniquement
  *   - requireSupervisor → autorise Supervisor uniquement
+ *   - requireAdmin      → autorise Admin uniquement
  *   - requireParent     → autorise Parent uniquement
  */
 
@@ -20,7 +21,7 @@ const JWT_SECRET = process.env.JWT_SECRET!
 // Contenu décodé d'un token JWT Haven
 export type JWTPayload = {
   userId: string
-  role: 'STUDENT' | 'SUPERVISOR' | 'PARENT'
+  role: 'STUDENT' | 'ADMIN' | 'SUPERVISOR' | 'PARENT'
 }
 
 /**
@@ -45,7 +46,7 @@ export function verifyToken(token: string): JWTPayload {
  */
 export function requireRole(
   token: string,
-  allowedRoles: Array<'STUDENT' | 'SUPERVISOR' | 'PARENT'>
+  allowedRoles: Array<'STUDENT' | 'ADMIN' | 'SUPERVISOR' | 'PARENT'>
 ): JWTPayload {
   const payload = verifyToken(token)
 
@@ -58,9 +59,9 @@ export function requireRole(
 
 // --- Raccourcis à utiliser directement dans les routes ---
 
-/** Toute personne connectée (Student, Supervisor ou Parent) */
+/** Toute personne connectée (Student, Admin, Supervisor ou Parent) */
 export const requireAuth = (t: string) =>
-  requireRole(t, ['STUDENT', 'SUPERVISOR', 'PARENT'])
+  requireRole(t, ['STUDENT', 'ADMIN', 'SUPERVISOR', 'PARENT'])
 
 /** Réservé aux étudiants */
 export const requireStudent = (t: string) =>
@@ -69,6 +70,10 @@ export const requireStudent = (t: string) =>
 /** Réservé aux superviseurs (psychologues, staff pédagogique) */
 export const requireSupervisor = (t: string) =>
   requireRole(t, ['SUPERVISOR'])
+
+/** Réservé aux administrateurs de la plateforme */
+export const requireAdmin = (t: string) =>
+  requireRole(t, ['ADMIN'])
 
 /** Réservé aux parents */
 export const requireParent = (t: string) =>
