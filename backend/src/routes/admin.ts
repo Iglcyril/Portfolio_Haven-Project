@@ -3,10 +3,11 @@ import { requireAdmin } from "../middlewares/auth.middleware"
 
 // Route d'administration pour la gestion des signalements et des utilisateurs
 export const adminRoutes = new Elysia({ prefix: "/admin" })
+
 // liste de tous les signalements avec filtrage
   .get("/reports", ({query}) => {
 	const { status } = query
-	
+
 	    // A faire : remplacer par une vraie requête Prisma → prisma.report.findMany()
     const reports = [
       {
@@ -42,3 +43,19 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
       total: filtered.length
     }
   })
+
+  .get ("/reports/:id", ({ params }) => {
+	const { id } = params
+	// A faire : remplacer par une vraie requête Prisma -> prisma.report.findUnique({ where: { trackingCode: id } })
+	const report = {
+	trackingCode: id,
+	status: "en_cours",
+	categorie: "harcelement_scolaire",
+	severite: "HIGH",
+	createdAt: "2026-05-15T10:30:00Z"
+	}
+	return report
+	})
+
+
+
