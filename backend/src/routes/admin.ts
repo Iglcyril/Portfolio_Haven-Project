@@ -69,7 +69,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	updatedAt: new Date().toISOString()
 	}
 	},{
-  // Validation des données entrantes — tous les champs sont optionnels
+  // Validation des données entrantes tous les champs sont optionnels
   body: t.Object({
     status: t.Optional(t.Union([
       t.Literal("urgent"),
@@ -94,8 +94,40 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	  t.Literal("ELEVE")
 	]))
   })
-})
+  })
 
+ .get("/stats", ({query}) => {
+	const { etablissement_id } = query
+	// A faire : remplacer par une vraie requête Prisma -> prisma.report.groupBy({ by: ['categorie'], where: { etablissement_id } })
 
-
-
+	return {
+	  etablissement_id,
+	  // repartition par catégories
+	  by_categorie: [
+		{ categorie: "harcelement_scolaire", count: 10 },
+		{ categorie: "violence_physique", count: 2 },
+		{ categorie: "violence_verbale", count: 1 },
+		{ categorie: "cyberharcelement", count: 5 },
+		{ categorie: "discrimination", count: 0 },
+		{ categorie: "mal_etre", count: 3 },
+		{ categorie: "autre", count: 0 }
+	  ],
+	  // repartition par statut
+	  by_status: [
+		{ status: "urgent", count: 4 },
+		{ status: "en_cours", count: 8 },
+		{ status: "traite", count: 5 },
+		{ status: "archive", count: 1 }
+	  ],
+	  // repartition par niveau de gravité
+	  by_level: [
+		{ level: "BAS", count: 6 },
+		{ level: "MOYEN", count: 7 },
+		{ level: "ELEVE", count: 5 },
+	  ],
+	  // chiffres clés à voir si implémenté
+	  total_reports: 20,
+	  resolution_amount: "50%",
+	  average_resolution_time: "3 jours"
+	}
+  })
