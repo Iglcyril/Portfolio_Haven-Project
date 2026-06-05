@@ -3,6 +3,7 @@ import { swagger } from "@elysiajs/swagger"
 import { cors } from "@elysiajs/cors"
 import { reportsRoutes } from "./routes/reports"
 import { parentsRoutes } from "./routes/parents"
+import { adminRoutes } from "./routes/admin"
 
 const app = new Elysia()
   .use(cors())
@@ -17,6 +18,7 @@ const app = new Elysia()
   }))
   .use(reportsRoutes)
   .use(parentsRoutes)
+  .use(adminRoutes)
   .get("/",() => ({
 	Message: "Haven API is running",
 	version: "0.1.0"
