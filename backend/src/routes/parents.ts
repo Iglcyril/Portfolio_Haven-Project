@@ -37,5 +37,3 @@ export const parentsRoutes = new Elysia({ prefix: "/parents" })
 			message: t.String({ minLength: 10 }),
 		})
 	})
-
-
