@@ -10,16 +10,20 @@
  */
 
 import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-const prisma = new PrismaClient()
+// Prisma v7 — nécessite un adapter explicite pour la connexion PostgreSQL
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
+const prisma = new PrismaClient({ adapter })
+
 const JWT_SECRET = process.env.JWT_SECRET!
 
 export type RegisterInput = {
   email: string
   password: string
-  role?: 'STUDENT' | 'SUPERVISOR' | 'PARENT'
+  role?: 'STUDENT' | 'SUPERVISOR' | 'ADMIN' | 'PARENT'
 }
 
 export type LoginInput = {
@@ -61,6 +65,8 @@ export const authService = {
   /**
    * Authentifie un utilisateur existant.
    * Lance INVALID_CREDENTIALS si email ou mot de passe incorrect.
+   * Note : le message est volontairement vague pour ne pas révéler
+   * si c'est l'email ou le mot de passe qui est incorrect.
    */
   async login({ email, password }: LoginInput) {
     const user = await prisma.user.findUnique({ where: { email } })
