@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/theme/app_theme.dart';
 import 'features/home/home_page.dart';
+import 'features/intro/intro_screen.dart';
 
 class HavenApp extends StatefulWidget {
   const HavenApp({super.key});
@@ -11,6 +12,7 @@ class HavenApp extends StatefulWidget {
 
 class _HavenAppState extends State<HavenApp> {
   ThemeMode _themeMode = ThemeMode.light;
+  bool _showIntro = true;
 
   void _toggleTheme() {
     setState(() {
@@ -27,7 +29,11 @@ class _HavenAppState extends State<HavenApp> {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: _themeMode,
-      home: HomePage(onToggleTheme: _toggleTheme),
+      home: _showIntro
+          ? IntroScreen(
+              onComplete: () => setState(() => _showIntro = false),
+            )
+          : HomePage(onToggleTheme: _toggleTheme),
     );
   }
 }
