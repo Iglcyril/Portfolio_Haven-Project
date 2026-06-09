@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
                 )
               : const RadialGradient(
                   center: Alignment(0.0, -0.6),
-                  radius: 1.6,
+                  radius: 1.4,
                   colors: [
                     AppColors.lightGradientBottom,
                     AppColors.lightGradientTop,
@@ -46,15 +46,16 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _ThemeToggleButton(onTap: onToggleTheme, isDark: isDark),
-                  const Spacer(flex: 1),
+                  const SizedBox(height: 24),
                   Center(child: _AppIcon()),
+                  const SizedBox(height: 16),
                   Center(child: _TitleText(isDark: isDark)),
                   const SizedBox(height: 10),
                   Center(child: _SubtitleText(isDark: isDark)),
                   const Spacer(flex: 3),
                   _PortalButton(
                     label: 'Portail Étudiant',
-                    subtitle: 'Pour les écoles & universités',
+                    subtitle: 'Pour les collèges & lycées',
                     icon: Icons.person_outline_rounded,
                     isFilled: true,
                     isDark: isDark,
@@ -62,8 +63,18 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   _PortalButton(
+                    label: 'Espace Parents',
+                    subtitle: 'Pour les parents & tuteurs',
+                    icon: Icons.family_restroom,
+                    isFilled: false,
+                    isDark: isDark,
+                    customBgColor: const Color(0xFF8ED4BF),
+                    onTap: () {},
+                  ),
+                  const SizedBox(height: 12),
+                  _PortalButton(
                     label: 'Espace Professionnel',
-                    subtitle: 'Pour les entreprises & organisations',
+                    subtitle: 'Pour les référents & le réctorat',
                     icon: Icons.shield_outlined,
                     isFilled: false,
                     isDark: isDark,
@@ -131,8 +142,8 @@ class _AppIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       'assets/logo.PNG',
-      width: 160,
-      height: 160,
+      width: 120,
+      height: 120,
       fit: BoxFit.contain,
     );
   }
@@ -186,6 +197,7 @@ class _PortalButton extends StatelessWidget {
   final bool isFilled;
   final bool isDark;
   final VoidCallback onTap;
+  final Color? customBgColor;
 
   const _PortalButton({
     required this.label,
@@ -194,6 +206,7 @@ class _PortalButton extends StatelessWidget {
     required this.isFilled,
     required this.isDark,
     required this.onTap,
+    this.customBgColor,
   });
 
   @override
@@ -206,14 +219,36 @@ class _PortalButton extends StatelessWidget {
     final Color iconColor;
     final List<BoxShadow>? shadows;
 
-    if (isFilled) {
+    final bool useGlass = isFilled && isDark && customBgColor == null;
+
+    if (customBgColor != null) {
+      // Espace Parents : mint en light, style étudiant en dark
+      bgColor = isDark ? Colors.white.withOpacity(0.12) : customBgColor!;
+      borderColor = isDark
+          ? Colors.white.withOpacity(0.15)
+          : Colors.transparent;
+      textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
+      subtitleColor = isDark
+          ? Colors.white.withOpacity(0.65)
+          : AppColors.lightTextSecondary;
+      iconBgColor = isDark
+          ? Colors.white.withOpacity(0.15)
+          : AppColors.primary.withOpacity(0.1);
+      iconColor = isDark ? Colors.white : AppColors.primary;
+      shadows = null;
+    } else if (isFilled) {
+      // Portail Étudiant : couleur la plus sombre en dark + glass, vert plein en light
       bgColor = isDark
-          ? Colors.white.withOpacity(0.12)
+          ? AppColors.darkGradientTop.withOpacity(0.70)
           : AppColors.studentButtonFill;
-      borderColor = Colors.transparent;
+      borderColor = isDark
+          ? Colors.white.withOpacity(0.08)
+          : Colors.transparent;
       textColor = Colors.white;
       subtitleColor = Colors.white.withOpacity(0.65);
-      iconBgColor = Colors.white.withOpacity(0.15);
+      iconBgColor = isDark
+          ? Colors.white.withOpacity(0.10)
+          : Colors.white.withOpacity(0.15);
       iconColor = Colors.white;
       shadows = null;
     } else {
@@ -240,65 +275,73 @@ class _PortalButton extends StatelessWidget {
             ];
     }
 
+    final Color arrowColor = (isFilled || (customBgColor != null && isDark))
+        ? Colors.white.withOpacity(0.70)
+        : (isDark
+            ? Colors.white.withOpacity(0.55)
+            : AppColors.lightTextSecondary);
+
+    final Widget card = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 17),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: borderColor),
+        boxShadow: shadows,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: iconColor, size: 22),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.fraunces(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: textColor,
+                    letterSpacing: -0.1,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.manrope(
+                    fontSize: 12,
+                    color: subtitleColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.arrow_forward_ios_rounded, color: arrowColor, size: 15),
+        ],
+      ),
+    );
+
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 17),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: borderColor),
-          boxShadow: shadows,
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 42,
-              height: 42,
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                borderRadius: BorderRadius.circular(12),
+      child: useGlass
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(28),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: card,
               ),
-              child: Icon(icon, color: iconColor, size: 22),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    style: GoogleFonts.fraunces(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: textColor,
-                      letterSpacing: -0.1,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.manrope(
-                      fontSize: 12,
-                      color: subtitleColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              color: isFilled
-                  ? Colors.white.withOpacity(0.7)
-                  : (isDark
-                      ? Colors.white.withOpacity(0.55)
-                      : AppColors.lightTextSecondary),
-              size: 15,
-            ),
-          ],
-        ),
-      ),
+            )
+          : card,
     );
   }
 }
