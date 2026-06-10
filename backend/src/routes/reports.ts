@@ -37,7 +37,7 @@ const anonymatLevel = t.Union([
 ])
 
 // création route POST/catégories
-const reportCategories = t.Union([
+const reportCategory = t.Union([
 	t.Literal("harcelement_scolaire"),
 	t.Literal("violence_physique"),
 	t.Literal("violence_verbale"),
@@ -58,7 +58,7 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 		const crisisAlert = containsAlertKeywords (body.contenu)
 
 	//ajout code erreur
-		if (!body.etablissement_id || body.etablissement_id.trim() === "") {
+		if (!body.establishment_id || body.establishment_id.trim() === "") {
 		ctx.set.status = 400
 		return { error: "L'identifiant de l'établissement est requis" }
 	}
@@ -73,11 +73,11 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 		...(crisisAlert && {
 			urgence: {
 				message: "Tu n'es pas seul (e), Contacte immédiatement :",
-				numero: [
-					{ nom: "Prévention suicide", numero: "3114" },
-					{ nom: "Enfance en danger", numero: "119" },
-					{ nom: "Cyberharcèlement", numero: "3018" },
-					{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
+				number: [
+					{ name: "Prévention suicide", number: "3114" },
+					{ name: "Enfance en danger", number: "119" },
+					{ name: "Cyberharcèlement", number: "3018" },
+					{ name: "Pour les personnes sourd-aveugles", number: "114" },
 					]
 				}
 			})
@@ -88,8 +88,8 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
       type: reportType,
       anonymat_level: anonymatLevel,
       contenu: t.String({ minLength: 10 }),
-      categorie: reportCategories,
-      etablissement_id: t.String()
+      category: reportCategory,
+      establishment_id: t.String()
     })
   })
   // récupération d'un signalement avec son code de suivi
