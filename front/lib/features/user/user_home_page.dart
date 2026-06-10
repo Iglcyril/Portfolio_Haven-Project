@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../report/confidential_choice_page.dart';
 
 class UserHomePage extends StatelessWidget {
   final VoidCallback onToggleTheme;
@@ -41,7 +42,13 @@ class UserHomePage extends StatelessWidget {
                         icon: Icons.person_outline_rounded,
                         isFilled: true,
                         isDark: isDark,
-                        onTap: () {},
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => ConfidentialChoicePage(
+                              onToggleTheme: onToggleTheme,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 12),
                       _ReportCard(
@@ -50,7 +57,13 @@ class UserHomePage extends StatelessWidget {
                         icon: Icons.remove_red_eye_outlined,
                         isFilled: false,
                         isDark: isDark,
-                        onTap: () {},
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => ConfidentialChoicePage(
+                              onToggleTheme: onToggleTheme,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 28),
                       _ResourcesSection(isDark: isDark),
