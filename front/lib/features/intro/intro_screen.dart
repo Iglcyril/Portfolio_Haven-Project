@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/circle_clipper.dart';
 
 // ─── Intro palette (same as dark theme home page) ───────────────────────────
 const _green   = Color(0xFF00A176);
@@ -51,12 +52,12 @@ class _IntroScreenState extends State<IntroScreen>
       vsync: this,
     )..forward();
 
-    // Fire at t≈5.9s — screen is black, swap is seamless
+    // Fire at t≈5.8s — ripple circle fully covers screen, swap is seamless
     _ctrl.addListener(_checkCompletion);
   }
 
   void _checkCompletion() {
-    if (!_completionFired && _ctrl.value >= 5.9 / 6.0) {
+    if (!_completionFired && _ctrl.value >= 5.8 / 6.0) {
       _completionFired = true;
       widget.onComplete();
     }
@@ -96,6 +97,8 @@ class _IntroScreenState extends State<IntroScreen>
                   _Wordmark(t: t, w: w, markCy: markCy, sx: sx, sy: sy),
                   _Tagline(t: t, w: w, markCy: markCy, sx: sx, sy: sy),
                   _TrustBadge(t: t, w: w, sx: sx, sy: sy),
+                  // Ripple circle expands from logo center → covers screen at t=5.8s
+                  _RippleExpand(t: t, cx: cx, markCy: markCy),
                   _FadeOverlay(t: t),
                 ],
               );
@@ -664,24 +667,41 @@ class _ShieldPainter extends CustomPainter {
   bool shouldRepaint(_ShieldPainter _) => false;
 }
 
-// ─── Fade overlay: black on open, black before navigation swap ───────────────
+// ─── Ripple expand: filled circle grows from logo center → covers full screen ─
+// Starts at t=5.2s, reaches full coverage at t=5.8s.
+// Hands off seamlessly to app.dart's contracting reveal overlay.
+class _RippleExpand extends StatelessWidget {
+  final double t, cx, markCy;
+  const _RippleExpand({required this.t, required this.cx, required this.markCy});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = _seg(t, 5.2, 5.8, curve: Curves.easeInCubic);
+    if (p <= 0) return const SizedBox.shrink();
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: ClipPath(
+          clipper: CircleClipper(
+            center: Offset(cx, markCy),
+            fraction: p,
+          ),
+          child: const ColoredBox(color: AppColors.darkGradientTop),
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Fade overlay: only handles the opening fade-in (t=0 → 0.45s) ────────────
 class _FadeOverlay extends StatelessWidget {
   final double t;
   const _FadeOverlay({required this.t});
 
   @override
   Widget build(BuildContext context) {
-    final double opacity;
-    if (t <= 0.45) {
-      opacity = 1.0 - _seg(t, 0, 0.45, curve: Curves.easeInOutCubic);
-    } else if (t >= 5.3) {
-      opacity = _seg(t, 5.3, 5.9, curve: Curves.easeInOutCubic);
-    } else {
-      opacity = 0.0;
-    }
-
+    if (t >= 0.45) return const SizedBox.shrink();
+    final opacity = 1.0 - _seg(t, 0, 0.45, curve: Curves.easeInOutCubic);
     if (opacity <= 0.001) return const SizedBox.shrink();
-
     return Positioned.fill(
       child: IgnorePointer(
         child: ColoredBox(
