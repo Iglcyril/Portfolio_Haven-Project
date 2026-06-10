@@ -54,7 +54,7 @@ class HomePage extends StatelessWidget {
                   Center(child: _SubtitleText(isDark: isDark)),
                   const Spacer(flex: 3),
                   _PortalButton(
-                    label: 'Portail Étudiant',
+                    label: 'Portail Étudiants',
                     subtitle: 'Pour les collèges & lycées',
                     icon: Icons.person_outline_rounded,
                     isFilled: true,
@@ -73,7 +73,7 @@ class HomePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   _PortalButton(
-                    label: 'Espace Professionnel',
+                    label: 'Espace Professionnels',
                     subtitle: 'Pour les référents & le réctorat',
                     icon: Icons.shield_outlined,
                     isFilled: false,
