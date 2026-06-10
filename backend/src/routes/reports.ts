@@ -48,27 +48,39 @@ const reportCategories = t.Union([
 ])
 // traitement d'un nouveau signalement avec génération du suivi et détection mots clés
 export const reportsRoutes = new Elysia({ prefix: "/reports" })
-  .post("/", ({ body }) => {
-    const trackingCode = generateTrackingCode()
-	const crisisAlert = containsAlertKeywords (body.contenu)
-	 return {
-	trackingCode,
-	statut: "recu",
-	crisisDetected: crisisAlert,
-	createdAt: new Date().toISOString(),
-	// si mots clés détectés, on ajoute numéro urgence avec message réconfortant
-	...(crisisAlert && {
-		urgence: {
-			message: "Tu n'es pas seul (e), Contacte immédiatement :",
-			numero: [
-				{ nom: "Prévention suicide", numero: "3114" },
-				{ nom: "Enfance en danger", numero: "119" },
-				{ nom: "Cyberharcèlement", numero: "3018" },
-				{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
-				]
-			}
-		})
+	// {body, set} : body contient les données du signalement, set permet de définir le code de statut de la réponse à retirer quand on fera le lien avec la base de donnée
+  //.post("/", ({ body, set }: { body: any, set: any }) => {
+
+	.post("/", (ctx) => {
+  		const body = ctx.body as any
+    	const trackingCode = generateTrackingCode()
+		const crisisAlert = containsAlertKeywords (body.contenu)
+
+	//ajout code erreur
+		if (!body.etablissement_id || body.etablissement_id.trim() === "") {
+		ctx.set.status = 400
+		return { error: "L'identifiant de l'établissement est requis" }
 	}
+	ctx.set.status = 201
+
+	 return {
+		trackingCode,
+		statut: "recu",
+		crisisDetected: crisisAlert,
+		createdAt: new Date().toISOString(),
+	// si mots clés détectés, on ajoute numéro urgence avec message réconfortant
+		...(crisisAlert && {
+			urgence: {
+				message: "Tu n'es pas seul (e), Contacte immédiatement :",
+				numero: [
+					{ nom: "Prévention suicide", numero: "3114" },
+					{ nom: "Enfance en danger", numero: "119" },
+					{ nom: "Cyberharcèlement", numero: "3018" },
+					{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
+					]
+				}
+			})
+		}
   },{
     // Validation des données entrantes
     body: t.Object({
