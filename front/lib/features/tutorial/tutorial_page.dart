@@ -581,7 +581,7 @@ class _Screen3 extends StatelessWidget {
                     child: SlideTransition(
                       position: titleBigSlide,
                       child: Text(
-                        'Un référent',
+                        'Une équipe',
                         style: GoogleFonts.fraunces(
                           fontSize: 52,
                           fontWeight: FontWeight.w700,
@@ -598,7 +598,7 @@ class _Screen3 extends StatelessWidget {
                     child: SlideTransition(
                       position: titleSubSlide,
                       child: Text(
-                        'prendra ton signalement\nen charge.',
+                        'prendra en charge ton signalement !',
                         style: GoogleFonts.fraunces(
                           fontSize: 28,
                           fontWeight: FontWeight.w500,
