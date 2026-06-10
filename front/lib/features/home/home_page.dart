@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../auth/auth_page.dart';
 
 class HomePage extends StatelessWidget {
   final VoidCallback onToggleTheme;
@@ -59,7 +60,14 @@ class HomePage extends StatelessWidget {
                     icon: Icons.person_outline_rounded,
                     isFilled: true,
                     isDark: isDark,
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AuthPage(
+                          portal: PortalType.student,
+                          onToggleTheme: onToggleTheme,
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   _PortalButton(
@@ -69,7 +77,14 @@ class HomePage extends StatelessWidget {
                     isFilled: false,
                     isDark: isDark,
                     customBgColor: const Color(0xFF8ED4BF),
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AuthPage(
+                          portal: PortalType.parent,
+                          onToggleTheme: onToggleTheme,
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   _PortalButton(
@@ -78,7 +93,14 @@ class HomePage extends StatelessWidget {
                     icon: Icons.shield_outlined,
                     isFilled: false,
                     isDark: isDark,
-                    onTap: () {},
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => AuthPage(
+                          portal: PortalType.professional,
+                          onToggleTheme: onToggleTheme,
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   const _EncryptionLabel(),
