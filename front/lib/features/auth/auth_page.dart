@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../tutorial/tutorial_page.dart';
+import '../user/user_home_page.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -147,10 +148,18 @@ class _AuthPageState extends State<AuthPage> {
                       onTap: _tab == _AuthTab.register
                           ? () => Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => const TutorialPage(),
+                                  builder: (_) => TutorialPage(
+                                    onToggleTheme: widget.onToggleTheme,
+                                  ),
                                 ),
                               )
-                          : () {},
+                          : () => Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (_) => UserHomePage(
+                                    onToggleTheme: widget.onToggleTheme,
+                                  ),
+                                ),
+                              ),
                     ),
                     const SizedBox(height: 20),
                     _Footer(isDark: isDark),

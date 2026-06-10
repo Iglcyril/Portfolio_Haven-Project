@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../user/user_home_page.dart';
 
 class TutorialPage extends StatefulWidget {
-  const TutorialPage({super.key});
+  final VoidCallback onToggleTheme;
+  const TutorialPage({super.key, required this.onToggleTheme});
 
   @override
   State<TutorialPage> createState() => _TutorialPageState();
@@ -189,12 +191,18 @@ class _TutorialPageState extends State<TutorialPage>
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.of(context).pop();
+      _goHome();
     }
   }
 
-  void _skip() {
-    Navigator.of(context).pop();
+  void _skip() => _goHome();
+
+  void _goHome() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => UserHomePage(onToggleTheme: widget.onToggleTheme),
+      ),
+    );
   }
 
   void _onPageChanged(int page) {

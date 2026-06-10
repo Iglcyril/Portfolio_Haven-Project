@@ -11,6 +11,9 @@ abstract final class AppColors {
   // Warm white (replaces pure white in light mode)
   static const Color warmWhite = Color(0xFFF9F6F1);
 
+  // Card background — light mode
+  static const Color lightCard = Color(0xFFE6E4DF);
+
   // Dark mode gradient
   static const Color darkGradientTop = Color(0xFF102F2B);
   static const Color darkGradientBottom = Color(0xFF028966);
