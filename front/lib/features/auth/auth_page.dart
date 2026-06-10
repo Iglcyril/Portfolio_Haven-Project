@@ -58,7 +58,26 @@ class _AuthPageState extends State<AuthPage> {
           child: Scaffold(
             backgroundColor: Colors.transparent,
             resizeToAvoidBottomInset: true,
-            body: SafeArea(
+            body: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  right: -310,
+                  bottom: -420,
+                  child: IgnorePointer(
+                    child: Transform.rotate(
+                      angle: 0.8,
+                      child: Opacity(
+                        opacity: isDark ? 0.04 : 0.5,
+                        child: Image.asset(
+                          isDark ? 'assets/anchor.png' : 'assets/anchorwhitemode.png',
+                          width: 950,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SafeArea(
               child: SingleChildScrollView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
@@ -129,6 +148,8 @@ class _AuthPageState extends State<AuthPage> {
                   ],
                 ),
               ),
+            ),
+              ],
             ),
           ),
         ),
