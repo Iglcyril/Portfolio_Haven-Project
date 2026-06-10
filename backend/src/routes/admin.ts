@@ -8,12 +8,12 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
   .get("/reports", ({query, headers, set}) => {
 
 	//Vérification du token d'authentification et des droits d'accès
-	const token = headers.authorization?.replace("Bearer", "")
+	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
 		requireAdmin(token)
 	}
 	catch (e: any) {
-		if (e.message === "Invalid token") {
+		if (e.message === "INVALID_TOKEN") {
 			set.status = 401
 			return { error: "Token manquant ou expiré" }
 		}
