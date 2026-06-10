@@ -24,14 +24,13 @@ import { Elysia } from 'elysia'
 import { cors } from '@elysiajs/cors'
 import { bearer } from '@elysiajs/bearer'
 import { swagger } from '@elysiajs/swagger'
-import { authRoutes } from './routes/auth.routes'
-import { adminRoutes } from './routes/admin.routes'
-import { parentsRoutes } from './routes/parents.routes'
-import { reportsRoutes } from './routes/reports.routes'
+import { authRoutes } from './routes/auth'
+import { adminRoutes } from './routes/admin'
+import { parentsRoutes } from './routes/parents'
+import { reportsRoutes } from './routes/reports'
 // import { chatRoutes } from './routes/chat.routes' → à ajouter quand Haven Lab fournit leur API
 
 // --- Validation des variables d'environnement ---
-// Le serveur refuse de démarrer s'il manque une variable critique.
 const requiredEnv = ['DATABASE_URL', 'JWT_SECRET']
 for (const key of requiredEnv) {
   if (!process.env[key]) {
@@ -42,15 +41,8 @@ for (const key of requiredEnv) {
 
 const app = new Elysia()
 
-  // CORS — autorise les requêtes depuis le frontend Flutter
   .use(cors())
-
-  // Bearer — extrait le token du header Authorization: Bearer <token>
   .use(bearer())
-
-  // Swagger — documentation interactive accessible sur /swagger
-  // Le bouton Authorize en haut à droite permet de renseigner le JWT
-  // et de l'utiliser automatiquement sur toutes les routes protégées
   .use(swagger({
     documentation: {
       info: {
@@ -58,17 +50,15 @@ const app = new Elysia()
         version: '0.1.0',
         description: 'Bullying report API for schools'
       },
-      // Configuration du schéma de sécurité Bearer JWT
       components: {
         securitySchemes: {
           bearerAuth: {
             type: 'http',
             scheme: 'bearer',
-            bearerFormat: 'JWT',
+            bearerFormat: 'JWT'
           }
         }
       },
-      // Applique bearerAuth à toutes les routes par défaut
       security: [{ bearerAuth: [] }]
     }
   }))
@@ -80,7 +70,6 @@ const app = new Elysia()
   .use(reportsRoutes) // /api/reports/* → signalements
   // .use(chatRoutes) // /api/chat/*    → chatbot Haven Lab (à venir)
 
-  // Health check — vérifie que le serveur tourne
   .get('/health', () => ({ status: 'ok', project: 'Haven', version: '0.1.0' }))
 
   .listen(process.env.PORT ?? 3000)
