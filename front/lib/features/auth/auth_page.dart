@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../tutorial/tutorial_page.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -141,7 +142,16 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    _CtaButton(tab: _tab),
+                    _CtaButton(
+                      tab: _tab,
+                      onTap: _tab == _AuthTab.register
+                          ? () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const TutorialPage(),
+                                ),
+                              )
+                          : () {},
+                    ),
                     const SizedBox(height: 20),
                     _Footer(isDark: isDark),
                     const SizedBox(height: 32),
@@ -663,7 +673,8 @@ class _RememberMe extends StatelessWidget {
 
 class _CtaButton extends StatelessWidget {
   final _AuthTab tab;
-  const _CtaButton({required this.tab});
+  final VoidCallback onTap;
+  const _CtaButton({required this.tab, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -671,9 +682,7 @@ class _CtaButton extends StatelessWidget {
         tab == _AuthTab.register ? 'Créer mon compte' : 'Se connecter';
 
     return GestureDetector(
-      onTap: () {
-        // TODO: brancher auth service
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 18),
         decoration: BoxDecoration(

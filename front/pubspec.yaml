@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^8.0.0
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +23,6 @@ flutter:
     - assets/logo.PNG
     - assets/anchor.png
     - assets/anchorwhitemode.png
+    - assets/svg_screen_1.svg
+    - assets/svg_screen_2.svg
+    - assets/svg_screen_3.svg
