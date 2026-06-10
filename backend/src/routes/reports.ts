@@ -95,24 +95,30 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
   // récupération d'un signalement avec son code de suivi
   .get("/:code", (ctx) => {
 	const { code } = ctx.params
+	// A remplacé par prisma 
 	return {
-	trackingCode: code,
-	status: "en_cours",
-	categorie: "harcelement_scolaire",
+	tracking_Code: code,
+	current_status: "en_cours",
+	category: "harcelement_scolaire",
 	level: "haut",
-	createdAt: "2026-05-15T10:30:00Z",
 	referent: "Madame Dupont",
+	createdAt: "2026-05-15T10:30:00Z",
+	last_update: "2026-05-15T10:30:00Z",
 	timeline: [
 		{
-			status: "recu",
+			step: "recu",
 			timestamp: "2026-05-15T10:30:00Z",
-			commentaire: "Signalement reçu, en attente de traitement",
+			comment: "Signalement reçu, en attente de traitement",
 		},
+		{
+			step: "en_cours",
+			timestamp: "2026-05-16T14:45:00Z",
+			comment: "Le référent de l'établissement a pris en charge le signalement",
+		}
 	],
 	next_steps: [
 		"Le référent de l'établissement prendra contact avec vous dans les plus brefs délais",
 		"En cas d'urgence, n'hésitez pas à contacter les numéros d'urgence fournis"
 	],
-	last_update: "2026-05-15T10:30:00Z"
 	}
 })
