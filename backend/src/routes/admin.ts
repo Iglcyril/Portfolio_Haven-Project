@@ -5,7 +5,21 @@ import { requireAdmin } from "../middlewares/auth.middleware"
 export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 // liste de tous les signalements avec filtrage
-  .get("/reports", ({query}) => {
+  .get("/reports", ({query, headers, set}) => {
+
+	//Vérification du token d'authentification et des droits d'accès
+	const token = headers.authorization?.replace("Bearer", "")
+	try {
+		requireAdmin(token)
+	}
+	catch (e: any) {
+		if (e.message === "Invalid token") {
+			set.status = 401
+			return { error: "Token manquant ou expiré" }
+		}
+		set.status = 403
+		return { error: "Accès refusé" }
+	}
 	const { status } = query
 
 	    // A faire : remplacer par une vraie requête Prisma → prisma.report.findMany()
@@ -13,21 +27,21 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
       {
         trackingCode: "HVN-AB12-CD34",
         status: "urgent",
-        categorie: "harcelement_scolaire",
+        category: "harcelement_scolaire",
         severite: "HIGH",
         createdAt: "2026-05-15T10:30:00Z"
       },
       {
         trackingCode: "HVN-EF56-GH78",
         status: "en_cours",
-        categorie: "cyberharcelement",
+        category: "cyberharcelement",
         severite: "MEDIUM",
         createdAt: "2026-05-20T14:00:00Z"
       },
       {
         trackingCode: "HVN-IJ90-KL12",
         status: "traite",
-        categorie: "mal_etre",
+        category: "mal_etre",
         severite: "LOW",
         createdAt: "2026-05-22T09:15:00Z"
       }
@@ -50,7 +64,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	const report = {
 	trackingCode: id,
 	status: "en_cours",
-	categorie: "harcelement_scolaire",
+	category: "harcelement_scolaire",
 	level: "HIGH",
 	createdAt: "2026-05-15T10:30:00Z"
 	}
@@ -60,12 +74,12 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 	.patch("/reports/:id", ({ params, body }) => {
 	const { id } = params
-	const { status, categorie, level } = body
+	const { status, category, level } = body
 	return {
 	trackingCode: id,
 	status: status || "en_cours",
-	categorie: categorie || "harcelement_scolaire",
-	level: level || "HIGH",
+	category: category || "harcelement_scolaire",
+	level: level || "ELEVE",
 	updatedAt: new Date().toISOString()
 	}
 	},{
@@ -79,7 +93,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
     ])),
     assigne_a: t.Optional(t.String()),
     note_interne: t.Optional(t.String()),
-	categorie: t.Optional(t.Union([
+	category: t.Optional(t.Union([
 	  t.Literal("harcelement_scolaire"),
 	  t.Literal("violence_physique"),
 	  t.Literal ("violence_verbale"),
@@ -97,20 +111,20 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
   })
 
  .get("/stats", ({query}) => {
-	const { etablissement_id } = query
-	// A faire : remplacer par une vraie requête Prisma -> prisma.report.groupBy({ by: ['categorie'], where: { etablissement_id } })
+	const { establishment_id } = query
+	// A faire : remplacer par une vraie requête Prisma -> prisma.report.groupBy({ by: ['category'], where: { establishment_id } })
 
 	return {
-	  etablissement_id,
+	  establishment_id,
 	  // repartition par catégories
-	  by_categorie: [
-		{ categorie: "harcelement_scolaire", count: 10 },
-		{ categorie: "violence_physique", count: 2 },
-		{ categorie: "violence_verbale", count: 1 },
-		{ categorie: "cyberharcelement", count: 5 },
-		{ categorie: "discrimination", count: 0 },
-		{ categorie: "mal_etre", count: 3 },
-		{ categorie: "autre", count: 0 }
+	  by_category: [
+		{ category: "harcelement_scolaire", count: 10 },
+		{ category: "violence_physique", count: 2 },
+		{ category: "violence_verbale", count: 1 },
+		{ category: "cyberharcelement", count: 5 },
+		{ category: "discrimination", count: 0 },
+		{ category: "mal_etre", count: 3 },
+		{ category: "autre", count: 0 }
 	  ],
 	  // repartition par statut
 	  by_status: [
