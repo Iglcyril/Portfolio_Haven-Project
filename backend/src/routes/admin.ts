@@ -91,8 +91,27 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	})
 
 
-	.patch("/reports/:id", ({ params, body }) => {
+	.patch("/reports/:id", ({ params, body, headers, set }) => {
+	// vérification du token d'authentification et des droits d'accès
+	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	try {
+		requireAdmin(token)
+	}
+	catch (e: any) {
+		if (e.message === "INVALID_TOKEN") {
+			set.status = 401
+			return { error: "Token manquant ou expiré" }
+		}
+		set.status = 403
+		return { error: "Accès refusé" }
+	}
 	const { id } = params
+	// vérification format id
+	if (!id.startsWith("HVN-")) {
+		set.status = 404
+		return { error: "Signalement non trouvé" }
+	}
+	// A faire : remplacer par une vraie requête Prisma -> prisma.report.update({ where: { trackingCode: id }, data: { ...body } })
 	const { status, category, level } = body
 	return {
 	trackingCode: id,
@@ -129,7 +148,21 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
   })
   })
 
- .get("/stats", ({query}) => {
+ .get("/stats", ({query, headers, set}) => {
+	// vérification du token d'authentification et des droits d'accès
+	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	try {
+		requireAdmin(token)
+	}
+	catch (e: any) {
+		if (e.message === "INVALID_TOKEN") {
+			set.status = 401
+			return { error: "Token manquant ou expiré" }
+		}
+		set.status = 403
+		return { error: "Accès refusé" }
+	}
+
 	const { establishment_id } = query
 	// A faire : remplacer par une vraie requête Prisma -> prisma.report.groupBy({ by: ['category'], where: { establishment_id } })
 
@@ -167,7 +200,21 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 // A faire : remplacer par une requète prisma data team
 
- .get("/team", ({query}) => {
+ .get("/team", ({query, headers, set}) => {
+	// vérification du token d'authentification et des droits d'accès
+	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	try {
+		requireAdmin(token)
+	}
+	catch (e: any) {
+		if (e.message === "INVALID_TOKEN") {
+			set.status = 401
+			return { error: "Token manquant ou expiré" }
+		}
+		set.status = 403
+		return { error: "Accès refusé" }
+	}
+
 	const { team_info } = query
 
 	return {
