@@ -314,7 +314,7 @@ class _ReportCard extends StatelessWidget {
     }
 
     final Widget card = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(28),
