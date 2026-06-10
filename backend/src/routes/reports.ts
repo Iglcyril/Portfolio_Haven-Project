@@ -95,9 +95,16 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
   // récupération d'un signalement avec son code de suivi
   .get("/:code", (ctx) => {
 	const { code } = ctx.params
+
+	// Vérifiaction du suivi
+	if (!code.startsWith("HVN-")) {
+		ctx.set.status = 404
+		return { error: "Code de suivi invalide" }
+	}
+
 	// A remplacé par prisma 
 	return {
-	tracking_Code: code,
+	tracking_code: code,
 	current_status: "en_cours",
 	category: "harcelement_scolaire",
 	level: "haut",
