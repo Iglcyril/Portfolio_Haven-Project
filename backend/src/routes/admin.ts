@@ -131,3 +131,38 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	  average_resolution_time: "3 jours"
 	}
   })
+
+// A faire : remplacer par une requète prisma data team
+
+ .get("/team", ({query}) => {
+	const { team_info } = query
+
+	return {
+	  team_info: [
+		{
+			id: 1,
+			name: "Alice Dupont",
+			role: "Responsable de la sécurité",
+			email: "alice.dupont@example.com",
+			dispo: "Libre",
+			assigned_cases: 5,
+		},
+		{
+			id: 2,
+			name: "Bob Martin",
+			role: "Psychologue scolaire",
+			email: "bob.martin@example.com",
+			dispo: "Occupé",
+			assigned_cases: 3
+		},
+		{
+			id: 3,
+			name: "Claire Durand",
+			role: "Médiatrice",
+			email: "claire.durand@example.com",
+			dispo: "Absent",
+			assigned_cases: 2
+		}
+	  ]
+	}
+ })
