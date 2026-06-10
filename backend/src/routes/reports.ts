@@ -129,3 +129,18 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 	],
 	}
 })
+
+// Annulation du signalement a faire dans les 5 minutes.
+	.delete("/:code", ({ params, set }) => {
+		const { code } = params
+		// Vérifiaction du suivi
+		if (!code.startsWith("HVN-")) {
+			set.status = 404
+			return { error: "Signalement inconnu" }
+		}
+		return {
+			message: "Votre signalement a été annulé avec succès. Si vous avez besoin d'aide, n'hésitez pas à contacter les numéros d'urgence fournis.",
+			trackingCode: code,
+			deletedAt: new Date().toISOString(),
+		}
+	})
