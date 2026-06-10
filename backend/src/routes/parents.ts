@@ -2,13 +2,19 @@ import { Elysia, t } from "elysia"
 
 // Traitement de la soumission du formulaire de contact des parents pour un suivi personnalisé
 export const parentsRoutes = new Elysia({ prefix: "/parents" })
-  .get("/report/:code", ({ params }) => {
-	const { code } = params
+  .get("/report/:code", ({ params, set }) => {
+  const { code } = params
+
+  // Vérification du format du code de suivi
+  if (!code.startsWith("HVN-")) {
+    set.status = 404
+    return { error: "Code de suivi invalide" }
+  }
 	const report = {
 	trackingCode: code,
 	studentName: "Jean Dupont",
 	incidentDate: "2024-05-15",
-	reportCategories: "harcelement_scolaire",
+	reportCategory: "harcelement_scolaire",
 	status: "en_cours",
 	supervisorName: "Mme Durand",
 	supervisorJob: "Conseillère principale d'éducation",
