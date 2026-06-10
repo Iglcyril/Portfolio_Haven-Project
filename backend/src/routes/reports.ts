@@ -49,6 +49,7 @@ const reportCategories = t.Union([
 // traitement d'un nouveau signalement avec génération du suivi et détection mots clés
 export const reportsRoutes = new Elysia({ prefix: "/reports" })
 	// {body, set} : body contient les données du signalement, set permet de définir le code de statut de la réponse à retirer quand on fera le lien avec la base de donnée
+
   //.post("/", ({ body, set }: { body: any, set: any }) => {
 
 	.post("/", (ctx) => {
@@ -91,3 +92,27 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
       etablissement_id: t.String()
     })
   })
+  // récupération d'un signalement avec son code de suivi
+  .get("/:code", (ctx) => {
+	const { code } = ctx.params
+	return {
+	trackingCode: code,
+	status: "en_cours",
+	categorie: "harcelement_scolaire",
+	level: "haut",
+	createdAt: "2026-05-15T10:30:00Z",
+	referent: "Madame Dupont",
+	timeline: [
+		{
+			status: "recu",
+			timestamp: "2026-05-15T10:30:00Z",
+			commentaire: "Signalement reçu, en attente de traitement",
+		},
+	],
+	next_steps: [
+		"Le référent de l'établissement prendra contact avec vous dans les plus brefs délais",
+		"En cas d'urgence, n'hésitez pas à contacter les numéros d'urgence fournis"
+	],
+	last_update: "2026-05-15T10:30:00Z"
+	}
+})
