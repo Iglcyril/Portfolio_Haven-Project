@@ -35,6 +35,14 @@ class _TutorialPageState extends State<TutorialPage>
   late final Animation<double> _s2Illus;
   late final Animation<double> _s2Bubble;
 
+  // Screen 3 — animations staggerées
+  late final Animation<double> _s3TitleBig;
+  late final Animation<Offset> _s3TitleBigSlide;
+  late final Animation<double> _s3TitleSub;
+  late final Animation<Offset> _s3TitleSubSlide;
+  late final Animation<double> _s3Illus;
+  late final Animation<double> _s3Bubble;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +55,7 @@ class _TutorialPageState extends State<TutorialPage>
     );
     _buildScreen1Anims();
     _buildScreen2Anims();
+    _buildScreen3Anims();
     _animCtrl[0].forward();
   }
 
@@ -126,6 +135,44 @@ class _TutorialPageState extends State<TutorialPage>
     );
   }
 
+  void _buildScreen3Anims() {
+    final c = _animCtrl[2];
+
+    _s3TitleBig = CurvedAnimation(
+      parent: c,
+      curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
+    );
+    _s3TitleBigSlide = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: c,
+      curve: const Interval(0.0, 0.25, curve: Curves.easeOut),
+    ));
+
+    _s3TitleSub = CurvedAnimation(
+      parent: c,
+      curve: const Interval(0.12, 0.35, curve: Curves.easeOut),
+    );
+    _s3TitleSubSlide = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: c,
+      curve: const Interval(0.12, 0.35, curve: Curves.easeOut),
+    ));
+
+    _s3Illus = CurvedAnimation(
+      parent: c,
+      curve: const Interval(0.28, 0.60, curve: Curves.easeOut),
+    );
+
+    _s3Bubble = CurvedAnimation(
+      parent: c,
+      curve: const Interval(0.58, 0.82, curve: Curves.easeOut),
+    );
+  }
+
   @override
   void dispose() {
     for (final c in _animCtrl) {
@@ -187,7 +234,14 @@ class _TutorialPageState extends State<TutorialPage>
                     illusAnim: _s2Illus,
                     bubbleAnim: _s2Bubble,
                   ),
-                  const _PlaceholderScreen(index: 3),
+                  _Screen3(
+                    titleBigAnim: _s3TitleBig,
+                    titleBigSlide: _s3TitleBigSlide,
+                    titleSubAnim: _s3TitleSub,
+                    titleSubSlide: _s3TitleSubSlide,
+                    illusAnim: _s3Illus,
+                    bubbleAnim: _s3Bubble,
+                  ),
                 ],
               ),
 
@@ -476,6 +530,126 @@ class _Screen2 extends StatelessWidget {
                         child: const _SpeechBubble(
                           text:
                               'Ouvre le chat, choisis ton anonymat & explique ce que tu as vu ou vécu !',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ─── Screen 3 ─────────────────────────────────────────────────────────────────
+
+class _Screen3 extends StatelessWidget {
+  final Animation<double> titleBigAnim;
+  final Animation<Offset> titleBigSlide;
+  final Animation<double> titleSubAnim;
+  final Animation<Offset> titleSubSlide;
+  final Animation<double> illusAnim;
+  final Animation<double> bubbleAnim;
+
+  const _Screen3({
+    required this.titleBigAnim,
+    required this.titleBigSlide,
+    required this.titleSubAnim,
+    required this.titleSubSlide,
+    required this.illusAnim,
+    required this.bubbleAnim,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([titleBigAnim, illusAnim, bubbleAnim]),
+      builder: (_, __) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(28, 52, 28, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FadeTransition(
+                    opacity: titleBigAnim,
+                    child: SlideTransition(
+                      position: titleBigSlide,
+                      child: Text(
+                        'Un référent',
+                        style: GoogleFonts.fraunces(
+                          fontSize: 52,
+                          fontWeight: FontWeight.w700,
+                          height: 1.0,
+                          letterSpacing: -1.5,
+                          color: AppColors.lightTextPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  FadeTransition(
+                    opacity: titleSubAnim,
+                    child: SlideTransition(
+                      position: titleSubSlide,
+                      child: Text(
+                        'prendra ton signalement\nen charge.',
+                        style: GoogleFonts.fraunces(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w500,
+                          height: 1.2,
+                          letterSpacing: -0.5,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Expanded(
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned.fill(
+                    child: FadeTransition(
+                      opacity: illusAnim,
+                      child: CustomPaint(painter: _BlobPainter()),
+                    ),
+                  ),
+                  Positioned.fill(
+                    child: FadeTransition(
+                      opacity: illusAnim,
+                      child: ScaleTransition(
+                        scale: Tween<double>(begin: 0.88, end: 1.0)
+                            .animate(illusAnim),
+                        child: SvgPicture.asset(
+                          'assets/svg_screen_3.svg',
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 24,
+                    right: 80,
+                    bottom: 112,
+                    child: FadeTransition(
+                      opacity: bubbleAnim,
+                      child: ScaleTransition(
+                        scale: Tween<double>(begin: 0.85, end: 1.0)
+                            .animate(bubbleAnim),
+                        alignment: Alignment.bottomLeft,
+                        child: const _SpeechBubble(
+                          text:
+                              'Toi, tu pourras tout voir en temps réel sur ton Espace Personnel !',
                         ),
                       ),
                     ),
