@@ -23,7 +23,7 @@ class _HavenAppState extends State<HavenApp> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _revealCtrl = AnimationController(
-      duration: const Duration(milliseconds: 650),
+      duration: const Duration(milliseconds: 950),
       vsync: this,
     );
     _revealCtrl.addStatusListener((status) {
@@ -61,50 +61,60 @@ class _HavenAppState extends State<HavenApp> with TickerProviderStateMixin {
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: _themeMode,
-      // builder wraps every route — used here only for the transition overlay.
+      // builder adds the contracting-circle overlay on top of every route.
+      // _RevealOverlay manages its own AnimatedBuilder so child! is never
+      // affected by the overlay's rebuilds.
       builder: (ctx, child) {
         return Stack(
           children: [
             child!,
-            // Contracting circle overlay: starts at full coverage, shrinks to
-            // the logo center position, revealing the page underneath.
-            if (!_revealCtrl.isCompleted && _revealCtrl.value > 0)
-              AnimatedBuilder(
-                animation: _revealCtrl,
-                builder: (_, __) {
-                  final size   = MediaQuery.of(ctx).size;
-                  final center = Offset(
-                    size.width / 2,
-                    size.height * 760 / 1920,
-                  );
-                  // fraction: 1.0 (full screen) → 0.0 (nothing)
-                  final fraction = 1.0 -
-                      CurvedAnimation(
-                        parent: _revealCtrl,
-                        curve: Curves.easeOutCubic,
-                      ).value;
-                  if (fraction <= 0.001) return const SizedBox.shrink();
-                  return Positioned.fill(
-                    child: IgnorePointer(
-                      child: ClipPath(
-                        clipper: CircleClipper(
-                          center: center,
-                          fraction: fraction,
-                        ),
-                        child: const ColoredBox(
-                          color: AppColors.darkGradientTop,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+            _RevealOverlay(ctrl: _revealCtrl),
           ],
         );
       },
       home: _showIntro
           ? IntroScreen(onComplete: _onIntroComplete)
           : HomePage(onToggleTheme: _toggleTheme),
+    );
+  }
+}
+
+// Contracting circle that reveals the page underneath after the intro.
+// Only visible while _revealCtrl is actively running (status == forward).
+// When dismissed (value=0, not yet started) it returns nothing — this is
+// what prevented the overlay from covering the screen during the intro.
+class _RevealOverlay extends StatelessWidget {
+  final AnimationController ctrl;
+  const _RevealOverlay({required this.ctrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: ctrl,
+      builder: (ctx, __) {
+        // Hidden when not yet started or already finished
+        if (ctrl.status == AnimationStatus.dismissed ||
+            ctrl.status == AnimationStatus.completed) {
+          return const SizedBox.shrink();
+        }
+
+        final fraction = 1.0 -
+            CurvedAnimation(parent: ctrl, curve: Curves.easeOutQuart).value;
+        if (fraction <= 0.001) return const SizedBox.shrink();
+
+        final size = MediaQuery.of(ctx).size;
+        return Positioned.fill(
+          child: IgnorePointer(
+            child: ClipPath(
+              clipper: CircleClipper(
+                center: Offset(size.width / 2, size.height * 760 / 1920),
+                fraction: fraction,
+              ),
+              child: const ColoredBox(color: AppColors.darkGradientTop),
+            ),
+          ),
+        );
+      },
     );
   }
 }

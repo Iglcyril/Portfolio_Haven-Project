@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
@@ -581,41 +582,86 @@ class _TrustBadge extends StatelessWidget {
 
     return Positioned(
       left: 0,
-      width: w,                           // explicit width — guarantees centering
+      width: w,
       top: 1640 * sy + ty,
       child: Opacity(
         opacity: p.clamp(0.0, 1.0),
         child: Center(
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 26 * sx,
-              vertical: 16 * sy,
-            ),
+          child: DecoratedBox(
+            // outer glow — must be outside ClipRRect so it isn't clipped
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(249, 246, 241, 0.06),
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(
-                color: const Color.fromRGBO(249, 246, 241, 0.12),
-              ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomPaint(
-                  size: Size(26 * sx, 26 * sx),
-                  painter: const _ShieldPainter(),
-                ),
-                SizedBox(width: 14 * sx),
-                Text(
-                  'Confidentiel · Anonyme · Toujours',
-                  style: GoogleFonts.manrope(
-                    fontSize: 26 * sx,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.02 * 26 * sx,
-                    color: const Color.fromRGBO(249, 246, 241, 0.75),
-                  ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.darkGradientBottom.withOpacity(0.15),
+                  blurRadius: 5,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 3),
                 ),
               ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 30 * sx,
+                    vertical: 18 * sy,
+                  ),
+                  // glass fill: bright green top-left → dark bottom-right
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      stops: const [0.0, 0.5, 1.0],
+                      colors: [
+                        AppColors.darkGradientBottom.withOpacity(0.30),
+                        AppColors.darkGradientBottom.withOpacity(0.18),
+                        AppColors.darkGradientTop.withOpacity(0.52),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.darkGradientBottom.withOpacity(0.48),
+                      width: 1.5,
+                    ),
+                  ),
+                  // top-highlight sheen painted over the content (liquid glass)
+                  foregroundDecoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: const [0.0, 0.38, 1.0],
+                      colors: [
+                        const Color(0xFFFFFFFF).withOpacity(0.11),
+                        const Color(0xFFFFFFFF).withOpacity(0.02),
+                        Colors.transparent,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomPaint(
+                        size: Size(28 * sx, 28 * sx),
+                        painter: const _ShieldPainter(),
+                      ),
+                      SizedBox(width: 14 * sx),
+                      Text(
+                        'Confidentiel · Anonyme · Toujours',
+                        style: GoogleFonts.manrope(
+                          fontSize: 27 * sx,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.02 * 27 * sx,
+                          color: const Color.fromRGBO(249, 246, 241, 0.88),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
