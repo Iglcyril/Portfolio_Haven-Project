@@ -6,6 +6,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import 'anon_level.dart';
 import '../chat/chat_page.dart';
+import '../chat/report_submitted_page.dart';
 
 class ConfidentialChoicePage extends StatefulWidget {
   final VoidCallback onToggleTheme;
@@ -107,6 +108,13 @@ class _ConfidentialChoicePageState extends State<ConfidentialChoicePage> {
                                         builder: (_) => ChatPage(
                                           onToggleTheme: widget.onToggleTheme,
                                           anonLevel: _selected!,
+                                          onSend: () => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) => ReportSubmittedPage(
+                                                onToggleTheme: widget.onToggleTheme,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     )

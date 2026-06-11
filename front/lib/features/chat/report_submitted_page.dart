@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../dashboard/dashboard_page.dart';
 
 class ReportSubmittedPage extends StatelessWidget {
-  const ReportSubmittedPage({super.key});
+  final VoidCallback onToggleTheme;
+  const ReportSubmittedPage({super.key, required this.onToggleTheme});
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +63,43 @@ class ReportSubmittedPage extends StatelessWidget {
                           height: 1.6,
                         ),
                         textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 40),
+                      GestureDetector(
+                        onTap: () {
+                          int count = 0;
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                              builder: (_) => DashboardPage(
+                                onToggleTheme: onToggleTheme,
+                              ),
+                            ),
+                            (route) => count++ >= 3,
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 28, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(28),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.35),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            'Voir mes signalements',
+                            style: GoogleFonts.manrope(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

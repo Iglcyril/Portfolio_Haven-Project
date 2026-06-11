@@ -8,7 +8,6 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../report/anon_level.dart';
-import 'report_submitted_page.dart';
 
 class _Msg {
   final String? text;
@@ -29,6 +28,7 @@ class _Msg {
 class ChatPage extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final AnonLevel anonLevel;
+  final VoidCallback onSend;
   final String userName;
   final String userInitials;
 
@@ -36,6 +36,7 @@ class ChatPage extends StatefulWidget {
     super.key,
     required this.onToggleTheme,
     required this.anonLevel,
+    required this.onSend,
     this.userName = 'Alex Morgan',
     this.userInitials = 'AM',
   });
@@ -191,9 +192,7 @@ class _ChatPageState extends State<ChatPage> {
         isDark: isDark,
         onConfirm: () {
           Navigator.pop(context);
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const ReportSubmittedPage()),
-          );
+          widget.onSend();
         },
         onCancel: () => Navigator.pop(context),
       ),

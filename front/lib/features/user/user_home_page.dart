@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../report/confidential_choice_page.dart';
+import '../dashboard/dashboard_page.dart';
 
 class UserHomePage extends StatelessWidget {
   final VoidCallback onToggleTheme;
@@ -32,7 +33,7 @@ class UserHomePage extends StatelessWidget {
                       const SizedBox(height: 8),
                       _ThemeToggle(isDark: isDark, onTap: onToggleTheme),
                       const SizedBox(height: 8),
-                      _TopBar(isDark: isDark),
+                      _TopBar(isDark: isDark, onToggleTheme: onToggleTheme),
                       const SizedBox(height: 32),
                       _HeroText(isDark: isDark),
                       const SizedBox(height: 28),
@@ -122,7 +123,8 @@ class _ThemeToggle extends StatelessWidget {
 
 class _TopBar extends StatelessWidget {
   final bool isDark;
-  const _TopBar({required this.isDark});
+  final VoidCallback onToggleTheme;
+  const _TopBar({required this.isDark, required this.onToggleTheme});
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +176,13 @@ class _TopBar extends StatelessWidget {
         ),
         const Spacer(),
         GestureDetector(
-          onTap: () {},
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => DashboardPage(
+                onToggleTheme: onToggleTheme,
+              ),
+            ),
+          ),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
             decoration: BoxDecoration(
