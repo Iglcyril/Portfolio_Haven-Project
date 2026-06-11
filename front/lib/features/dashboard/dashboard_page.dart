@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,12 +6,27 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../report/confidential_choice_page.dart';
+import 'report_detail_page.dart';
 
 // ─── Modèles ──────────────────────────────────────────────────────────────────
 
 enum ReportPriority { high, medium, low }
 
 enum ReportStatus { filed, reviewed, inProgress, resolved }
+
+class ReportAction {
+  final DateTime date;
+  final String actor;
+  final String description;
+  final IconData icon;
+
+  const ReportAction({
+    required this.date,
+    required this.actor,
+    required this.description,
+    required this.icon,
+  });
+}
 
 class ReportItem {
   final String caseNumber;
@@ -19,6 +35,10 @@ class ReportItem {
   final String date;
   final String counselor;
   final ReportStatus status;
+  final String initialText;
+  final DateTime submittedAt;
+  final String anonLabel;
+  final List<ReportAction> actions;
 
   const ReportItem({
     required this.caseNumber,
@@ -27,45 +47,96 @@ class ReportItem {
     required this.date,
     required this.counselor,
     required this.status,
+    required this.initialText,
+    required this.submittedAt,
+    required this.anonLabel,
+    required this.actions,
   });
 }
 
-const List<ReportItem> _mockReports = [
-  ReportItem(
-    caseNumber: '#HV-8829',
-    priority: ReportPriority.high,
-    title: "Messages répétés d'un camarade",
-    date: '28 avr.',
-    counselor: 'M. Reyes',
-    status: ReportStatus.inProgress,
-  ),
-  ReportItem(
-    caseNumber: '#HV-8714',
-    priority: ReportPriority.medium,
-    title: 'Commentaire inapproprié en classe',
-    date: '12 avr.',
-    counselor: 'J. Park',
-    status: ReportStatus.inProgress,
-  ),
-  ReportItem(
-    caseNumber: '#HV-8602',
-    priority: ReportPriority.low,
-    title: 'Témoin de harcèlement verbal',
-    date: '30 mars',
-    counselor: 'Fermé',
-    status: ReportStatus.resolved,
-  ),
-];
+List<ReportItem> buildMockReports() => [
+      ReportItem(
+        caseNumber: '#HV-8829',
+        priority: ReportPriority.high,
+        title: "Messages répétés d'un camarade",
+        date: '28 avr.',
+        counselor: 'M. Reyes',
+        status: ReportStatus.inProgress,
+        anonLabel: 'Anonyme à 100%',
+        initialText:
+            "Depuis environ 3 semaines, un camarade de classe m'envoie des messages très déplaisants sur les réseaux sociaux. Il se moque de moi devant les autres et me menace de partager des photos embarrassantes si je le dénonce. Ça se passe principalement sur Instagram et aussi en classe.",
+        submittedAt: DateTime.now().subtract(const Duration(minutes: 2, seconds: 18)),
+        actions: [
+          ReportAction(date: DateTime.utc(2026, 4, 28, 14, 32), actor: 'Système', description: 'Dossier ouvert et numéro de cas attribué.', icon: Icons.folder_open_rounded),
+          ReportAction(date: DateTime.utc(2026, 4, 28, 15, 10), actor: 'M. Reyes', description: 'Dossier assigné à M. Reyes, conseiller principal.', icon: Icons.person_rounded),
+          ReportAction(date: DateTime.utc(2026, 4, 29, 9, 0), actor: 'M. Reyes', description: 'Premier entretien planifié pour le 30 avril à 10h00.', icon: Icons.calendar_today_rounded),
+          ReportAction(date: DateTime.utc(2026, 4, 30, 10, 25), actor: 'M. Reyes', description: 'Entretien réalisé. Éléments complémentaires recueillis. Enquête en cours auprès des témoins.', icon: Icons.chat_bubble_outline_rounded),
+        ],
+      ),
+      ReportItem(
+        caseNumber: '#HV-8714',
+        priority: ReportPriority.medium,
+        title: 'Commentaire inapproprié en classe',
+        date: '12 avr.',
+        counselor: 'J. Park',
+        status: ReportStatus.inProgress,
+        anonLabel: 'Anonyme à moitié',
+        initialText:
+            "Lors d'un cours de français, un élève a fait un commentaire blessant sur mon apparence physique devant toute la classe. Le professeur n'a pas réagi. Ce n'est pas la première fois que cela arrive.",
+        submittedAt: DateTime(2026, 4, 12, 10, 5),
+        actions: [
+          ReportAction(date: DateTime.utc(2026, 4, 12, 10, 5), actor: 'Système', description: 'Dossier ouvert et numéro de cas attribué.', icon: Icons.folder_open_rounded),
+          ReportAction(date: DateTime.utc(2026, 4, 12, 11, 30), actor: 'J. Park', description: 'Dossier assigné à J. Park.', icon: Icons.person_rounded),
+          ReportAction(date: DateTime.utc(2026, 4, 13, 14, 0), actor: 'J. Park', description: "Entretien avec l'enseignant concerné réalisé.", icon: Icons.chat_bubble_outline_rounded),
+        ],
+      ),
+      ReportItem(
+        caseNumber: '#HV-8602',
+        priority: ReportPriority.low,
+        title: 'Témoin de harcèlement verbal',
+        date: '30 mars',
+        counselor: 'Fermé',
+        status: ReportStatus.resolved,
+        anonLabel: 'Pas d\'anonymat',
+        initialText:
+            "J'ai été témoin d'une scène de harcèlement verbal dans la cour de récréation. Un groupe d'élèves s'en prenait à un camarade plus jeune. Je n'ai pas osé intervenir mais je voulais le signaler.",
+        submittedAt: DateTime(2026, 3, 30, 8, 42),
+        actions: [
+          ReportAction(date: DateTime.utc(2026, 3, 30, 8, 42), actor: 'Système', description: 'Dossier ouvert et numéro de cas attribué.', icon: Icons.folder_open_rounded),
+          ReportAction(date: DateTime.utc(2026, 3, 30, 9, 15), actor: 'M. Reyes', description: 'Dossier pris en charge.', icon: Icons.person_rounded),
+          ReportAction(date: DateTime.utc(2026, 3, 31, 11, 0), actor: 'M. Reyes', description: 'Médiation réalisée entre les parties concernées.', icon: Icons.handshake_outlined),
+          ReportAction(date: DateTime.utc(2026, 4, 2, 14, 0), actor: 'M. Reyes', description: 'Dossier clôturé. Situation résolue.', icon: Icons.check_circle_outline_rounded),
+        ],
+      ),
+    ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   final VoidCallback onToggleTheme;
 
-  const DashboardPage({
-    super.key,
-    required this.onToggleTheme,
-  });
+  const DashboardPage({super.key, required this.onToggleTheme});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  late List<ReportItem> _reports;
+
+  @override
+  void initState() {
+    super.initState();
+    _reports = buildMockReports();
+  }
+
+  void _archiveReport(ReportItem report) {
+    setState(() => _reports.remove(report));
+  }
+
+  void _deleteReport(ReportItem report) {
+    setState(() => _reports.remove(report));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +155,7 @@ class DashboardPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _DashAppBar(isDark: isDark, onToggleTheme: onToggleTheme),
+                    _DashAppBar(isDark: isDark, onToggleTheme: widget.onToggleTheme),
                     Expanded(
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -101,16 +172,22 @@ class DashboardPage extends StatelessWidget {
                               onNewReport: () => Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (_) => ConfidentialChoicePage(
-                                    onToggleTheme: onToggleTheme,
+                                    onToggleTheme: widget.onToggleTheme,
                                   ),
                                 ),
                               ),
                             ),
                             const SizedBox(height: 12),
-                            ..._mockReports.map(
+                            ..._reports.map(
                               (r) => Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
-                                child: _ReportCard(isDark: isDark, report: r),
+                                child: _ReportCard(
+                                  isDark: isDark,
+                                  report: r,
+                                  onToggleTheme: widget.onToggleTheme,
+                                  onArchive: () => _archiveReport(r),
+                                  onDelete: () => _deleteReport(r),
+                                ),
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -176,12 +253,8 @@ class _DashAppBar extends StatelessWidget {
                         : Colors.black.withValues(alpha: 0.07),
                   ),
                   child: Icon(
-                    isDark
-                        ? Icons.light_mode_outlined
-                        : Icons.dark_mode_outlined,
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.90)
-                        : Colors.black,
+                    isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                    color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
                     size: 20,
                   ),
                 ),
@@ -243,15 +316,9 @@ class _StatsRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: _StatCard(
-                value: '3', label: 'Actifs', isFilled: true, isDark: isDark),
-          ),
+          Expanded(child: _StatCard(value: '3', label: 'Actifs', isFilled: true, isDark: isDark)),
           const SizedBox(width: 10),
-          Expanded(
-            child: _StatCard(
-                value: '1', label: 'Résolu', isFilled: false, isDark: isDark),
-          ),
+          Expanded(child: _StatCard(value: '1', label: 'Résolu', isFilled: false, isDark: isDark)),
           const SizedBox(width: 10),
           Expanded(child: _BreathingCard(isDark: isDark)),
         ],
@@ -266,28 +333,18 @@ class _StatCard extends StatelessWidget {
   final bool isFilled;
   final bool isDark;
 
-  const _StatCard({
-    required this.value,
-    required this.label,
-    required this.isFilled,
-    required this.isDark,
-  });
+  const _StatCard({required this.value, required this.label, required this.isFilled, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
     final bg = isFilled
         ? AppColors.primary
-        : (isDark
-            ? Colors.white.withValues(alpha: 0.07)
-            : AppColors.lightCard);
-    final valueColor = isFilled
-        ? Colors.white
-        : (isDark ? Colors.white : AppColors.lightTextPrimary);
+        : (isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard);
+    final valueColor =
+        isFilled ? Colors.white : (isDark ? Colors.white : AppColors.lightTextPrimary);
     final labelColor = isFilled
         ? Colors.white.withValues(alpha: 0.80)
-        : (isDark
-            ? Colors.white.withValues(alpha: 0.50)
-            : AppColors.lightTextSecondary);
+        : (isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
@@ -295,46 +352,16 @@ class _StatCard extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(20),
         boxShadow: isFilled
-            ? [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.30),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                )
-              ]
-            : (isDark
-                ? null
-                : [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    )
-                  ]),
+            ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.30), blurRadius: 12, offset: const Offset(0, 4))]
+            : (isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))]),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            value,
-            style: GoogleFonts.fraunces(
-              fontSize: 28,
-              fontWeight: FontWeight.w800,
-              color: valueColor,
-              letterSpacing: -0.5,
-              height: 1.0,
-            ),
-          ),
+          Text(value, style: GoogleFonts.fraunces(fontSize: 28, fontWeight: FontWeight.w800, color: valueColor, letterSpacing: -0.5, height: 1.0)),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.manrope(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: labelColor,
-            ),
-          ),
+          Text(label, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: labelColor)),
         ],
       ),
     );
@@ -354,40 +381,17 @@ class _BreathingCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
         decoration: BoxDecoration(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.07)
-              : AppColors.lightCard,
+          color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: isDark
-              ? null
-              : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  )
-                ],
+          boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              Icons.self_improvement_rounded,
-              color: AppColors.primary,
-              size: 32,
-            ),
+            Icon(Icons.self_improvement_rounded, color: AppColors.primary, size: 32),
             const SizedBox(height: 8),
-            Text(
-              'Respirer',
-              style: GoogleFonts.manrope(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.50)
-                    : AppColors.lightTextSecondary,
-              ),
-            ),
+            Text('Respirer', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
           ],
         ),
       ),
@@ -401,8 +405,7 @@ class _SectionHeader extends StatelessWidget {
   final bool isDark;
   final VoidCallback onNewReport;
 
-  const _SectionHeader(
-      {required this.isDark, required this.onNewReport});
+  const _SectionHeader({required this.isDark, required this.onNewReport});
 
   @override
   Widget build(BuildContext context) {
@@ -413,23 +416,14 @@ class _SectionHeader extends StatelessWidget {
           style: GoogleFonts.manrope(
             fontSize: 11,
             fontWeight: FontWeight.w700,
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.45)
-                : AppColors.lightTextSecondary,
+            color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
             letterSpacing: 1.2,
           ),
         ),
         const Spacer(),
         GestureDetector(
           onTap: onNewReport,
-          child: Text(
-            '+ Nouveau',
-            style: GoogleFonts.manrope(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary,
-            ),
-          ),
+          child: Text('+ Nouveau', style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
         ),
       ],
     );
@@ -438,11 +432,28 @@ class _SectionHeader extends StatelessWidget {
 
 // ─── Carte signalement ────────────────────────────────────────────────────────
 
-class _ReportCard extends StatelessWidget {
+class _ReportCard extends StatefulWidget {
   final bool isDark;
   final ReportItem report;
+  final VoidCallback onToggleTheme;
+  final VoidCallback onArchive;
+  final VoidCallback onDelete;
 
-  const _ReportCard({required this.isDark, required this.report});
+  const _ReportCard({
+    required this.isDark,
+    required this.report,
+    required this.onToggleTheme,
+    required this.onArchive,
+    required this.onDelete,
+  });
+
+  @override
+  State<_ReportCard> createState() => _ReportCardState();
+}
+
+class _ReportCardState extends State<_ReportCard> {
+  Timer? _timer;
+  Duration _remaining = Duration.zero;
 
   static const Map<ReportPriority, Color> _colors = {
     ReportPriority.high: Color(0xFFE53935),
@@ -457,29 +468,119 @@ class _ReportCard extends StatelessWidget {
   };
 
   @override
+  void initState() {
+    super.initState();
+    _updateRemaining();
+    if (_remaining.inSeconds > 0) {
+      _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        _updateRemaining();
+        if (_remaining.inSeconds <= 0) _timer?.cancel();
+      });
+    }
+  }
+
+  void _updateRemaining() {
+    final elapsed = DateTime.now().difference(widget.report.submittedAt);
+    final r = const Duration(minutes: 5) - elapsed;
+    setState(() => _remaining = r.isNegative ? Duration.zero : r);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String get _countdownLabel {
+    final m = _remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = _remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  bool get _canDelete => _remaining.inSeconds > 0;
+
+  void _showOptions(BuildContext context) {
+    final isDark = widget.isDark;
+    final canArchive = widget.report.status == ReportStatus.resolved;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return Container(
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1A3832) : Colors.white,
+            borderRadius: BorderRadius.circular(28),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 8),
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withValues(alpha: 0.20) : Colors.black.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 8),
+              _SheetOption(
+                isDark: isDark,
+                icon: Icons.open_in_new_rounded,
+                label: 'Voir le détail',
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => ReportDetailPage(
+                      report: widget.report,
+                      onToggleTheme: widget.onToggleTheme,
+                      onDelete: widget.onDelete,
+                    ),
+                  ));
+                },
+              ),
+              Divider(
+                height: 1,
+                indent: 20,
+                endIndent: 20,
+                color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.06),
+              ),
+              _SheetOption(
+                isDark: isDark,
+                icon: Icons.archive_outlined,
+                label: 'Archiver',
+                enabled: canArchive,
+                onTap: canArchive
+                    ? () {
+                        Navigator.of(context).pop();
+                        widget.onArchive();
+                      }
+                    : null,
+                subtitle: canArchive ? null : 'Disponible uniquement si résolu',
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final color = _colors[report.priority]!;
-    final badge = _badges[report.priority]!;
+    final color = _colors[widget.report.priority]!;
+    final badge = _badges[widget.report.priority]!;
+    final isDark = widget.isDark;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withValues(alpha: 0.07)
-            : AppColors.lightCard,
+        color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
         borderRadius: BorderRadius.circular(24),
-        border: isDark
-            ? Border.all(color: Colors.white.withValues(alpha: 0.08))
-            : null,
-        boxShadow: isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                )
-              ],
+        border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
+        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,7 +588,6 @@ class _ReportCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Icône bouclier
               Container(
                 width: 44,
                 height: 44,
@@ -504,122 +604,141 @@ class _ReportCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        // Badge numéro de dossier
                         isDark
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                      sigmaX: 12, sigmaY: 12),
+                                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white
-                                          .withValues(alpha: 0.10),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      report.caseNumber,
-                                      style: GoogleFonts.manrope(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white
-                                            .withValues(alpha: 0.70),
-                                      ),
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(8)),
+                                    child: Text(widget.report.caseNumber, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
                                   ),
                                 ),
                               )
                             : Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 3),
-                                decoration: BoxDecoration(
-                                  color: AppColors.warmWhite,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  report.caseNumber,
-                                  style: GoogleFonts.manrope(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.lightTextSecondary,
-                                  ),
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(color: AppColors.warmWhite, borderRadius: BorderRadius.circular(8)),
+                                child: Text(widget.report.caseNumber, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                               ),
                         const SizedBox(width: 8),
+                        // Badge priorité
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 7, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(
-                            color: color.withValues(
-                                alpha: isDark ? 0.20 : 0.12),
+                            color: color.withValues(alpha: isDark ? 0.20 : 0.12),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Container(
-                                width: 5,
-                                height: 5,
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
+                              Container(width: 5, height: 5, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
                               const SizedBox(width: 4),
-                              Text(
-                                badge,
-                                style: GoogleFonts.manrope(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                  color: color,
-                                  letterSpacing: 0.3,
-                                ),
-                              ),
+                              Text(badge, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: color, letterSpacing: 0.3)),
                             ],
                           ),
                         ),
+                        // Badge countdown
+                        if (_canDelete) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE53935).withValues(alpha: isDark ? 0.20 : 0.10),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.timer_outlined, size: 10, color: const Color(0xFFE53935).withValues(alpha: 0.85)),
+                                const SizedBox(width: 3),
+                                Text(_countdownLabel, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: const Color(0xFFE53935).withValues(alpha: 0.85))),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      report.title,
-                      style: GoogleFonts.manrope(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? Colors.white
-                            : AppColors.lightTextPrimary,
-                        letterSpacing: -0.4,
-                        height: 1.2,
-                      ),
+                      widget.report.title,
+                      style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.4, height: 1.2),
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      'Déposé le ${report.date} · Responsable : ${report.counselor}',
-                      style: GoogleFonts.manrope(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.45)
-                            : AppColors.lightTextSecondary,
-                      ),
+                      'Déposé le ${widget.report.date} · Responsable : ${widget.report.counselor}',
+                      style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary),
                     ),
                   ],
                 ),
               ),
-              Icon(
-                Icons.more_horiz_rounded,
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.35)
-                    : AppColors.lightTextSecondary,
-                size: 20,
+              GestureDetector(
+                onTap: () => _showOptions(context),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Icon(Icons.more_horiz_rounded, color: isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary, size: 20),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 14),
-          _ProgressTracker(isDark: isDark, status: report.status, activeColor: color),
+          _ProgressTracker(isDark: isDark, status: widget.report.status, activeColor: color),
         ],
+      ),
+    );
+  }
+}
+
+// ─── Option bottom sheet ──────────────────────────────────────────────────────
+
+class _SheetOption extends StatelessWidget {
+  final bool isDark;
+  final IconData icon;
+  final String label;
+  final String? subtitle;
+  final bool enabled;
+  final VoidCallback? onTap;
+
+  const _SheetOption({
+    required this.isDark,
+    required this.icon,
+    required this.label,
+    this.subtitle,
+    this.enabled = true,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = enabled
+        ? (isDark ? Colors.white : AppColors.lightTextPrimary)
+        : (isDark ? Colors.white.withValues(alpha: 0.30) : Colors.black.withValues(alpha: 0.25));
+    final iconColor = enabled
+        ? AppColors.primary
+        : (isDark ? Colors.white.withValues(alpha: 0.25) : Colors.black.withValues(alpha: 0.20));
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: iconColor),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w600, color: textColor)),
+                  if (subtitle != null)
+                    Text(subtitle!, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -634,23 +753,14 @@ class _ProgressTracker extends StatelessWidget {
 
   const _ProgressTracker({required this.isDark, required this.status, required this.activeColor});
 
-  static const List<String> _labels = [
-    'DÉPOSÉ',
-    'EXAMINÉ',
-    'EN COURS',
-    'RÉSOLU',
-  ];
+  static const List<String> _labels = ['DÉPOSÉ', 'EXAMINÉ', 'EN COURS', 'RÉSOLU'];
 
   int get _ci {
     switch (status) {
-      case ReportStatus.filed:
-        return 0;
-      case ReportStatus.reviewed:
-        return 1;
-      case ReportStatus.inProgress:
-        return 2;
-      case ReportStatus.resolved:
-        return 3;
+      case ReportStatus.filed: return 0;
+      case ReportStatus.reviewed: return 1;
+      case ReportStatus.inProgress: return 2;
+      case ReportStatus.resolved: return 3;
     }
   }
 
@@ -658,9 +768,7 @@ class _ProgressTracker extends StatelessWidget {
   Widget build(BuildContext context) {
     final ci = _ci;
     final active = activeColor;
-    final inactive = isDark
-        ? Colors.white.withValues(alpha: 0.15)
-        : Colors.black.withValues(alpha: 0.12);
+    final inactive = isDark ? Colors.white.withValues(alpha: 0.15) : Colors.black.withValues(alpha: 0.12);
 
     return Column(
       children: [
@@ -685,14 +793,8 @@ class _ProgressTracker extends StatelessWidget {
               _labels[i],
               style: GoogleFonts.manrope(
                 fontSize: 8,
-                fontWeight:
-                    isCurrent ? FontWeight.w700 : FontWeight.w500,
-                color: isCurrent
-                    ? active
-                    : (isDark
-                        ? Colors.white.withValues(alpha: 0.35)
-                        : AppColors.lightTextSecondary
-                            .withValues(alpha: 0.70)),
+                fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                color: isCurrent ? active : (isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary.withValues(alpha: 0.70)),
                 letterSpacing: 0.3,
               ),
             );
@@ -708,20 +810,11 @@ class _ProgressTracker extends StatelessWidget {
     return Container(
       width: isCurrent ? 10 : 7,
       height: isCurrent ? 10 : 7,
-      decoration: BoxDecoration(
-        color: filled ? active : inactive,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: filled ? active : inactive, shape: BoxShape.circle),
     );
   }
 
   Widget _line(bool filled, Color active, Color inactive) {
-    return Container(
-      height: 2,
-      decoration: BoxDecoration(
-        color: filled ? active : inactive,
-        borderRadius: BorderRadius.circular(1),
-      ),
-    );
+    return Container(height: 2, decoration: BoxDecoration(color: filled ? active : inactive, borderRadius: BorderRadius.circular(1)));
   }
 }
