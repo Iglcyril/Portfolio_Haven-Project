@@ -122,12 +122,14 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  static List<ReportItem>? _persistentReports;
   late List<ReportItem> _reports;
 
   @override
   void initState() {
     super.initState();
-    _reports = buildMockReports();
+    _persistentReports ??= buildMockReports();
+    _reports = _persistentReports!;
   }
 
   void _archiveReport(ReportItem report) {
@@ -165,7 +167,11 @@ class _DashboardPageState extends State<DashboardPage> {
                             const SizedBox(height: 20),
                             _Greeting(isDark: isDark),
                             const SizedBox(height: 20),
-                            _StatsRow(isDark: isDark),
+                            _StatsRow(
+                              isDark: isDark,
+                              activeCount: _reports.where((r) => r.status != ReportStatus.resolved).length,
+                              resolvedCount: _reports.where((r) => r.status == ReportStatus.resolved).length,
+                            ),
                             const SizedBox(height: 28),
                             _SectionHeader(
                               isDark: isDark,
@@ -308,7 +314,9 @@ class _Greeting extends StatelessWidget {
 
 class _StatsRow extends StatelessWidget {
   final bool isDark;
-  const _StatsRow({required this.isDark});
+  final int activeCount;
+  final int resolvedCount;
+  const _StatsRow({required this.isDark, required this.activeCount, required this.resolvedCount});
 
   @override
   Widget build(BuildContext context) {
@@ -316,9 +324,9 @@ class _StatsRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: _StatCard(value: '3', label: 'Actifs', isFilled: true, isDark: isDark)),
+          Expanded(child: _StatCard(value: '$activeCount', label: 'Actifs', isFilled: true, isDark: isDark)),
           const SizedBox(width: 10),
-          Expanded(child: _StatCard(value: '1', label: 'Résolu', isFilled: false, isDark: isDark)),
+          Expanded(child: _StatCard(value: '$resolvedCount', label: 'Résolu', isFilled: false, isDark: isDark)),
           const SizedBox(width: 10),
           Expanded(child: _BreathingCard(isDark: isDark)),
         ],
