@@ -11,12 +11,16 @@ class ReportDetailPage extends StatefulWidget {
   final ReportItem report;
   final VoidCallback onToggleTheme;
   final VoidCallback onDelete;
+  final bool canAddInfo;
+  final bool canDelete;
 
   const ReportDetailPage({
     super.key,
     required this.report,
     required this.onToggleTheme,
     required this.onDelete,
+    this.canAddInfo = true,
+    this.canDelete = true,
   });
 
   @override
@@ -385,34 +389,34 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                               child: _AddedInfoBubble(isDark: isDark, info: info),
                             )),
 
-                            const SizedBox(height: 12),
-
-                            // ── Ajouter des informations ──────────────────
-                            if (!_showAddInfo)
-                              GestureDetector(
-                                onTap: () => setState(() => _showAddInfo = true),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.add_circle_outline_rounded, size: 16, color: AppColors.primary),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      'Ajouter des informations',
-                                      style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary),
-                                    ),
-                                  ],
+                            if (widget.canAddInfo) ...[
+                              const SizedBox(height: 12),
+                              if (!_showAddInfo)
+                                GestureDetector(
+                                  onTap: () => setState(() => _showAddInfo = true),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.add_circle_outline_rounded, size: 16, color: AppColors.primary),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Ajouter des informations',
+                                        style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                _AddInfoField(
+                                  isDark: isDark,
+                                  controller: _addInfoController,
+                                  onSend: _submitInfo,
+                                  onCancel: () => setState(() {
+                                    _showAddInfo = false;
+                                    _addInfoController.clear();
+                                  }),
                                 ),
-                              )
-                            else
-                              _AddInfoField(
-                                isDark: isDark,
-                                controller: _addInfoController,
-                                onSend: _submitInfo,
-                                onCancel: () => setState(() {
-                                  _showAddInfo = false;
-                                  _addInfoController.clear();
-                                }),
-                              ),
+                            ],
 
                             const SizedBox(height: 28),
 
@@ -442,7 +446,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                             const SizedBox(height: 28),
 
                             // ── Bouton suppression countdown ──────────────
-                            if (_canDelete)
+                            if (widget.canDelete && _canDelete)
                               GestureDetector(
                                 onTap: () => _confirmDelete(context, isDark),
                                 child: Container(

@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
+import '../parent/child_registration_page.dart';
+import '../parent/parent_dashboard_page.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -146,20 +148,36 @@ class _AuthPageState extends State<AuthPage> {
                     _CtaButton(
                       tab: _tab,
                       onTap: _tab == _AuthTab.register
-                          ? () => Navigator.of(context).push(
-                                MaterialPageRoute(
+                          ? () {
+                              if (widget.portal == PortalType.parent) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => ChildRegistrationPage(
+                                    onToggleTheme: widget.onToggleTheme,
+                                  ),
+                                ));
+                              } else {
+                                Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => TutorialPage(
                                     onToggleTheme: widget.onToggleTheme,
                                   ),
-                                ),
-                              )
-                          : () => Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
+                                ));
+                              }
+                            }
+                          : () {
+                              if (widget.portal == PortalType.parent) {
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                  builder: (_) => ParentDashboardPage(
+                                    onToggleTheme: widget.onToggleTheme,
+                                  ),
+                                ));
+                              } else {
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => UserHomePage(
                                     onToggleTheme: widget.onToggleTheme,
                                   ),
-                                ),
-                              ),
+                                ));
+                              }
+                            },
                     ),
                     const SizedBox(height: 20),
                     _Footer(isDark: isDark),
