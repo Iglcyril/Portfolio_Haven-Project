@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Haven utilise le micro pour t'aider à décrire oralement ce que tu as vécu.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Haven utilise la reconnaissance vocale pour t'aider à écrire ton signalement.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Haven utilise la caméra pour que tu puisses joindre des preuves à ton signalement.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Haven accède à ta galerie pour que tu puisses joindre des photos ou vidéos à ton signalement.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

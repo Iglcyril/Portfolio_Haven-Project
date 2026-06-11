@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
-
-enum _AnonLevel { none, partial, full }
+import 'anon_level.dart';
+import '../chat/chat_page.dart';
 
 class ConfidentialChoicePage extends StatefulWidget {
   final VoidCallback onToggleTheme;
@@ -16,7 +16,7 @@ class ConfidentialChoicePage extends StatefulWidget {
 }
 
 class _ConfidentialChoicePageState extends State<ConfidentialChoicePage> {
-  _AnonLevel? _selected;
+  AnonLevel? _selected;
 
   @override
   Widget build(BuildContext context) {
@@ -71,27 +71,27 @@ class _ConfidentialChoicePageState extends State<ConfidentialChoicePage> {
                         title: "Pas d'anonymat pour moi",
                         subtitle: "Ton nom et ta classe seront visibles",
                         icon: Icons.badge_outlined,
-                        selected: _selected == _AnonLevel.none,
+                        selected: _selected == AnonLevel.none,
                         isDark: isDark,
-                        onTap: () => setState(() => _selected = _AnonLevel.none),
+                        onTap: () => setState(() => _selected = AnonLevel.none),
                       ),
                       const SizedBox(height: 12),
                       _AnonCard(
                         title: "Anonyme mais à moitié",
                         subtitle: "Ton nom est caché, mais ta classe visible",
                         icon: Icons.remove_red_eye_outlined,
-                        selected: _selected == _AnonLevel.partial,
+                        selected: _selected == AnonLevel.partial,
                         isDark: isDark,
-                        onTap: () => setState(() => _selected = _AnonLevel.partial),
+                        onTap: () => setState(() => _selected = AnonLevel.partial),
                       ),
                       const SizedBox(height: 12),
                       _AnonCard(
                         title: "Anonyme à 100%",
                         subtitle: "Ton nom et ta classe seront cachés !",
                         icon: Icons.lock_outline_rounded,
-                        selected: _selected == _AnonLevel.full,
+                        selected: _selected == AnonLevel.full,
                         isDark: isDark,
-                        onTap: () => setState(() => _selected = _AnonLevel.full),
+                        onTap: () => setState(() => _selected = AnonLevel.full),
                       ),
                       const SizedBox(height: 28),
                       Row(
@@ -101,7 +101,16 @@ class _ConfidentialChoicePageState extends State<ConfidentialChoicePage> {
                           _StartButton(
                             enabled: _selected != null,
                             isDark: isDark,
-                            onTap: _selected != null ? () {} : null,
+                            onTap: _selected != null
+                                ? () => Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => ChatPage(
+                                          onToggleTheme: widget.onToggleTheme,
+                                          anonLevel: _selected!,
+                                        ),
+                                      ),
+                                    )
+                                : null,
                           ),
                         ],
                       ),
