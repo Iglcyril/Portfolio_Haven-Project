@@ -18,6 +18,7 @@ export type AppError =
   | 'INVALID_CREDENTIALS'   // Email ou mot de passe incorrect au login
   | 'REPORT_NOT_FOUND'      // Rapport introuvable en base
   | 'USER_NOT_FOUND'        // Utilisateur introuvable en base
+  | 'DELETE_TIMEOUT'        // Délai d'annulation de 5 minutes dépassé
 
 /**
  * Table de correspondance : code d'erreur métier → HTTP status + message public.
@@ -31,6 +32,7 @@ const errorMap: Record<AppError, { status: number; message: string }> = {
   INVALID_CREDENTIALS:  { status: 401, message: 'Invalid email or password' },
   REPORT_NOT_FOUND:     { status: 404, message: 'Report not found' },
   USER_NOT_FOUND:       { status: 404, message: 'User not found' },
+  DELETE_TIMEOUT:       { status: 403, message: 'Délai d\'annulation dépassé — impossible de supprimer ce signalement' },
 }
 
 /**

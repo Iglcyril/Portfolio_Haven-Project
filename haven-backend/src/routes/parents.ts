@@ -8,14 +8,14 @@
  *   GET  /parents/report/:code → suivi d'un rapport par tracking code
  *   POST /parents/contact      → formulaire de contact pour les parents
  *
- * Note : les données sont statiques pour l'instant.
- * À remplacer par des requêtes Prisma quand le Report Service sera connecté.
+ * Connecté à Prisma via reportService.findByTrackingId()
  */
 
 import { Elysia, t } from 'elysia'
 import { bearer } from '@elysiajs/bearer'
 import { requireAuth } from '../middlewares/auth.middleware'
 import { handleError } from '../middlewares/error.middleware'
+import { reportService } from '../services/report.service'
 
 export const parentsRoutes = new Elysia({ prefix: '/parents' })
   .use(bearer())
@@ -23,39 +23,18 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
   /**
    * GET /parents/report/:code
    * Réservé : utilisateurs connectés (Parent, Supervisor, Admin)
-   * Retourne le suivi d'un rapport via son tracking code.
-   * À faire : remplacer par prisma.report.findUnique({ where: { trackingId: code } })
+   * Retourne le suivi d'un rapport via son tracking code depuis la base.
+   *
+   * Réponses :
+   *   200 → rapport complet
+   *   401 → token absent ou invalide
+   *   403 → accès refusé
+   *   404 → rapport introuvable
    */
   .get('/report/:code', async ({ params, bearer, set }) => {
     try {
-      requireAuth(bearer ?? '')
-
-      const { code } = params
-
-      // Vérification du format du code de suivi
-      if (!code.startsWith('HVN-')) {
-        set.status = 404
-        return { error: 'Code de suivi invalide' }
-      }
-
-      // À faire : remplacer par une vraie requête Prisma
-      const report = {
-        trackingCode:      code,
-        studentName:       'Jean Dupont',
-        incidentDate:      '2024-05-15',
-        reportCategory:    'harcelement_scolaire',
-        status:            'en_cours',
-        supervisorName:    'Mme Durand',
-        supervisorJob:     'Conseillère principale d\'éducation',
-        supervisorContact: 'g.durand@etablissement.fr',
-        actionsTaken: [
-          'Contactez l\'école pour obtenir des informations supplémentaires'
-        ],
-        nextSteps: 'Suivi régulier avec la famille et l\'école pour assurer la sécurité de l\'enfant'
-      }
-
-      return report
-
+      const { userId, role } = requireAuth(bearer ?? '')
+      return await reportService.findByTrackingId(params.code, userId, role)
     } catch (e) {
       const { status, body } = handleError(e)
       set.status = status
@@ -67,7 +46,11 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
    * POST /parents/contact
    * Public — pas de JWT requis
    * Permet à un parent de contacter l'équipe de suivi.
-   * À faire : envoyer un email ou créer une tâche dans le système de gestion de cas.
+   * À faire : envoyer un email à l'équipe de suivi
+   *
+   * Réponses :
+   *   200 → message envoyé
+   *   422 → body invalide
    */
   .post('/contact', async ({ body, set }) => {
     try {

@@ -5,7 +5,7 @@
  * Préfixe : /reports
  *
  * Routes :
- *   POST   /reports      → soumettre un signalement (sauvegardé en base)
+ *   POST   /reports       → soumettre un signalement (sauvegardé en base)
  *   GET    /reports/:code → suivi d'un signalement par tracking code
  *   DELETE /reports/:code → annuler un signalement (dans les 5 minutes)
  *
@@ -116,7 +116,6 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
         statut:         'recu',
         crisisDetected: report.crisisDetected,
         createdAt:      report.createdAt,
-        // Si crise détectée → numéros d'urgence avec message réconfortant
         ...(crisisAlert && {
           urgence: {
             message: 'Tu n\'es pas seul(e), Contacte immédiatement :',
@@ -148,53 +147,19 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
   /**
    * GET /reports/:code
    * Réservé : tous les utilisateurs connectés
-   * Retourne le suivi d'un signalement via son tracking code avec timeline.
-   * À faire : remplacer par prisma.report.findUnique({ where: { trackingId: code } })
+   * Retourne le suivi d'un signalement via son tracking code.
+   * Connecté à Prisma via reportService.findByTrackingId()
    *
    * Réponses :
-   *   200 → rapport avec timeline
+   *   200 → rapport complet
    *   401 → token absent ou invalide
-   *   404 → code de suivi invalide
+   *   403 → accès refusé
+   *   404 → rapport introuvable
    */
   .get('/:code', async ({ params, bearer, set }) => {
     try {
-      requireAuth(bearer ?? '')
-
-      const { code } = params
-
-      // Vérification du format du code de suivi
-      if (!code.startsWith('HVN-')) {
-        set.status = 404
-        return { error: 'Code de suivi invalide' }
-      }
-
-      // À faire : remplacer par une vraie requête Prisma
-      return {
-        tracking_code:  code,
-        current_status: 'EN_COURS',
-        category:       'harcelement_scolaire',
-        level:          'MOYEN',
-        referent:       'Madame Dupont',
-        createdAt:      '2026-05-15T10:30:00Z',
-        last_update:    '2026-05-15T10:30:00Z',
-        timeline: [
-          {
-            step:      'EN_ATTENTE',
-            timestamp: '2026-05-15T10:30:00Z',
-            comment:   'Signalement reçu, en attente de traitement'
-          },
-          {
-            step:      'EN_COURS',
-            timestamp: '2026-05-16T14:45:00Z',
-            comment:   'Le référent de l\'établissement a pris en charge le signalement'
-          }
-        ],
-        next_steps: [
-          'Le référent de l\'établissement prendra contact avec vous dans les plus brefs délais',
-          'En cas d\'urgence, n\'hésitez pas à contacter les numéros d\'urgence fournis'
-        ]
-      }
-
+      const { userId, role } = requireAuth(bearer ?? '')
+      return await reportService.findByTrackingId(params.code, userId, role)
     } catch (e) {
       const { status, body } = handleError(e)
       set.status = status
@@ -206,37 +171,18 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
    * DELETE /reports/:code
    * Réservé : tous les utilisateurs connectés
    * Annule un signalement dans les 5 minutes suivant sa création.
-   * À faire : vérifier le délai de 5 minutes + prisma.report.delete()
+   * Connecté à Prisma via reportService.delete()
    *
    * Réponses :
    *   200 → signalement annulé
    *   401 → token absent ou invalide
-   *   404 → code de suivi invalide
+   *   403 → délai dépassé ou accès refusé
+   *   404 → rapport introuvable
    */
   .delete('/:code', async ({ params, bearer, set }) => {
     try {
-      requireAuth(bearer ?? '')
-
-      const { code } = params
-
-      // Vérification du format du code de suivi
-      if (!code.startsWith('HVN-')) {
-        set.status = 404
-        return { error: 'Signalement inconnu' }
-      }
-
-      // À faire : vérifier que le rapport a moins de 5 minutes
-      // const report = await prisma.report.findUnique({ where: { trackingId: code } })
-      // const diff = Date.now() - new Date(report.createdAt).getTime()
-      // if (diff > 5 * 60 * 1000) return { error: 'Délai d\'annulation dépassé' }
-      // await prisma.report.delete({ where: { trackingId: code } })
-
-      return {
-        message:      'Votre signalement a été annulé avec succès. Si vous avez besoin d\'aide, n\'hésitez pas à contacter les numéros d\'urgence fournis.',
-        trackingCode: code,
-        deletedAt:    new Date().toISOString()
-      }
-
+      const { userId, role } = requireAuth(bearer ?? '')
+      return await reportService.delete(params.code, userId, role)
     } catch (e) {
       const { status, body } = handleError(e)
       set.status = status
