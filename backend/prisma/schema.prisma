@@ -28,14 +28,14 @@ enum Role {
   ADMIN       // Administrateur de la plateforme
 }
 
-// Cycle de vie d'un rapport — en français pour les écoles françaises
+// Cycle de vie d'un rapport
 enum ReportStatus {
   EN_ATTENTE  // Rapport soumis, pas encore traité
   EN_COURS    // Un superviseur a pris en charge le rapport
   RESOLU      // Situation traitée et clôturée
 }
 
-// Niveau de gravité — en français pour les écoles françaises
+// Niveau de gravité
 enum Severity {
   BAS    // Badge vert sur le dashboard
   MOYEN  // Badge orange sur le dashboard
@@ -63,11 +63,20 @@ enum Categorie {
 // --- Tables ---
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
+  id           String    @id @default(uuid())
+  email        String    @unique
   passwordHash String
-  role         Role     @default(STUDENT)
-  createdAt    DateTime @default(now())
+  role         Role      @default(STUDENT)
+  firstName    String?   // Prénom - requis pour les STUDENT et PARENT
+  lastName     String?   // Nom - requis pour les STUDENT et PARENT
+  birthDate    DateTime? // Date de naissance - requis pour les STUDENT
+  createdAt    DateTime  @default(now())
+
+  // Lien parent → enfant
+  parentId     String?
+  parent       User?     @relation("ParentChild", fields: [parentId], references: [id])
+  children     User[]    @relation("ParentChild")
+
   reports      Report[]
 }
 

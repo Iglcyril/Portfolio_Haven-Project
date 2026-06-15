@@ -21,9 +21,12 @@ const prisma = new PrismaClient({ adapter })
 const JWT_SECRET = process.env.JWT_SECRET!
 
 export type RegisterInput = {
-  email: string
-  password: string
-  role?: 'STUDENT' | 'SUPERVISOR' | 'ADMIN' | 'PARENT'
+  email:      string
+  password:   string
+  role?:      'STUDENT' | 'SUPERVISOR' | 'ADMIN' | 'PARENT'
+  firstName?: string    // Prénom - requis pour STUDENT et PARENT
+  lastName?:  string    // Nom - requis pour STUDENT et PARENT
+  birthDate?: string    // Date de naissance - requis pour STUDENT (format: YYYY-MM-DD)
 }
 
 export type LoginInput = {
@@ -40,7 +43,7 @@ export const authService = {
    * - Génère un JWT valable 7 jours
    * Lance EMAIL_ALREADY_EXISTS si l'email existe déjà.
    */
-  async register({ email, password, role = 'STUDENT' }: RegisterInput) {
+  async register({ email, password, role = 'STUDENT', firstName, lastName, birthDate }: RegisterInput) {
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
       throw new Error('EMAIL_ALREADY_EXISTS')
@@ -49,8 +52,24 @@ export const authService = {
     const passwordHash = await bcrypt.hash(password, 12)
 
     const user = await prisma.user.create({
-      data: { email, passwordHash, role },
-      select: { id: true, email: true, role: true, createdAt: true }
+      data: {
+        email,
+        passwordHash,
+        role,
+        firstName,
+        lastName,
+        // Convertit la date string en objet Date si fournie
+        birthDate: birthDate ? new Date(birthDate) : undefined
+      },
+      select: {
+        id:        true,
+        email:     true,
+        role:      true,
+        firstName: true,
+        lastName:  true,
+        birthDate: true,
+        createdAt: true
+      }
     })
 
     const token = jwt.sign(
@@ -98,7 +117,15 @@ export const authService = {
   async getProfile(userId: string) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, role: true, createdAt: true }
+      select: {
+        id:        true,
+        email:     true,
+        role:      true,
+        firstName: true,
+        lastName:  true,
+        birthDate: true,
+        createdAt: true
+      }
     })
     if (!user) throw new Error('USER_NOT_FOUND')
     return user

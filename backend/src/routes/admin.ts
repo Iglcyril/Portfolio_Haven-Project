@@ -5,18 +5,26 @@
  * Préfixe : /admin
  *
  * Routes :
- *   GET   /admin/reports      → liste tous les signalements depuis la base
- *   GET   /admin/reports/:id  → détail d'un signalement depuis la base
- *   PATCH /admin/reports/:id  → modifier statut, catégorie, niveau en base
- *   GET   /admin/stats        → statistiques par établissement depuis la base
- *   GET   /admin/team         → liste de l'équipe (statique pour l'instant)
+ *   GET   /admin/reports                  → liste tous les signalements depuis la base
+ *   GET   /admin/reports/:id              → détail d'un signalement depuis la base
+ *   PATCH /admin/reports/:id/status       → modifier le statut en base
+ *   PATCH /admin/reports/:id/severity     → modifier la sévérité en base
+ *   GET   /admin/stats                    → statistiques par établissement depuis la base
+ *   GET   /admin/team                     → liste de l'équipe (statique pour l'instant)
+ *   PATCH /admin/users/:studentId/parent  → lier un parent à un étudiant
  */
 
 import { Elysia, t } from 'elysia'
 import { bearer } from '@elysiajs/bearer'
+import { PrismaClient } from '@prisma/client'
+import { PrismaPg } from '@prisma/adapter-pg'
 import { requireSupervisor } from '../middlewares/auth.middleware'
 import { handleError } from '../middlewares/error.middleware'
 import { reportService } from '../services/report.service'
+
+// Prisma v7 — nécessite un adapter explicite pour la connexion PostgreSQL
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
+const prisma = new PrismaClient({ adapter })
 
 export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(bearer())
@@ -162,4 +170,64 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
       set.status = status
       return body
     }
+  })
+
+  /**
+   * PATCH /admin/users/:studentId/parent
+   * Réservé : ADMIN et SUPERVISOR
+   * Lie un compte parent à un compte étudiant.
+   * Permet au parent de consulter les rapports de son enfant.
+   *
+   * Réponses :
+   *   200 → lien créé avec succès
+   *   400 → utilisateur n'est pas un étudiant ou un parent
+   *   401 → token absent ou invalide
+   *   403 → accès refusé
+   *   404 → utilisateur introuvable
+   */
+  .patch('/users/:studentId/parent', async ({ params, body, bearer, set }) => {
+    try {
+      requireSupervisor(bearer ?? '')
+
+      // Vérifie que l'étudiant existe
+      const student = await prisma.user.findUnique({
+        where: { id: params.studentId }
+      })
+      if (!student) throw new Error('USER_NOT_FOUND')
+      if (student.role !== 'STUDENT') {
+        set.status = 400
+        return { error: 'L\'utilisateur n\'est pas un étudiant' }
+      }
+
+      // Vérifie que le parent existe
+      const parent = await prisma.user.findUnique({
+        where: { id: body.parentId }
+      })
+      if (!parent) throw new Error('USER_NOT_FOUND')
+      if (parent.role !== 'PARENT') {
+        set.status = 400
+        return { error: 'L\'utilisateur n\'est pas un parent' }
+      }
+
+      // Crée le lien parent → enfant
+      await prisma.user.update({
+        where: { id: params.studentId },
+        data:  { parentId: body.parentId }
+      })
+
+      return {
+        message:   'Lien parent/enfant créé avec succès',
+        studentId: params.studentId,
+        parentId:  body.parentId
+      }
+
+    } catch (e) {
+      const { status, body } = handleError(e)
+      set.status = status
+      return body
+    }
+  }, {
+    body: t.Object({
+      parentId: t.String()
+    })
   })

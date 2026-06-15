@@ -127,27 +127,35 @@ export const reportService = {
 
   /**
    * Retourne le détail complet d'un rapport via son trackingId.
-   * - Un Student ne peut accéder qu'à ses propres rapports
-   * - Un Supervisor / Admin peut accéder à tous les rapports
+   * - SUPERVISOR / ADMIN → accès à tous les rapports
+   * - STUDENT → uniquement ses propres rapports
+   * - PARENT → uniquement les rapports de ses enfants liés
    * Lance REPORT_NOT_FOUND ou FORBIDDEN selon le cas.
    */
   async findByTrackingId(trackingId: string, userId: string, role: string) {
     const report = await prisma.report.findUnique({
       where: { trackingId },
       include: {
-        // Messages triés chronologiquement pour reconstituer la conversation
-        messages: { orderBy: { createdAt: 'asc' } }
+        messages: { orderBy: { createdAt: 'asc' } },
+        // On inclut l'étudiant avec son parentId pour vérifier le lien
+        user: {
+          select: { id: true, parentId: true }
+        }
       }
     })
 
     if (!report) throw new Error('REPORT_NOT_FOUND')
 
-    // Un student ne peut voir que ses propres rapports
-    if (!['SUPERVISOR', 'ADMIN'].includes(role) && report.userId !== userId) {
-      throw new Error('FORBIDDEN')
-    }
+    // SUPERVISOR et ADMIN → accès total
+    if (['SUPERVISOR', 'ADMIN'].includes(role)) return report
 
-    return report
+    // STUDENT → uniquement ses propres rapports
+    if (role === 'STUDENT' && report.userId === userId) return report
+
+    // PARENT → uniquement les rapports de ses enfants liés
+    if (role === 'PARENT' && report.user.parentId === userId) return report
+
+    throw new Error('FORBIDDEN')
   },
 
   /**
