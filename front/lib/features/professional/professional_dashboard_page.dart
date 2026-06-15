@@ -2,6 +2,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../dashboard/dashboard_page.dart';
@@ -20,97 +21,39 @@ class _TeamMember {
           .toUpperCase();
 }
 
-class _ProReport {
-  final String caseNumber;
-  final DateTime submittedAt;
-  final String initialText;
-  final String anonLevel; // 'Anonyme' | 'Semi-anonyme' | 'Identité visible'
-  final String? studentClass;
-  final String? studentName;
-  String? riskLevel; // null | 'Faible' | 'Moyen' | 'Élevé'
-  bool isAssigned = false;
-  String? assignedTo;
-  bool isResolved = false;
+// ─── Helper ───────────────────────────────────────────────────────────────────
 
-  _ProReport({
-    required this.caseNumber,
-    required this.submittedAt,
-    required this.initialText,
-    required this.anonLevel,
-    this.studentClass,
-    this.studentName,
-  });
-
-  ReportItem toReportItem() => ReportItem(
-        caseNumber: caseNumber,
-        priority: riskLevel == 'Élevé'
-            ? ReportPriority.high
-            : riskLevel == 'Moyen'
-                ? ReportPriority.medium
-                : ReportPriority.low,
-        title: 'Signalement anonyme',
-        date: _fmtDate(submittedAt),
-        counselor: assignedTo ?? 'Non attribué',
-        status: isResolved ? ReportStatus.resolved : ReportStatus.filed,
-        initialText: initialText,
-        submittedAt: submittedAt,
-        anonLabel: anonLevel,
-        studentClass: studentClass,
-        studentName: studentName,
-        actions: [
-          ReportAction(
-            date: submittedAt,
-            actor: 'Système',
-            description: 'Signalement déposé et enregistré dans Haven.',
-            icon: Icons.inbox_rounded,
-          ),
-        ],
-      );
-
-  static String _fmtDate(DateTime dt) {
-    const m = [
-      'jan.', 'fév.', 'mar.', 'avr.', 'mai', 'juin',
-      'juil.', 'aoû.', 'sep.', 'oct.', 'nov.', 'déc.'
-    ];
-    return '${dt.day} ${m[dt.month - 1]}';
-  }
+ReportItem _toReportItem(HavenReport r) {
+  const months = [
+    'jan.', 'fév.', 'mar.', 'avr.', 'mai', 'juin',
+    'juil.', 'aoû.', 'sep.', 'oct.', 'nov.', 'déc.'
+  ];
+  return ReportItem(
+    caseNumber: r.caseNumber,
+    priority: r.riskLevel == 'Élevé'
+        ? ReportPriority.high
+        : r.riskLevel == 'Moyen'
+            ? ReportPriority.medium
+            : ReportPriority.low,
+    title: 'Signalement anonyme',
+    date: '${r.submittedAt.day} ${months[r.submittedAt.month - 1]}',
+    counselor: r.assignedTo ?? 'Non attribué',
+    status: r.isResolved ? ReportStatus.resolved : ReportStatus.filed,
+    initialText: r.initialText,
+    submittedAt: r.submittedAt,
+    anonLabel: r.anonLevel,
+    studentClass: r.studentClass,
+    studentName: r.studentName,
+    actions: [
+      ReportAction(
+        date: r.submittedAt,
+        actor: 'Système',
+        description: 'Signalement déposé et enregistré dans Haven.',
+        icon: Icons.inbox_rounded,
+      ),
+    ],
+  );
 }
-
-// ─── Mock data ────────────────────────────────────────────────────────────────
-
-List<_ProReport> _buildMockProReports() => [
-      _ProReport(
-        caseNumber: '#HV-9102',
-        submittedAt: DateTime.now().subtract(const Duration(hours: 1)),
-        initialText:
-            'Moqueries répétées signalées dans une classe de 4ème. Plusieurs élèves semblent impliqués dans des comportements d\'exclusion quotidiens.',
-        anonLevel: 'Anonyme',
-      ),
-      _ProReport(
-        caseNumber: '#HV-9098',
-        submittedAt: DateTime.now().subtract(const Duration(hours: 5)),
-        initialText:
-            'Comportement d\'intimidation dans les couloirs. L\'élève concerné refuse de s\'alimenter à la cantine depuis plusieurs jours.',
-        anonLevel: 'Semi-anonyme',
-        studentClass: '4ème A',
-      ),
-      _ProReport(
-        caseNumber: '#HV-9091',
-        submittedAt: DateTime.now().subtract(const Duration(days: 1)),
-        initialText:
-            'Cyberharcèlement via Instagram entre plusieurs élèves de 3ème B. Des captures d\'écran ont été jointes au dossier.',
-        anonLevel: 'Identité visible',
-        studentName: 'Lucie Fontaine',
-        studentClass: '3ème B',
-      ),
-      _ProReport(
-        caseNumber: '#HV-9088',
-        submittedAt: DateTime.now().subtract(const Duration(days: 2)),
-        initialText:
-            'Violences verbales quotidiennes signalées par un élève de 6ème de la part d\'un groupe de camarades.',
-        anonLevel: 'Anonyme',
-      ),
-    ];
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -133,9 +76,6 @@ class ProfessionalDashboardPage extends StatefulWidget {
 
 class _ProfessionalDashboardPageState
     extends State<ProfessionalDashboardPage> {
-  static List<_ProReport>? _persistentReports;
-  static final List<_ProReport> _archivedReports = [];
-  late List<_ProReport> _reports;
 
   static const _teamMembers = [
     _TeamMember('Sophie', 'Martin', 'CPE'),
@@ -151,20 +91,31 @@ class _ProfessionalDashboardPageState
     'Élevé': Color(0xFFC0392B),
   };
 
-  List<_ProReport> get _unassigned =>
+  List<HavenReport> get _reports =>
+      ReportStore.instance.reports.where((r) => !r.isArchivedByDirector).toList();
+  List<HavenReport> get _archivedReports =>
+      ReportStore.instance.reports.where((r) => r.isArchivedByDirector).toList();
+  List<HavenReport> get _unassigned =>
       _reports.where((r) => !r.isAssigned).toList();
+
+  void _rebuild() => setState(() {});
 
   @override
   void initState() {
     super.initState();
-    _persistentReports ??= _buildMockProReports();
-    _reports = _persistentReports!;
+    ReportStore.instance.addListener(_rebuild);
+  }
+
+  @override
+  void dispose() {
+    ReportStore.instance.removeListener(_rebuild);
+    super.dispose();
   }
 
   // ── Bottom sheet : actions ────────────────────────────────────────────────
 
   void _showActionsSheet(
-      BuildContext ctx, _ProReport report, bool isDark) {
+      BuildContext ctx, HavenReport report, bool isDark) {
     showModalBottomSheet(
       context: ctx,
       backgroundColor: Colors.transparent,
@@ -194,7 +145,8 @@ class _ProfessionalDashboardPageState
                   Navigator.pop(sheetCtx);
                   Navigator.of(ctx).push(MaterialPageRoute(
                     builder: (_) => ReportDetailPage(
-                      report: report.toReportItem(),
+                      report: _toReportItem(report),
+                      havenReport: report,
                       onToggleTheme: widget.onToggleTheme,
                       onDelete: () {},
                       canAddInfo: false,
@@ -270,7 +222,7 @@ class _ProfessionalDashboardPageState
   // ── Bottom sheet : attribution ────────────────────────────────────────────
 
   void _showAssignSheet(
-      BuildContext ctx, _ProReport report, bool isDark) {
+      BuildContext ctx, HavenReport report, bool isDark) {
     showModalBottomSheet(
       context: ctx,
       backgroundColor: Colors.transparent,
@@ -400,7 +352,7 @@ class _ProfessionalDashboardPageState
   // ── Bottom sheet : niveau de risque ──────────────────────────────────────
 
   void _showRiskSheet(
-      BuildContext ctx, _ProReport report, bool isDark) {
+      BuildContext ctx, HavenReport report, bool isDark) {
     const levels = ['Faible', 'Moyen', 'Élevé'];
     const levelIcons = [
       Icons.check_circle_outline_rounded,
@@ -535,7 +487,7 @@ class _ProfessionalDashboardPageState
   // ── Bottom sheet : archivage ──────────────────────────────────────────────
 
   void _showArchiveSheet(
-      BuildContext ctx, _ProReport report, bool isDark) {
+      BuildContext ctx, HavenReport report, bool isDark) {
     showModalBottomSheet(
       context: ctx,
       backgroundColor: Colors.transparent,
@@ -569,10 +521,7 @@ class _ProfessionalDashboardPageState
               const SizedBox(height: 24),
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    _reports.remove(report);
-                    _archivedReports.add(report);
-                  });
+                  ReportStore.instance.archiveByDirector(report);
                   Navigator.pop(sheetCtx);
                 },
                 child: Container(
@@ -729,7 +678,7 @@ class _ProfessionalDashboardPageState
                                   ],
                                   const Spacer(),
                                   Text(
-                                    _ProReportCard._timeAgo(report.submittedAt),
+                                    HavenReportCard._timeAgo(report.submittedAt),
                                     style: GoogleFonts.manrope(
                                       fontSize: 11,
                                       color: isDark
@@ -996,7 +945,7 @@ class _ProfessionalDashboardPageState
                               ...unassigned.map((report) => Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 12),
-                                    child: _ProReportCard(
+                                    child: HavenReportCard(
                                       report: report,
                                       isDark: isDark,
                                       onThreeDots: () => _showActionsSheet(
@@ -1167,12 +1116,12 @@ class _StatCard extends StatelessWidget {
 }
 
 
-class _ProReportCard extends StatelessWidget {
-  final _ProReport report;
+class HavenReportCard extends StatelessWidget {
+  final HavenReport report;
   final bool isDark;
   final VoidCallback onThreeDots;
 
-  const _ProReportCard({
+  const HavenReportCard({
     required this.report,
     required this.isDark,
     required this.onThreeDots,
@@ -1294,7 +1243,11 @@ class _ProReportCard extends StatelessWidget {
           const SizedBox(height: 14),
 
           // ── Barre de progression (figée à "Déposé") ─────────────────────
-          _MiniProgressBar(isDark: isDark, riskLevel: report.riskLevel),
+          _MiniProgressBar(
+            isDark: isDark,
+            riskLevel: report.riskLevel,
+            progressStage: report.progressStage,
+          ),
         ],
       ),
     );
@@ -1416,10 +1369,13 @@ class _RiskBadge extends StatelessWidget {
 class _MiniProgressBar extends StatelessWidget {
   final bool isDark;
   final String? riskLevel;
+  final int progressStage;
 
-  const _MiniProgressBar({required this.isDark, this.riskLevel});
-
-  static const _steps = ['Déposé', 'Analysé', 'En cours', 'Résolu'];
+  const _MiniProgressBar({
+    required this.isDark,
+    this.riskLevel,
+    this.progressStage = 0,
+  });
 
   static const _riskColors = {
     'Faible': Color(0xFF2EAB7B),
@@ -1431,15 +1387,16 @@ class _MiniProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final steps = kProgressSteps;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ── Dots + connecteurs ─────────────────────────────────────────────
         Row(
-          children: List.generate(_steps.length * 2 - 1, (i) {
+          children: List.generate(steps.length * 2 - 1, (i) {
             if (i.isOdd) {
-              final filled = i < 1;
+              final filled = (i ~/ 2) < progressStage;
               return Expanded(
                 child: Container(
                   height: 2,
@@ -1452,13 +1409,14 @@ class _MiniProgressBar extends StatelessWidget {
               );
             }
             final step = i ~/ 2;
-            final isActive = step == 0;
+            final isActive = step == progressStage;
+            final isDone = step < progressStage;
             return Container(
               width: 8,
               height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isActive
+                color: (isActive || isDone)
                     ? _activeColor
                     : (isDark
                         ? Colors.white.withValues(alpha: 0.15)
@@ -1479,12 +1437,12 @@ class _MiniProgressBar extends StatelessWidget {
         const SizedBox(height: 4),
         // ── Labels ────────────────────────────────────────────────────────
         Row(
-          children: List.generate(_steps.length * 2 - 1, (i) {
+          children: List.generate(steps.length * 2 - 1, (i) {
             if (i.isOdd) return const Expanded(child: SizedBox());
             final step = i ~/ 2;
-            final isActive = step == 0;
+            final isActive = step == progressStage;
             return Text(
-              _steps[step],
+              steps[step],
               style: GoogleFonts.manrope(
                 fontSize: 9,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
@@ -1599,7 +1557,7 @@ class _BottomSheetWrapper extends StatelessWidget {
 // ─── Page signalements actifs ──────────────────────────────────────────────────
 
 class _ActiveReportsPage extends StatefulWidget {
-  final List<_ProReport> reports;
+  final List<HavenReport> reports;
   final bool isManager;
   final String? currentUserName;
   final List<ProMember> teamMembers;
@@ -1620,6 +1578,20 @@ class _ActiveReportsPage extends StatefulWidget {
 }
 
 class _ActiveReportsPageState extends State<_ActiveReportsPage> {
+  void _rebuild() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    ReportStore.instance.addListener(_rebuild);
+  }
+
+  @override
+  void dispose() {
+    ReportStore.instance.removeListener(_rebuild);
+    super.dispose();
+  }
+
   Widget _sheetTile({
     required IconData icon,
     required String label,
@@ -1656,7 +1628,7 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
     );
   }
 
-  void _showThreeDotsSheet(BuildContext ctx, _ProReport report, bool isDark) {
+  void _showThreeDotsSheet(BuildContext ctx, HavenReport report, bool isDark) {
     showModalBottomSheet(
       context: ctx,
       backgroundColor: Colors.transparent,
@@ -1687,7 +1659,8 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
                     ctx,
                     MaterialPageRoute(
                       builder: (_) => ReportDetailPage(
-                        report: report.toReportItem(),
+                        report: _toReportItem(report),
+                        havenReport: report,
                         onToggleTheme: widget.onToggleTheme,
                         onDelete: () {},
                         canAddInfo: false,
@@ -1738,11 +1711,8 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
                   isDark: isDark,
                   onTap: report.isResolved
                       ? () {
-                          widget.reports.remove(report);
-                          _ProfessionalDashboardPageState._archivedReports.add(report);
+                          ReportStore.instance.archiveByDirector(report);
                           Navigator.pop(sheetCtx);
-                          setState(() {});
-                          widget.onChanged();
                         }
                       : () {},
                 ),
@@ -1852,7 +1822,8 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => ReportDetailPage(
-                          report: report.toReportItem(),
+                          report: _toReportItem(report),
+                          havenReport: report,
                           onToggleTheme: widget.onToggleTheme,
                           onDelete: () {},
                           canAddInfo: false,
@@ -1876,7 +1847,7 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
                         ),
                       ),
                     ),
-                    child: _ProReportCard(
+                    child: HavenReportCard(
                       report: report,
                       isDark: isDark,
                       onThreeDots: () =>

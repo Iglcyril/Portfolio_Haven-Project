@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import 'director_designation_page.dart';
+import 'referent_dashboard_page.dart';
 
 // ─── Rôles professionnels ─────────────────────────────────────────────────────
 
@@ -61,7 +62,12 @@ class _ProfessionalRoleSelectionPageState
         ),
       ));
     } else {
-      // TODO: Navigator.push → ProfessionalDashboardPage
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ReferentDashboardPage(
+          onToggleTheme: widget.onToggleTheme,
+          // currentUserName sera fourni par le backend à la connexion
+        ),
+      ));
     }
   }
 

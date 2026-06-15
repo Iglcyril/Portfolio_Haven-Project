@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import 'dashboard_page.dart';
@@ -19,6 +20,7 @@ class ReportDetailPage extends StatefulWidget {
   final String? initialAssignedTo;
   final void Function(String level)? onRiskLevelChanged;
   final void Function(String name)? onAssigned;
+  final HavenReport? havenReport;
 
   const ReportDetailPage({
     super.key,
@@ -33,6 +35,7 @@ class ReportDetailPage extends StatefulWidget {
     this.initialAssignedTo,
     this.onRiskLevelChanged,
     this.onAssigned,
+    this.havenReport,
   });
 
   @override
@@ -93,6 +96,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     super.initState();
     _riskLevel = widget.initialRiskLevel;
     _assignedTo = widget.initialAssignedTo;
+    if (widget.havenReport != null) ReportStore.instance.addListener(_rebuild);
     _updateRemaining();
     if (_remaining.inSeconds > 0) {
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -102,6 +106,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     }
   }
 
+  void _rebuild() => setState(() {});
+
   void _updateRemaining() {
     final elapsed = DateTime.now().difference(widget.report.submittedAt);
     final r = const Duration(minutes: 5) - elapsed;
@@ -110,6 +116,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
 
   @override
   void dispose() {
+    if (widget.havenReport != null) ReportStore.instance.removeListener(_rebuild);
     _timer?.cancel();
     _addInfoController.dispose();
     super.dispose();
@@ -547,7 +554,12 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                             const SizedBox(height: 20),
 
                             // Barre de progression
-                            _DetailProgressTracker(isDark: isDark, status: widget.report.status, activeColor: color),
+                            _DetailProgressTracker(
+                              isDark: isDark,
+                              status: widget.report.status,
+                              activeColor: color,
+                              overrideStep: widget.havenReport?.progressStage,
+                            ),
 
                             const SizedBox(height: 28),
 
@@ -776,7 +788,16 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     icon: Icons.edit_note_rounded,
                                   );
                                 }),
-                              ],
+                                if (widget.havenReport != null)
+                                  ...widget.havenReport!.events.map((e) => ReportAction(
+                                    date: e.createdAt,
+                                    actor: widget.havenReport!.assignedTo ?? 'Référent',
+                                    description: e.comment != null
+                                        ? '${e.type} — ${e.comment}'
+                                        : e.type,
+                                    icon: kEventIcons[e.type] ?? Icons.circle_outlined,
+                                  )),
+                              ]..sort((a, b) => a.date.compareTo(b.date)),
                             ),
 
                             const SizedBox(height: 28),
@@ -858,12 +879,19 @@ class _DetailProgressTracker extends StatelessWidget {
   final bool isDark;
   final ReportStatus status;
   final Color activeColor;
+  final int? overrideStep;
 
-  const _DetailProgressTracker({required this.isDark, required this.status, required this.activeColor});
+  const _DetailProgressTracker({
+    required this.isDark,
+    required this.status,
+    required this.activeColor,
+    this.overrideStep,
+  });
 
-  static const List<String> _labels = ['DÉPOSÉ', 'EXAMINÉ', 'EN COURS', 'RÉSOLU'];
+  static const List<String> _labels = ['REÇU', 'PRISE EN CHARGE', 'SUIVI EN COURS', 'RÉSOLU'];
 
   int get _ci {
+    if (overrideStep != null) return overrideStep!;
     switch (status) {
       case ReportStatus.filed: return 0;
       case ReportStatus.reviewed: return 1;

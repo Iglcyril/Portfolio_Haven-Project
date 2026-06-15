@@ -8,6 +8,7 @@ import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
 import '../parent/parent_dashboard_page.dart';
 import '../professional/role_selection_page.dart';
+import '../professional/referent_dashboard_page.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -179,6 +180,27 @@ class _AuthPageState extends State<AuthPage> {
                                     onToggleTheme: widget.onToggleTheme,
                                   ),
                                 ));
+                              } else if (widget.portal == PortalType.professional) {
+                                // Mock users — remplacé par auth backend
+                                const _mockReferents = {
+                                  'sophie.martin@haven.fr': 'Sophie Martin',
+                                };
+                                final email = _emailCtrl.text.trim().toLowerCase();
+                                final referentName = _mockReferents[email];
+                                if (referentName != null) {
+                                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                    builder: (_) => ReferentDashboardPage(
+                                      onToggleTheme: widget.onToggleTheme,
+                                      currentUserName: referentName,
+                                    ),
+                                  ));
+                                } else {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => ProfessionalRoleSelectionPage(
+                                      onToggleTheme: widget.onToggleTheme,
+                                    ),
+                                  ));
+                                }
                               } else {
                                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                                   builder: (_) => UserHomePage(
