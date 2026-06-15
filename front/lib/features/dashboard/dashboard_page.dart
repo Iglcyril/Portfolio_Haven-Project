@@ -38,6 +38,8 @@ class ReportItem {
   final String initialText;
   final DateTime submittedAt;
   final String anonLabel;
+  final String? studentClass;
+  final String? studentName;
   final List<ReportAction> actions;
 
   const ReportItem({
@@ -51,6 +53,8 @@ class ReportItem {
     required this.submittedAt,
     required this.anonLabel,
     required this.actions,
+    this.studentClass,
+    this.studentName,
   });
 }
 
@@ -81,6 +85,7 @@ List<ReportItem> buildMockReports() => [
         counselor: 'J. Park',
         status: ReportStatus.inProgress,
         anonLabel: 'Anonyme à moitié',
+        studentClass: '3ème B',
         initialText:
             "Lors d'un cours de français, un élève a fait un commentaire blessant sur mon apparence physique devant toute la classe. Le professeur n'a pas réagi. Ce n'est pas la première fois que cela arrive.",
         submittedAt: DateTime(2026, 4, 12, 10, 5),
@@ -98,6 +103,8 @@ List<ReportItem> buildMockReports() => [
         counselor: 'Fermé',
         status: ReportStatus.resolved,
         anonLabel: 'Pas d\'anonymat',
+        studentName: 'Lucas Bernard',
+        studentClass: '2nde A',
         initialText:
             "J'ai été témoin d'une scène de harcèlement verbal dans la cour de récréation. Un groupe d'élèves s'en prenait à un camarade plus jeune. Je n'ai pas osé intervenir mais je voulais le signaler.",
         submittedAt: DateTime(2026, 3, 30, 8, 42),
@@ -673,7 +680,19 @@ class _ReportCardState extends State<_ReportCard> {
                       widget.report.title,
                       style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.4, height: 1.2),
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 5),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.08),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        widget.report.anonLabel,
+                        style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
                     Text(
                       'Déposé le ${widget.report.date} · Responsable : ${widget.report.counselor}',
                       style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary),

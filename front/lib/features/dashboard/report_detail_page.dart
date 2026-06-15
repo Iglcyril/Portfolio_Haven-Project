@@ -13,6 +13,12 @@ class ReportDetailPage extends StatefulWidget {
   final VoidCallback onDelete;
   final bool canAddInfo;
   final bool canDelete;
+  final bool isManager;
+  final List<ProMember> teamMembers;
+  final String? initialRiskLevel;
+  final String? initialAssignedTo;
+  final void Function(String level)? onRiskLevelChanged;
+  final void Function(String name)? onAssigned;
 
   const ReportDetailPage({
     super.key,
@@ -21,10 +27,23 @@ class ReportDetailPage extends StatefulWidget {
     required this.onDelete,
     this.canAddInfo = true,
     this.canDelete = true,
+    this.isManager = false,
+    this.teamMembers = const [],
+    this.initialRiskLevel,
+    this.initialAssignedTo,
+    this.onRiskLevelChanged,
+    this.onAssigned,
   });
 
   @override
   State<ReportDetailPage> createState() => _ReportDetailPageState();
+}
+
+class ProMember {
+  final String name;
+  final String role;
+  final String initials;
+  const ProMember({required this.name, required this.role, required this.initials});
 }
 
 class _AddedInfo {
@@ -40,6 +59,15 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   bool _showAddInfo = false;
   final _addInfoController = TextEditingController();
   final List<_AddedInfo> _addedInfos = [];
+
+  static const _riskColors = {
+    'Faible': Color(0xFF2EAB7B),
+    'Moyen': Color(0xFFE67E22),
+    'Élevé': Color(0xFFC0392B),
+  };
+
+  String? _riskLevel;
+  String? _assignedTo;
 
   static const Map<ReportPriority, Color> _colors = {
     ReportPriority.high: Color(0xFFE53935),
@@ -63,6 +91,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   @override
   void initState() {
     super.initState();
+    _riskLevel = widget.initialRiskLevel;
+    _assignedTo = widget.initialAssignedTo;
     _updateRemaining();
     if (_remaining.inSeconds > 0) {
       _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -101,6 +131,189 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
       _showAddInfo = false;
       _addInfoController.clear();
     });
+  }
+
+  void _showAssignSheet(BuildContext ctx, bool isDark) {
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetCtx) => Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1A3832) : Colors.white,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: isDark ? Colors.white.withValues(alpha: 0.20) : Colors.black.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Attribuer à…',
+                    style: GoogleFonts.fraunces(fontSize: 22, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.3),
+                  ),
+                  const SizedBox(height: 16),
+                  ...widget.teamMembers.map((member) {
+                    final isSelected = _assignedTo == member.name;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: GestureDetector(
+                        onTap: () {
+                          _assignedTo = member.name;
+                          Navigator.pop(sheetCtx);
+                          setState(() {});
+                          widget.onAssigned?.call(member.name);
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isSelected ? AppColors.primary.withValues(alpha: 0.10) : (isDark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFF5F5F5)),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: isSelected ? AppColors.primary : (isDark ? Colors.white.withValues(alpha: 0.10) : Colors.transparent)),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 38,
+                                height: 38,
+                                decoration: BoxDecoration(color: isDark ? AppColors.primary.withValues(alpha: 0.35) : AppColors.primary, shape: BoxShape.circle),
+                                child: Center(child: Text(member.initials, style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white))),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(member.name, style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.90) : AppColors.lightTextPrimary)),
+                                    Text(member.role, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary)),
+                                  ],
+                                ),
+                              ),
+                              if (isSelected) const Icon(Icons.check_circle_rounded, color: AppColors.primary, size: 18),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showRiskSheet(BuildContext ctx, bool isDark) {
+    const levels = ['Faible', 'Moyen', 'Élevé'];
+    const levelIcons = [Icons.check_circle_outline_rounded, Icons.warning_amber_rounded, Icons.dangerous_outlined];
+    const descriptions = [
+      'Situation à surveiller, sans urgence immédiate.',
+      'Situation préoccupante nécessitant un suivi actif.',
+      'Situation grave nécessitant une action immédiate.',
+    ];
+
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetCtx) => Container(
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1A3832) : Colors.white,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: isDark ? Colors.white.withValues(alpha: 0.20) : Colors.black.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Niveau de risque', style: GoogleFonts.fraunces(fontSize: 22, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.3)),
+                  const SizedBox(height: 4),
+                  Text('Évaluez la gravité du signalement', style: GoogleFonts.manrope(fontSize: 13, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                  const SizedBox(height: 20),
+                  ...List.generate(levels.length, (i) {
+                    final level = levels[i];
+                    final color = _riskColors[level]!;
+                    final isSelected = _riskLevel == level;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          _riskLevel = level;
+                          Navigator.pop(sheetCtx);
+                          setState(() {});
+                          widget.onRiskLevelChanged?.call(level);
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 150),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: isSelected ? color.withValues(alpha: isDark ? 0.18 : 0.08) : (isDark ? Colors.white.withValues(alpha: 0.07) : const Color(0xFFF5F5F5)),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: isSelected ? color : (isDark ? Colors.white.withValues(alpha: 0.10) : Colors.transparent), width: isSelected ? 1.5 : 1.0),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(color: color.withValues(alpha: isSelected ? 0.20 : 0.10), borderRadius: BorderRadius.circular(11)),
+                                child: Icon(levelIcons[i], color: color, size: 20),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(level, style: GoogleFonts.fraunces(fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.1)),
+                                    Text(descriptions[i], style: GoogleFonts.manrope(fontSize: 11, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                                  ],
+                                ),
+                              ),
+                              if (isSelected) Icon(Icons.check_rounded, color: color, size: 18),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _confirmDelete(BuildContext context, bool isDark) {
@@ -197,8 +410,13 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final color = _colors[widget.report.priority]!;
-    final priorityLabel = _priorityLabels[widget.report.priority]!;
+    const Color _unratedColor = Color(0xFF9E9E9E);
+    final Color color = widget.isManager
+        ? (_riskLevel != null ? _riskColors[_riskLevel]! : _unratedColor)
+        : _colors[widget.report.priority]!;
+    final String priorityLabel = widget.isManager
+        ? (_riskLevel?.toUpperCase() ?? 'NON ÉVALUÉ')
+        : _priorityLabels[widget.report.priority]!;
     final statusLabel = _statusLabels[widget.report.status]!;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -368,6 +586,31 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                       ),
                                     ],
                                   ),
+                                  // Classe et/ou nom si anonymat partiel ou absent
+                                  if (widget.report.studentClass != null || widget.report.studentName != null) ...[
+                                    const SizedBox(height: 7),
+                                    Row(
+                                      children: [
+                                        if (widget.report.studentName != null) ...[
+                                          Icon(Icons.person_outline_rounded, size: 12, color: isDark ? Colors.white.withValues(alpha: 0.40) : AppColors.lightTextSecondary),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            widget.report.studentName!,
+                                            style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary),
+                                          ),
+                                          const SizedBox(width: 10),
+                                        ],
+                                        if (widget.report.studentClass != null) ...[
+                                          Icon(Icons.school_outlined, size: 12, color: isDark ? Colors.white.withValues(alpha: 0.40) : AppColors.lightTextSecondary),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            widget.report.studentClass!,
+                                            style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ],
                                   const SizedBox(height: 10),
                                   // Texte du signalement
                                   Text(
@@ -419,6 +662,99 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                             ],
 
                             const SizedBox(height: 28),
+
+                            // ── Gestion (manager uniquement) ──────────────
+                            if (widget.isManager) ...[
+                              _SectionLabel(isDark: isDark, label: 'GESTION'),
+                              const SizedBox(height: 10),
+                              // Tile attribution
+                              GestureDetector(
+                                onTap: () => _showAssignSheet(context, isDark),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
+                                    boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 36,
+                                        height: 36,
+                                        decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.10), borderRadius: BorderRadius.circular(10)),
+                                        child: const Icon(Icons.person_add_outlined, color: AppColors.primary, size: 18),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Attribuer à', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                                            Text(
+                                              _assignedTo ?? 'Non attribué',
+                                              style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: _assignedTo != null ? AppColors.primary : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(Icons.chevron_right_rounded, size: 18, color: isDark ? Colors.white.withValues(alpha: 0.30) : AppColors.lightTextSecondary),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Tile niveau de risque
+                              GestureDetector(
+                                onTap: () => _showRiskSheet(context, isDark),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
+                                    boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 36,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          color: (_riskLevel != null ? _riskColors[_riskLevel]! : AppColors.primary).withValues(alpha: isDark ? 0.20 : 0.10),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Icon(Icons.flag_outlined, color: _riskLevel != null ? _riskColors[_riskLevel]! : AppColors.primary, size: 18),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Niveau de risque', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                                            Row(
+                                              children: [
+                                                if (_riskLevel != null) ...[
+                                                  Container(width: 7, height: 7, decoration: BoxDecoration(color: _riskColors[_riskLevel]!, shape: BoxShape.circle)),
+                                                  const SizedBox(width: 5),
+                                                ],
+                                                Text(
+                                                  _riskLevel ?? 'Non évalué',
+                                                  style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: _riskLevel != null ? _riskColors[_riskLevel]! : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(Icons.chevron_right_rounded, size: 18, color: isDark ? Colors.white.withValues(alpha: 0.30) : AppColors.lightTextSecondary),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 28),
+                            ],
 
                             // ── Historique ────────────────────────────────
                             _SectionLabel(isDark: isDark, label: 'HISTORIQUE'),

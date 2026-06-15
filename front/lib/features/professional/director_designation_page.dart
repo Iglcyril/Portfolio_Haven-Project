@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import 'professional_dashboard_page.dart';
 
 // ─── Modèle ───────────────────────────────────────────────────────────────────
 
@@ -102,7 +103,12 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
 
   void _onValidate() {
     if (!_canValidate) return;
-    // TODO: Navigate to ProfessionalDashboardPage
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      builder: (_) => ProfessionalDashboardPage(
+        onToggleTheme: widget.onToggleTheme,
+        isManager: true,
+      ),
+    ));
   }
 
   @override
