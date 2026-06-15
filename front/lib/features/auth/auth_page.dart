@@ -7,6 +7,7 @@ import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
 import '../parent/parent_dashboard_page.dart';
+import '../professional/role_selection_page.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -152,6 +153,14 @@ class _AuthPageState extends State<AuthPage> {
                               if (widget.portal == PortalType.parent) {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => ChildRegistrationPage(
+                                    onToggleTheme: widget.onToggleTheme,
+                                  ),
+                                ));
+                              } else if (widget.portal ==
+                                  PortalType.professional) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) =>
+                                      ProfessionalRoleSelectionPage(
                                     onToggleTheme: widget.onToggleTheme,
                                   ),
                                 ));
