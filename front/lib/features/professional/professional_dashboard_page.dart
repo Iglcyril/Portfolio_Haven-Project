@@ -117,11 +117,13 @@ List<_ProReport> _buildMockProReports() => [
 class ProfessionalDashboardPage extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final bool isManager;
+  final String? currentUserName;
 
   const ProfessionalDashboardPage({
     super.key,
     required this.onToggleTheme,
     required this.isManager,
+    this.currentUserName,
   });
 
   @override
@@ -132,6 +134,7 @@ class ProfessionalDashboardPage extends StatefulWidget {
 class _ProfessionalDashboardPageState
     extends State<ProfessionalDashboardPage> {
   static List<_ProReport>? _persistentReports;
+  static final List<_ProReport> _archivedReports = [];
   late List<_ProReport> _reports;
 
   static const _teamMembers = [
@@ -566,7 +569,10 @@ class _ProfessionalDashboardPageState
               const SizedBox(height: 24),
               GestureDetector(
                 onTap: () {
-                  setState(() => _reports.remove(report));
+                  setState(() {
+                    _reports.remove(report);
+                    _archivedReports.add(report);
+                  });
                   Navigator.pop(sheetCtx);
                 },
                 child: Container(
@@ -614,6 +620,168 @@ class _ProfessionalDashboardPageState
                   ),
                 ),
               ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // ── Bottom sheet : liste des archivés ────────────────────────────────────
+
+  void _showArchivedSheet(BuildContext ctx, bool isDark) {
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetCtx) {
+        return _BottomSheetWrapper(
+          isDark: isDark,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Signalements archivés',
+                style: GoogleFonts.fraunces(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _archivedReports.isEmpty
+                    ? 'Aucun signalement archivé pour le moment'
+                    : '${_archivedReports.length} signalement${_archivedReports.length > 1 ? 's' : ''} résolu${_archivedReports.length > 1 ? 's' : ''} et archivé${_archivedReports.length > 1 ? 's' : ''}',
+                style: GoogleFonts.manrope(
+                  fontSize: 13,
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.50)
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
+              if (_archivedReports.isNotEmpty) ...[
+              const SizedBox(height: 20),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(ctx).size.height * 0.45,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: _archivedReports.map((report) {
+                      final riskColor = _riskColors[report.riskLevel];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.07)
+                                : const Color(0xFFF5F5F5),
+                            borderRadius: BorderRadius.circular(18),
+                            border: isDark
+                                ? Border.all(color: Colors.white.withValues(alpha: 0.08))
+                                : null,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      color: isDark
+                                          ? Colors.white.withValues(alpha: 0.12)
+                                          : Colors.black.withValues(alpha: 0.06),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      report.caseNumber,
+                                      style: GoogleFonts.manrope(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                        color: isDark
+                                            ? Colors.white.withValues(alpha: 0.80)
+                                            : AppColors.lightTextSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                  if (riskColor != null) ...[
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: riskColor.withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        report.riskLevel!,
+                                        style: GoogleFonts.manrope(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600,
+                                          color: riskColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  const Spacer(),
+                                  Text(
+                                    _ProReportCard._timeAgo(report.submittedAt),
+                                    style: GoogleFonts.manrope(
+                                      fontSize: 11,
+                                      color: isDark
+                                          ? Colors.white.withValues(alpha: 0.35)
+                                          : AppColors.lightTextSecondary.withValues(alpha: 0.70),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                report.initialText,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.manrope(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.5,
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.55)
+                                      : AppColors.lightTextPrimary.withValues(alpha: 0.70),
+                                ),
+                              ),
+                              if (report.assignedTo != null) ...[
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    Icon(Icons.person_outline_rounded, size: 12,
+                                        color: isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      report.assignedTo!,
+                                      style: GoogleFonts.manrope(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                        color: isDark
+                                            ? Colors.white.withValues(alpha: 0.40)
+                                            : AppColors.lightTextSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              ],
             ],
           ),
         );
@@ -724,6 +892,21 @@ class _ProfessionalDashboardPageState
                                       icon: Icons.folder_open_outlined,
                                       isDark: isDark,
                                       isFilled: true,
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => _ActiveReportsPage(
+                                            reports: _reports,
+                                            isManager: widget.isManager,
+                                            currentUserName: widget.currentUserName,
+                                            teamMembers: _teamMembers
+                                                .map((m) => ProMember(name: m.fullName, role: m.role, initials: m.initials))
+                                                .toList(),
+                                            onToggleTheme: widget.onToggleTheme,
+                                            onChanged: () => setState(() {}),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(width: 10),
@@ -739,10 +922,11 @@ class _ProfessionalDashboardPageState
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: _StatCard(
-                                      value: '—',
-                                      label: 'Statistiques',
-                                      icon: Icons.bar_chart_rounded,
+                                      value: '${_archivedReports.length}',
+                                      label: 'Archivés',
+                                      icon: Icons.archive_outlined,
                                       isDark: isDark,
+                                      onTap: () => _showArchivedSheet(context, isDark),
                                     ),
                                   ),
                                 ],
@@ -845,6 +1029,7 @@ class _StatCard extends StatelessWidget {
   final bool isDark;
   final bool isFilled;
   final bool highlight;
+  final VoidCallback? onTap;
 
   const _StatCard({
     required this.value,
@@ -853,12 +1038,15 @@ class _StatCard extends StatelessWidget {
     required this.isDark,
     this.isFilled = false,
     this.highlight = false,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     if (isFilled) {
-      return Container(
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.primary,
@@ -905,10 +1093,13 @@ class _StatCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
       );
     }
 
-    return Container(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: isDark
@@ -970,11 +1161,11 @@ class _StatCard extends StatelessWidget {
           ),
         ],
       ),
+      ),
     );
   }
 }
 
-// ─── Carte de signalement ─────────────────────────────────────────────────────
 
 class _ProReportCard extends StatelessWidget {
   final _ProReport report;
@@ -1401,6 +1592,300 @@ class _BottomSheetWrapper extends StatelessWidget {
           child,
         ],
       ),
+    );
+  }
+}
+
+// ─── Page signalements actifs ──────────────────────────────────────────────────
+
+class _ActiveReportsPage extends StatefulWidget {
+  final List<_ProReport> reports;
+  final bool isManager;
+  final String? currentUserName;
+  final List<ProMember> teamMembers;
+  final VoidCallback onToggleTheme;
+  final VoidCallback onChanged;
+
+  const _ActiveReportsPage({
+    required this.reports,
+    required this.isManager,
+    this.currentUserName,
+    required this.teamMembers,
+    required this.onToggleTheme,
+    required this.onChanged,
+  });
+
+  @override
+  State<_ActiveReportsPage> createState() => _ActiveReportsPageState();
+}
+
+class _ActiveReportsPageState extends State<_ActiveReportsPage> {
+  Widget _sheetTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+    required bool isDark,
+    Color? color,
+  }) {
+    final c = color ?? (isDark ? Colors.white : AppColors.lightTextPrimary);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.07)
+              : const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: c),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: GoogleFonts.manrope(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: c,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showThreeDotsSheet(BuildContext ctx, _ProReport report, bool isDark) {
+    showModalBottomSheet(
+      context: ctx,
+      backgroundColor: Colors.transparent,
+      builder: (sheetCtx) => StatefulBuilder(
+        builder: (_, setSheetState) => _BottomSheetWrapper(
+          isDark: isDark,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                report.caseNumber,
+                style: GoogleFonts.fraunces(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _sheetTile(
+                icon: Icons.open_in_new_rounded,
+                label: 'Voir le détail',
+                isDark: isDark,
+                onTap: () {
+                  Navigator.pop(sheetCtx);
+                  Navigator.push(
+                    ctx,
+                    MaterialPageRoute(
+                      builder: (_) => ReportDetailPage(
+                        report: report.toReportItem(),
+                        onToggleTheme: widget.onToggleTheme,
+                        onDelete: () {},
+                        canAddInfo: false,
+                        canDelete: false,
+                        isManager: widget.isManager,
+                        teamMembers: widget.teamMembers,
+                        initialRiskLevel: report.riskLevel,
+                        initialAssignedTo: report.assignedTo,
+                        onRiskLevelChanged: (level) {
+                          report.riskLevel = level;
+                          setState(() {});
+                          widget.onChanged();
+                        },
+                        onAssigned: (name) {
+                          setState(() {
+                            report.isAssigned = true;
+                            report.assignedTo = name;
+                          });
+                          widget.onChanged();
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+              if (!report.isResolved &&
+                  widget.currentUserName != null &&
+                  report.assignedTo == widget.currentUserName) ...[
+                const SizedBox(height: 10),
+                _sheetTile(
+                  icon: Icons.check_circle_outline_rounded,
+                  label: 'Marquer comme résolu',
+                  isDark: isDark,
+                  color: const Color(0xFF2EAB7B),
+                  onTap: () {
+                    setSheetState(() => report.isResolved = true);
+                    setState(() {});
+                    widget.onChanged();
+                  },
+                ),
+              ],
+              const SizedBox(height: 10),
+              Opacity(
+                opacity: report.isResolved ? 1.0 : 0.35,
+                child: _sheetTile(
+                  icon: Icons.archive_outlined,
+                  label: 'Archiver le signalement',
+                  isDark: isDark,
+                  onTap: report.isResolved
+                      ? () {
+                          widget.reports.remove(report);
+                          _ProfessionalDashboardPageState._archivedReports.add(report);
+                          Navigator.pop(sheetCtx);
+                          setState(() {});
+                          widget.onChanged();
+                        }
+                      : () {},
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final active = widget.reports.where((r) => r.isAssigned).toList();
+
+    return Scaffold(
+      backgroundColor:
+          isDark ? AppColors.darkGradientTop : AppColors.warmWhite,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: isDark ? Colors.white : AppColors.lightTextPrimary,
+            size: 20,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Signalements actifs',
+          style: GoogleFonts.fraunces(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: isDark ? Colors.white : AppColors.lightTextPrimary,
+            letterSpacing: -0.3,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${active.length}',
+                style: GoogleFonts.manrope(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: active.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.folder_open_outlined,
+                    size: 52,
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : AppColors.lightTextSecondary.withValues(alpha: 0.30),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Aucun signalement actif',
+                    style: GoogleFonts.manrope(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.35)
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Les signalements attribués apparaîtront ici',
+                    style: GoogleFonts.manrope(
+                      fontSize: 12,
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.20)
+                          : AppColors.lightTextSecondary.withValues(alpha: 0.60),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              itemCount: active.length,
+              itemBuilder: (ctx, i) {
+                final report = active[i];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ReportDetailPage(
+                          report: report.toReportItem(),
+                          onToggleTheme: widget.onToggleTheme,
+                          onDelete: () {},
+                          canAddInfo: false,
+                          canDelete: false,
+                          isManager: widget.isManager,
+                          teamMembers: widget.teamMembers,
+                          initialRiskLevel: report.riskLevel,
+                          initialAssignedTo: report.assignedTo,
+                          onRiskLevelChanged: (level) {
+                            report.riskLevel = level;
+                            setState(() {});
+                            widget.onChanged();
+                          },
+                          onAssigned: (name) {
+                            setState(() {
+                              report.isAssigned = true;
+                              report.assignedTo = name;
+                            });
+                            widget.onChanged();
+                          },
+                        ),
+                      ),
+                    ),
+                    child: _ProReportCard(
+                      report: report,
+                      isDark: isDark,
+                      onThreeDots: () =>
+                          _showThreeDotsSheet(context, report, isDark),
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
