@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import 'director_designation_page.dart';
 
 // ─── Rôles professionnels ─────────────────────────────────────────────────────
 
@@ -54,7 +55,11 @@ class _ProfessionalRoleSelectionPageState
   void _onContinue() {
     if (!_canContinue) return;
     if (_selected == ProfessionalRole.director) {
-      // TODO: Navigator.push → DirectorDesignationPage
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => DirectorDesignationPage(
+          onToggleTheme: widget.onToggleTheme,
+        ),
+      ));
     } else {
       // TODO: Navigator.push → ProfessionalDashboardPage
     }
