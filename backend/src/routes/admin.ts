@@ -135,6 +135,42 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	}
 })
 
+	.post("/reports/:id/assign", ({ params, body, headers, set }) => {
+	// vérification du token d'authentification et des droits d'accès
+	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	try {
+		requireAdmin(token)
+	}
+	catch (e: any) {
+		if (e.message === "INVALID_TOKEN") {
+			set.status = 401
+			return { error: "Token manquant ou expiré" }
+		}
+		set.status = 403
+		return { error: "Accès refusé" }
+	}
+
+	const { id } = params
+
+	// vérification format id
+	if (!id.startsWith("HVN-")) {
+		set.status = 404
+		return { error: "Signalement non trouvé" }
+	}
+
+	// A faire : remplacer par prisma.report.update({ where: { trackingId: id }, data: { assignedTo: body.referent_id } })
+	return {
+		trackingCode: id,
+		referent_id: body.referent_id,
+		referent_name: "Alice Dupont",
+		assignedAt: new Date().toISOString()
+	}
+}, {
+	body: t.Object({
+		referent_id: t.String()
+	})
+})
+
 	.patch("/reports/:id", ({ params, body, headers, set }) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
