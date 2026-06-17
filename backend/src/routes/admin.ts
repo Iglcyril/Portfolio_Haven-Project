@@ -90,6 +90,50 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	return report
 	})
 
+	.get("/reports/:id/summary", ({ params, headers, set }) => {
+	// vérification du token d'authentification et des droits d'accès
+	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	try {
+		requireAdmin(token)
+	}
+	catch (e: any) {
+		if (e.message === "INVALID_TOKEN") {
+			set.status = 401
+			return { error: "Token manquant ou expiré" }
+		}
+		set.status = 403
+		return { error: "Accès refusé" }
+	}
+
+	const { id } = params
+
+	// vérification format id
+	if (!id.startsWith("HVN-")) {
+		set.status = 404
+		return { error: "Signalement non trouvé" }
+	}
+
+	// A faire : remplacer par prisma.report.findUnique({ where: { trackingId: id }, include: { summary: true } })
+	return {
+		trackingCode: id,
+		role: "victime",
+		report_type: "harcelement_scolaire",
+		anonymat_level: "partiel",
+		class_level: "3ème",
+		identity: null,
+		category: "cyberharcelement",
+		content: "Je me fais harceler depuis plusieurs semaines...",
+		initial_feeling: "Très mal",
+		report_status: "en_cours",
+		mood: "2",
+		is_crisis: false,
+		adult_contact: "oui",
+		contact_team: "oui",
+		establishment_id: "uuid-etablissement",
+		createdAt: "2026-06-10T08:00:00Z",
+		updatedAt: new Date().toISOString()
+	}
+})
 
 	.patch("/reports/:id", ({ params, body, headers, set }) => {
 	// vérification du token d'authentification et des droits d'accès
