@@ -222,12 +222,15 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 	const { team_info } = query
 
-	return {
-	  team_info: [
+	// Hiérarchie des rôles
+	const hierarchy = ["SUPERVISOR", "ADMIN", "RECTORAT"]
+
+	// A faire : remplacer par prisma.user.findMany({ where: { role: team_info } })
+	const team = [
 		{
 			id: 1,
 			name: "Alice Dupont",
-			role: "Responsable de la sécurité",
+			role: "ADMIN",
 			email: "alice.dupont@example.com",
 			dispo: "Libre",
 			assigned_cases: 5,
@@ -235,7 +238,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 		{
 			id: 2,
 			name: "Bob Martin",
-			role: "Psychologue scolaire",
+			role: "SUPERVISOR",
 			email: "bob.martin@example.com",
 			dispo: "Occupé",
 			assigned_cases: 3
@@ -243,11 +246,21 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 		{
 			id: 3,
 			name: "Claire Durand",
-			role: "Médiatrice",
+			role: "SUPERVISOR",
 			email: "claire.durand@example.com",
 			dispo: "Absent",
 			assigned_cases: 2
 		}
-	  ]
+	]
+
+	// Filtrer par rôle si fourni, sinon retourner toute l'équipe
+	const filtered = team_info
+		? team.filter(m => m.role === team_info.toUpperCase())
+		: team
+
+	return {
+		hierarchy,
+		total: filtered.length,
+		team_info: filtered
 	}
  })
