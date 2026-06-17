@@ -106,19 +106,24 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 		return { error: "Accès refusé" }
 	}
 	const { id } = params
+
 	// vérification format id
 	if (!id.startsWith("HVN-")) {
 		set.status = 404
 		return { error: "Signalement non trouvé" }
 	}
+
 	// A faire : remplacer par une vraie requête Prisma -> prisma.report.update({ where: { trackingCode: id }, data: { ...body } })
-	const { status, category, level } = body
+	const { status, category, level, assigne_a, note_interne } = body
+
 	return {
-	trackingCode: id,
-	status: status || "en_cours",
-	category: category || "harcelement_scolaire",
-	level: level || "ELEVE",
-	updatedAt: new Date().toISOString()
+		trackingCode: id,
+		status: status || "en_cours",
+		category: category || "harcelement_scolaire",
+		level: level || "ELEVE",
+		assigne_a: assigne_a || null,
+		note_interne: note_interne || null,
+		updatedAt: new Date().toISOString()
 	}
 	},{
   // Validation des données entrantes tous les champs sont optionnels
@@ -134,7 +139,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	category: t.Optional(t.Union([
 	  t.Literal("harcelement_scolaire"),
 	  t.Literal("violence_physique"),
-	  t.Literal ("violence_verbale"),
+	  t.Literal("violence_verbale"),
 	  t.Literal("cyberharcelement"),
 	  t.Literal("discrimination"),
 	  t.Literal("mal_etre"),
