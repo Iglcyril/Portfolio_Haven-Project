@@ -55,7 +55,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _listening = false;
   bool _showQuickReplies = true;
 
-  static const _caseNumber = '#HV-8829';
+  static const _caseNumber = '#HVN-8829';
 
   static const _quickReplies = [
     'En classe',

@@ -125,14 +125,14 @@ class ReportStore extends ChangeNotifier {
 
 List<HavenReport> _buildMockReports() => [
       HavenReport(
-        caseNumber: '#HV-9102',
+        caseNumber: '#HVN-9102',
         anonLevel: 'Anonyme',
         initialText:
             'Moqueries répétées signalées dans une classe de 4ème. Plusieurs élèves semblent impliqués dans des comportements d\'exclusion quotidiens.',
         submittedAt: DateTime.now().subtract(const Duration(hours: 1)),
       ),
       HavenReport(
-        caseNumber: '#HV-9098',
+        caseNumber: '#HVN-9098',
         anonLevel: 'Semi-anonyme',
         studentClass: '4ème A',
         initialText:
@@ -140,7 +140,7 @@ List<HavenReport> _buildMockReports() => [
         submittedAt: DateTime.now().subtract(const Duration(hours: 5)),
       ),
       HavenReport(
-        caseNumber: '#HV-9091',
+        caseNumber: '#HVN-9091',
         anonLevel: 'Identité visible',
         studentName: 'Lucie Fontaine',
         studentClass: '3ème B',
@@ -149,7 +149,7 @@ List<HavenReport> _buildMockReports() => [
         submittedAt: DateTime.now().subtract(const Duration(days: 1)),
       ),
       HavenReport(
-        caseNumber: '#HV-9088',
+        caseNumber: '#HVN-9088',
         anonLevel: 'Anonyme',
         initialText:
             'Violences verbales quotidiennes signalées par un élève de 6ème de la part d\'un groupe de camarades.',
@@ -157,7 +157,7 @@ List<HavenReport> _buildMockReports() => [
       ),
       // Attribués à Sophie Martin — permet de tester le dashboard référent
       HavenReport(
-        caseNumber: '#HV-9085',
+        caseNumber: '#HVN-9085',
         anonLevel: 'Semi-anonyme',
         studentClass: '5ème C',
         initialText:
@@ -176,7 +176,7 @@ List<HavenReport> _buildMockReports() => [
         ],
       ),
       HavenReport(
-        caseNumber: '#HV-9079',
+        caseNumber: '#HVN-9079',
         anonLevel: 'Identité visible',
         studentName: 'Thomas Leroy',
         studentClass: '2nde A',

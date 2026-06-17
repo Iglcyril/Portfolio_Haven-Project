@@ -60,7 +60,7 @@ class ReportItem {
 
 List<ReportItem> buildMockReports() => [
       ReportItem(
-        caseNumber: '#HV-8829',
+        caseNumber: '#HVN-8829',
         priority: ReportPriority.high,
         title: "Messages répétés d'un camarade",
         date: '28 avr.',
@@ -78,7 +78,7 @@ List<ReportItem> buildMockReports() => [
         ],
       ),
       ReportItem(
-        caseNumber: '#HV-8714',
+        caseNumber: '#HVN-8714',
         priority: ReportPriority.medium,
         title: 'Commentaire inapproprié en classe',
         date: '12 avr.',
@@ -96,7 +96,7 @@ List<ReportItem> buildMockReports() => [
         ],
       ),
       ReportItem(
-        caseNumber: '#HV-8602',
+        caseNumber: '#HVN-8602',
         priority: ReportPriority.low,
         title: 'Témoin de harcèlement verbal',
         date: '30 mars',
