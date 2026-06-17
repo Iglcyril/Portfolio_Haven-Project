@@ -1,4 +1,5 @@
 import 'dart:ui' show ImageFilter;
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,8 @@ import '../parent/child_registration_page.dart';
 import '../parent/parent_dashboard_page.dart';
 import '../professional/role_selection_page.dart';
 import '../professional/referent_dashboard_page.dart';
+import '../legal/cgu_page.dart';
+import '../legal/privacy_page.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -774,16 +777,44 @@ class _CtaButton extends StatelessWidget {
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
-class _Footer extends StatelessWidget {
+class _Footer extends StatefulWidget {
   final bool isDark;
   const _Footer({required this.isDark});
 
   @override
+  State<_Footer> createState() => _FooterState();
+}
+
+class _FooterState extends State<_Footer> {
+  late final TapGestureRecognizer _cguTap;
+  late final TapGestureRecognizer _privacyTap;
+
+  @override
+  void initState() {
+    super.initState();
+    _cguTap = TapGestureRecognizer()
+      ..onTap = () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const CguPage()),
+          );
+    _privacyTap = TapGestureRecognizer()
+      ..onTap = () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PrivacyPage()),
+          );
+  }
+
+  @override
+  void dispose() {
+    _cguTap.dispose();
+    _privacyTap.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final muted = isDark
+    final muted = widget.isDark
         ? Colors.white.withOpacity(0.38)
         : AppColors.lightTextSecondary.withOpacity(0.65);
-    final emphasis = isDark
+    final emphasis = widget.isDark
         ? Colors.white.withOpacity(0.60)
         : AppColors.lightTextPrimary;
 
@@ -791,15 +822,27 @@ class _Footer extends StatelessWidget {
       TextSpan(
         style: GoogleFonts.manrope(fontSize: 12, color: muted, height: 1.5),
         children: [
-          const TextSpan(text: "En continuant, vous acceptez les "),
+          const TextSpan(text: 'En continuant, vous acceptez les '),
           TextSpan(
-            text: 'Conditions',
-            style: TextStyle(fontWeight: FontWeight.w700, color: emphasis),
+            text: 'CGU',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: emphasis,
+              decoration: TextDecoration.underline,
+              decorationColor: emphasis,
+            ),
+            recognizer: _cguTap,
           ),
-          const TextSpan(text: ' & la '),
+          const TextSpan(text: ' et la '),
           TextSpan(
-            text: 'Confidentialité',
-            style: TextStyle(fontWeight: FontWeight.w700, color: emphasis),
+            text: 'Politique de confidentialité',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: emphasis,
+              decoration: TextDecoration.underline,
+              decorationColor: emphasis,
+            ),
+            recognizer: _privacyTap,
           ),
           const TextSpan(text: ' de Haven.'),
         ],

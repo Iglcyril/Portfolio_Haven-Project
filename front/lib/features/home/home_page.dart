@@ -4,11 +4,27 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../auth/auth_page.dart';
+import '../legal/cgu_modal.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final VoidCallback onToggleTheme;
 
   const HomePage({super.key, required this.onToggleTheme});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    // L'animation de réveil dans app.dart dure 950ms — on attend qu'elle soit
+    // terminée avant d'afficher le modal pour qu'il soit visible.
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) showCguModalIfNeeded(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +62,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _ThemeToggleButton(onTap: onToggleTheme, isDark: isDark),
+                  _ThemeToggleButton(onTap: widget.onToggleTheme, isDark: isDark),
                   const SizedBox(height: 24),
                   Center(child: _AppIcon()),
                   const SizedBox(height: 16),
@@ -64,7 +80,7 @@ class HomePage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => AuthPage(
                           portal: PortalType.student,
-                          onToggleTheme: onToggleTheme,
+                          onToggleTheme: widget.onToggleTheme,
                         ),
                       ),
                     ),
@@ -81,7 +97,7 @@ class HomePage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => AuthPage(
                           portal: PortalType.parent,
-                          onToggleTheme: onToggleTheme,
+                          onToggleTheme: widget.onToggleTheme,
                         ),
                       ),
                     ),
@@ -97,7 +113,7 @@ class HomePage extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => AuthPage(
                           portal: PortalType.professional,
-                          onToggleTheme: onToggleTheme,
+                          onToggleTheme: widget.onToggleTheme,
                         ),
                       ),
                     ),
