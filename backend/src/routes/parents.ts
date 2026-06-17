@@ -44,4 +44,34 @@ export const parentsRoutes = new Elysia({ prefix: "/parents" })
 		})
 	})
 
+// Récupération du résumé complet du signalement pour les parents
+// A faire : remplacer par prisma.report.findUnique({ where: { trackingId: code }, include: { summary: true } })
+.get("/report/:code/summary", ({ params, set }) => {
+	const { code } = params
 
+	// Vérification du format du code de suivi
+	if (!code.startsWith("HVN-")) {
+		set.status = 404
+		return { error: "Code de suivi invalide" }
+	}
+
+	return {
+		trackingCode: code,
+		role: "victime",
+		report_type: "harcelement_scolaire",
+		anonymat_level: "partiel",
+		category: "cyberharcelement",
+		initial_feeling: "Je me sens très mal...",
+		report_status: "en_cours",
+		mood: "3",
+		is_crisis: false,
+		adult_contact: "oui",
+		contact_team: "oui",
+		establishment_id: "uuid-etablissement",
+		savedAt: "2026-06-10T08:00:00Z",
+		supervisorName: "Mme Durand",
+		supervisorJob: "Conseillère principale d'éducation",
+		supervisorContact: "g.durand@gmail.com",
+		nextSteps: "Suivi régulier avec la famille et l'école"
+	}
+})
