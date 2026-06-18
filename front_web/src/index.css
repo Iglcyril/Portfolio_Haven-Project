@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-haven-primary: #2EAB7B;
+  --color-haven-primary-dark: #028966;
+  --color-haven-student: #00A176;
+  --color-haven-parent: #8ED4BF;
+  --color-haven-warm-white: #F9F6F1;
+  --color-haven-card: #E6E4DF;
+  --color-haven-dark: #102F2B;
+  --color-haven-dark-2: #0D2622;
+  --color-haven-text: #1A2E20;
+  --color-haven-muted: #5C7A68;
+
+  --font-fraunces: 'Fraunces', Georgia, serif;
+  --font-manrope: 'Manrope', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Manrope', system-ui, sans-serif;
+  background-color: #F9F6F1;
+  color: #1A2E20;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+}
