@@ -113,23 +113,57 @@ function StatsBar({ reports }: { reports: Report[] }) {
   )
 }
 
-// ─── Progress bar ─────────────────────────────────────────────────────────────
+// ─── 4-step progress tracker ──────────────────────────────────────────────────
 
-function ProgressBar({ value, color }: { value: number; color: string }) {
+const STAGES = ['DÉPOSÉ', 'EXAMINÉ', 'EN COURS', 'RÉSOLU']
+
+function getStage(report: Report): number {
+  if (report.status === 'resolved' || report.status === 'archived' || report.progressPercent >= 90) return 3
+  if (report.progressPercent >= 60) return 2
+  if (report.progressPercent >= 30) return 1
+  return 0
+}
+
+function ProgressTracker({ stage, color }: { stage: number; color: string }) {
   return (
-    <div style={{
-      height: 4,
-      borderRadius: 9999,
-      background: 'var(--c-progress-track)',
-      overflow: 'hidden',
-      transition: 'background 0.28s ease',
-    }}>
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: `${value}%` }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        style={{ height: '100%', borderRadius: 9999, background: color }}
-      />
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
+        {STAGES.map((_, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', flex: i < STAGES.length - 1 ? 1 : 0 }}>
+            <div style={{
+              width: i === stage ? 10 : 7,
+              height: i === stage ? 10 : 7,
+              borderRadius: '50%',
+              background: i <= stage ? color : 'var(--c-progress-track)',
+              flexShrink: 0,
+              transition: 'background 0.28s',
+            }} />
+            {i < STAGES.length - 1 && (
+              <div style={{
+                flex: 1,
+                height: 2,
+                background: i < stage ? color : 'var(--c-progress-track)',
+                borderRadius: 1,
+                margin: '0 3px',
+                transition: 'background 0.28s',
+              }} />
+            )}
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        {STAGES.map((label, i) => (
+          <span key={label} style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: '0.62rem',
+            fontWeight: i === stage ? 700 : 500,
+            color: i === stage ? color : 'var(--c-text-muted)',
+            letterSpacing: '0.04em',
+          }}>
+            {label}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
@@ -141,8 +175,9 @@ function ReportCard({ report, selected, onClick }: {
   selected: boolean
   onClick: () => void
 }) {
-  const sev = SEVERITY_META[report.severity]
-  const sta = STATUS_META[report.status]
+  const sev   = SEVERITY_META[report.severity]
+  const sta   = STATUS_META[report.status]
+  const stage = getStage(report)
 
   return (
     <motion.button
@@ -212,34 +247,21 @@ function ReportCard({ report, selected, onClick }: {
         </div>
       </div>
 
-      {/* Category */}
+      {/* Category + date */}
       <div style={{
         fontFamily: "'Manrope', sans-serif",
-        fontSize: '0.78rem',
+        fontSize: '0.75rem',
         color: 'var(--c-text-sub)',
         marginBottom: 12,
       }}>
-        {report.category}
+        {report.category} · Mis à jour le {formatDate(report.updatedAt)}
       </div>
 
-      {/* Progress */}
-      <div style={{ marginBottom: 10 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.70rem', color: 'var(--c-text-muted)' }}>
-            Avancement
-          </span>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.70rem', fontWeight: 700, color: 'var(--c-text-sub)' }}>
-            {report.progressPercent}%
-          </span>
-        </div>
-        <ProgressBar value={report.progressPercent} color={report.status === 'archived' ? 'var(--c-archived)' : ACCENT} />
-      </div>
+      {/* 4-step tracker */}
+      <ProgressTracker stage={stage} color={sev.color} />
 
-      {/* Footer */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.72rem', color: 'var(--c-text-muted)' }}>
-          Mis à jour le {formatDate(report.updatedAt)}
-        </span>
+      {/* Chevron */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
         <span style={{ color: selected ? ACCENT : 'var(--c-icon)', display: 'flex' }}>
           <ChevronRight size={14} />
         </span>
@@ -306,8 +328,9 @@ function Timeline({ entries }: { entries: Report['timeline'] }) {
 // ─── Detail panel ─────────────────────────────────────────────────────────────
 
 function DetailPanel({ report, onClose }: { report: Report; onClose: () => void }) {
-  const sev = SEVERITY_META[report.severity]
-  const sta = STATUS_META[report.status]
+  const sev   = SEVERITY_META[report.severity]
+  const sta   = STATUS_META[report.status]
+  const stage = getStage(report)
   const isMobile = useIsMobile()
 
   const panelStyle: React.CSSProperties = isMobile
@@ -424,17 +447,16 @@ function DetailPanel({ report, onClose }: { report: Report; onClose: () => void 
         </span>
       </div>
 
-      {/* Progress */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.75rem', color: 'var(--c-text-sub)' }}>
-            Avancement du dossier
-          </span>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.75rem', fontWeight: 700, color: 'var(--c-text)' }}>
-            {report.progressPercent}%
-          </span>
-        </div>
-        <ProgressBar value={report.progressPercent} color={report.status === 'archived' ? 'var(--c-archived)' : ACCENT} />
+      {/* 4-step tracker */}
+      <div style={{
+        marginBottom: 20,
+        padding: '14px',
+        borderRadius: 12,
+        background: 'var(--c-card)',
+        border: '1px solid var(--c-border)',
+        transition: 'background 0.28s ease, border-color 0.28s ease',
+      }}>
+        <ProgressTracker stage={stage} color={sev.color} />
       </div>
 
       {/* Referent */}

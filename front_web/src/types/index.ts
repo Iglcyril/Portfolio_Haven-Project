@@ -51,3 +51,26 @@ export interface EmergencyContact {
   description: string
   color: string
 }
+
+// ─── Parent ───────────────────────────────────────────────────────────────────
+
+export interface Child {
+  id: string
+  firstName: string
+  lastName: string
+  fullName: string
+  className: string
+  dateOfBirth: string
+  avatarInitials: string
+}
+
+export interface ParentReport extends Report {
+  childId: string
+}
+
+export interface EstablishmentContact {
+  name: string
+  role: 'director' | 'referent'
+  phone: string
+  initials: string
+}

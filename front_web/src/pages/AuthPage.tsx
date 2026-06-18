@@ -226,12 +226,18 @@ function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, 
   )
 }
 
-// ─── Dashboard routes per portal ─────────────────────────────────────────────
+// ─── Routes per portal and mode ──────────────────────────────────────────────
 
-const DASHBOARD_ROUTES: Record<PortalKey, string> = {
+const LOGIN_ROUTES: Record<PortalKey, string> = {
   students:      '/dashboard/student',
-  parents:       '/dashboard/student',      // placeholder until parent dashboard
-  professionals: '/dashboard/student',      // placeholder until pro dashboard
+  parents:       '/dashboard/parent',
+  professionals: '/dashboard/student',
+}
+
+const REGISTER_ROUTES: Record<PortalKey, string> = {
+  students:      '/dashboard/student',
+  parents:       '/onboarding/parent',
+  professionals: '/dashboard/student',
 }
 
 // ─── Success screen ───────────────────────────────────────────────────────────
@@ -241,7 +247,7 @@ import { useEffect } from 'react'
 function SuccessScreen({ mode, portalKey }: { mode: Mode; portalKey: PortalKey }) {
   const navigate = useNavigate()
   const isRegister = mode === 'register'
-  const destination = DASHBOARD_ROUTES[portalKey]
+  const destination = isRegister ? REGISTER_ROUTES[portalKey] : LOGIN_ROUTES[portalKey]
 
   useEffect(() => {
     const timer = setTimeout(() => navigate(destination), 1600)

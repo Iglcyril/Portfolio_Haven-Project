@@ -59,12 +59,15 @@ interface NavItem {
   href: string
   icon: React.ReactNode
   badge?: number
+  isActive?: (pathname: string, search: string) => boolean
 }
 
 interface Props {
   user: User
   navItems: NavItem[]
-  emergencyContacts: EmergencyContact[]
+  emergencyContacts?: EmergencyContact[]
+  sidebarHeaderContent?: React.ReactNode
+  sidebarFooterContent?: React.ReactNode
   children: React.ReactNode
   accentColor?: string
 }
@@ -277,6 +280,8 @@ function Sidebar({
   user,
   navItems,
   emergencyContacts,
+  sidebarHeaderContent,
+  sidebarFooterContent,
   accentColor,
   onClose,
 }: Props & { onClose?: () => void }) {
@@ -374,6 +379,11 @@ function Sidebar({
         </div>
       </div>
 
+      {/* Optional sidebar header content (e.g. child selector) */}
+      {sidebarHeaderContent && (
+        <div style={{ marginBottom: 16 }}>{sidebarHeaderContent}</div>
+      )}
+
       {/* Nav items */}
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
         <div style={{
@@ -389,8 +399,9 @@ function Sidebar({
           Navigation
         </div>
         {navItems.map(item => {
-          const isActive = location.pathname + location.search === item.href ||
-            location.pathname === item.href
+          const isActive = item.isActive
+            ? item.isActive(location.pathname, location.search)
+            : location.pathname + location.search === item.href || location.pathname === item.href
           return (
             <Link
               key={item.href}
@@ -455,8 +466,10 @@ function Sidebar({
         <LogoutButton />
       </div>
 
-      {/* Emergency */}
-      <EmergencyPanel contacts={emergencyContacts} />
+      {/* Sidebar footer: custom content or emergency contacts */}
+      {sidebarFooterContent ?? (emergencyContacts && emergencyContacts.length > 0 && (
+        <EmergencyPanel contacts={emergencyContacts} />
+      ))}
     </div>
   )
 }
@@ -539,7 +552,7 @@ function BottomNav({ navItems, accentColor }: { navItems: NavItem[]; accentColor
 
 // ─── Dashboard layout ─────────────────────────────────────────────────────────
 
-export default function DashboardLayout({ user, navItems, emergencyContacts, children, accentColor }: Props) {
+export default function DashboardLayout({ user, navItems, emergencyContacts, sidebarHeaderContent, sidebarFooterContent, children, accentColor }: Props) {
   const isMobile = useIsMobile()
   const isTablet = useIsTablet()
   const { isDark } = useTheme()
@@ -583,6 +596,8 @@ export default function DashboardLayout({ user, navItems, emergencyContacts, chi
                       user={user}
                       navItems={navItems}
                       emergencyContacts={emergencyContacts}
+                      sidebarHeaderContent={sidebarHeaderContent}
+                      sidebarFooterContent={sidebarFooterContent}
                       accentColor={accentColor}
                       onClose={() => setSidebarOpen(false)}
                     />
@@ -595,6 +610,8 @@ export default function DashboardLayout({ user, navItems, emergencyContacts, chi
               user={user}
               navItems={navItems}
               emergencyContacts={emergencyContacts}
+              sidebarHeaderContent={sidebarHeaderContent}
+              sidebarFooterContent={sidebarFooterContent}
               accentColor={accentColor}
             />
           )}
