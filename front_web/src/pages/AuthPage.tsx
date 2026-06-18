@@ -231,13 +231,13 @@ function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, 
 const LOGIN_ROUTES: Record<PortalKey, string> = {
   students:      '/dashboard/student',
   parents:       '/dashboard/parent',
-  professionals: '/dashboard/student',
+  professionals: '/dashboard/professional?role=director',
 }
 
 const REGISTER_ROUTES: Record<PortalKey, string> = {
   students:      '/dashboard/student',
   parents:       '/onboarding/parent',
-  professionals: '/dashboard/student',
+  professionals: '/onboarding/professional',
 }
 
 // ─── Success screen ───────────────────────────────────────────────────────────

@@ -74,3 +74,41 @@ export interface EstablishmentContact {
   phone: string
   initials: string
 }
+
+// ─── Professional ─────────────────────────────────────────────────────────────
+
+export type ProfessionalRole =
+  | 'director' | 'cpe' | 'nurse' | 'aed'
+  | 'teacher' | 'socialWorker' | 'other'
+
+export interface TeamMember {
+  id: string
+  fullName: string
+  firstName: string
+  lastName: string
+  avatarInitials: string
+  role: ProfessionalRole       // Haven role
+  roleLabel: string            // human-readable
+  jobTitle: string             // poste établissement
+  phone: string
+  email: string
+  activeCount: number
+  resolvedCount: number
+}
+
+export interface ReportEvent {
+  id: string
+  type: string
+  comment?: string
+  createdAt: string            // ISO
+  actor: string                // fullName of the referent who added it
+}
+
+export interface ProReport extends Omit<Report, 'severity'> {
+  severity?: Severity          // undefined = not yet classified by director
+  assignedTo?: string          // fullName of assigned referent
+  progressStage: number        // 0-3
+  anonLevel: string            // 'Anonyme' | 'Semi-anonyme' | 'Visible'
+  studentClass?: string
+  events: ReportEvent[]
+}

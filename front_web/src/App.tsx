@@ -5,6 +5,8 @@ import AuthPage from './pages/AuthPage'
 import StudentDashboard from './pages/dashboard/StudentDashboard'
 import ParentOnboarding from './pages/ParentOnboarding'
 import ParentDashboard from './pages/dashboard/ParentDashboard'
+import ProfessionalOnboarding from './pages/ProfessionalOnboarding'
+import ProfessionalDashboard from './pages/dashboard/ProfessionalDashboard'
 
 export default function App() {
   return (
@@ -15,6 +17,8 @@ export default function App() {
         <Route path="/dashboard/student" element={<StudentDashboard />} />
         <Route path="/onboarding/parent" element={<ParentOnboarding />} />
         <Route path="/dashboard/parent" element={<ParentDashboard />} />
+        <Route path="/onboarding/professional" element={<ProfessionalOnboarding />} />
+        <Route path="/dashboard/professional" element={<ProfessionalDashboard />} />
       </Routes>
     </ThemeProvider>
   )

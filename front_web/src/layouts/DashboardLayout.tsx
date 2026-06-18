@@ -68,7 +68,7 @@ interface Props {
   emergencyContacts?: EmergencyContact[]
   sidebarHeaderContent?: React.ReactNode
   sidebarFooterContent?: React.ReactNode
-  children: React.ReactNode
+  children?: React.ReactNode
   accentColor?: string
 }
 

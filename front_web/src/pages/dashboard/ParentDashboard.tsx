@@ -693,7 +693,6 @@ export default function ParentDashboard() {
   const [selected, setSelected]     = useState<ParentReport | null>(null)
   const [search, setSearch]         = useState('')
   const [sort, setSort]             = useState<SortKey>('date')
-  const isMobile                    = useIsMobile()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const childId      = searchParams.get('child')

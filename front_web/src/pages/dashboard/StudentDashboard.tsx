@@ -703,7 +703,6 @@ export default function StudentDashboard() {
   const [selected, setSelected] = useState<Report | null>(null)
   const [search, setSearch]   = useState('')
   const [sort, setSort]       = useState<SortKey>('date')
-  const isMobile              = useIsMobile()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const statusFilter = (searchParams.get('status') as StatusFilter) ?? 'all'
