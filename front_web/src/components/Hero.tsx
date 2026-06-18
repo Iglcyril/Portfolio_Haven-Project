@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import WaveDivider from './WaveDivider'
 import { SmokeBackground } from './SmokeBackground'
@@ -63,27 +63,6 @@ interface Props {
 }
 
 export default function Hero({ ready }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const [hovered, setHovered] = useState(false)
-
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect()
-      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-    }
-    el.addEventListener('mousemove', onMove)
-    el.addEventListener('mouseenter', () => setHovered(true))
-    el.addEventListener('mouseleave', () => setHovered(false))
-    return () => {
-      el.removeEventListener('mousemove', onMove)
-      el.removeEventListener('mouseenter', () => setHovered(true))
-      el.removeEventListener('mouseleave', () => setHovered(false))
-    }
-  }, [])
-
   // stagger global : line1 démarre à 0.1, line2 à ~0.55
   const line1Base = 0.1
   const line2Base = line1Base + LINE1.length * 0.045 + 0.08
@@ -93,7 +72,6 @@ export default function Hero({ ready }: Props) {
   return (
     <section
       id="hero"
-      ref={containerRef}
       style={{
         position: 'relative',
         minHeight: '100vh',
@@ -107,34 +85,6 @@ export default function Hero({ ready }: Props) {
     >
       {/* Smoke WebGL background */}
       <SmokeBackground smokeColor="#2EAB7B" opacity={0.09} />
-
-      {/* Spotlight suivant la souris */}
-      <div
-        style={{
-          pointerEvents: 'none',
-          position: 'absolute',
-          inset: 0,
-          transition: 'opacity 0.4s',
-          opacity: hovered ? 1 : 0.7,
-          background: `radial-gradient(800px circle at ${hovered ? mousePos.x : '50%'}px ${hovered ? mousePos.y : '45%'}px,
-            rgba(46, 171, 123, 0.14) 0%,
-            rgba(46, 171, 123, 0.05) 40%,
-            transparent 65%)`,
-        }}
-      />
-
-      {/* Glow ambiant animé */}
-      <motion.div
-        style={{ pointerEvents: 'none', position: 'absolute', inset: 0 }}
-        animate={{
-          background: [
-            'radial-gradient(900px circle at 25% 35%, rgba(46,171,123,0.07), transparent 55%)',
-            'radial-gradient(900px circle at 75% 65%, rgba(2,137,102,0.09), transparent 55%)',
-            'radial-gradient(900px circle at 25% 35%, rgba(46,171,123,0.07), transparent 55%)',
-          ],
-        }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-      />
 
       {/* Contenu */}
       <div
