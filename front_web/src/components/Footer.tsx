@@ -1,7 +1,10 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
+import LegalModal from './LegalModal'
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const [modal, setModal] = useState<'cgu' | 'privacy' | null>(null)
 
   return (
     <footer
@@ -48,25 +51,28 @@ export default function Footer() {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
             {[
-              { label: "Conditions générales d'utilisation", href: '#' },
-              { label: 'Politique de confidentialité', href: '#' },
+              { label: "Conditions générales d'utilisation", key: 'cgu' as const },
+              { label: 'Politique de confidentialité', key: 'privacy' as const },
             ].map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
+              <button
+                key={link.key}
+                onClick={() => setModal(link.key)}
                 style={{
                   fontFamily: "'Manrope', system-ui, sans-serif",
                   fontSize: '0.88rem',
                   fontWeight: 600,
                   color: 'rgba(255,255,255,0.45)',
-                  textDecoration: 'none',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
                   transition: 'color 0.2s',
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = '#2EAB7B')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </div>
 
@@ -100,6 +106,9 @@ export default function Footer() {
           </p>
         </div>
       </motion.div>
+
+      {/* Modales légales */}
+      {modal && <LegalModal type={modal} onClose={() => setModal(null)} />}
 
       {/* HAVEN pleine largeur */}
       <motion.div
