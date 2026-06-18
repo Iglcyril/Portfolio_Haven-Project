@@ -6,140 +6,149 @@ export default function Footer() {
   return (
     <footer
       id="contact"
-      className="relative overflow-hidden"
-      style={{ background: '#0D2622' }}
+      style={{ position: 'relative', background: '#0D2622', overflowY: 'hidden' }}
     >
-      {/* Top content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-20 pb-10">
-        <motion.div
-          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-10 pb-10"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      {/* Contenu principal */}
+      <motion.div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '80px 48px 40px',
+        }}
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {/* Ligne principale — contenu centré + logo absolu à droite */}
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 20,
+            paddingBottom: 40,
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
+          }}
         >
-          {/* Left — logo + tagline */}
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <img src="/assets/logo.PNG" alt="Haven" className="w-10 h-10 object-contain" />
-              <span
-                style={{
-                  fontFamily: 'var(--font-fraunces)',
-                  fontSize: '1.5rem',
-                  fontWeight: 700,
-                  color: '#fff',
-                  letterSpacing: '-0.03em',
-                }}
-              >
-                Haven
-              </span>
-            </div>
-            <p
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: '0.9rem',
-                color: 'rgba(255,255,255,0.45)',
-                lineHeight: 1.6,
-                maxWidth: 260,
-              }}
-            >
-              Un espace sûr et confidentiel pour signaler et traiter le harcèlement.
-            </p>
-          </div>
-
-          {/* Right — links */}
-          <div className="flex flex-col gap-3">
-            <a
-              href="#"
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'rgba(255,255,255,0.55)',
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#2EAB7B')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
-            >
-              Conditions générales d'utilisation
-            </a>
-            <a
-              href="#"
-              style={{
-                fontFamily: 'var(--font-manrope)',
-                fontSize: '0.9rem',
-                fontWeight: 600,
-                color: 'rgba(255,255,255,0.55)',
-                textDecoration: 'none',
-                transition: 'color 0.2s',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#2EAB7B')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
-            >
-              Politique de confidentialité
-            </a>
-          </div>
-        </motion.div>
-
-        {/* Copyright */}
-        <div className="pt-6 pb-2 text-center">
+          {/* Tagline + liens — vraiment centrés */}
           <p
             style={{
-              fontFamily: 'var(--font-manrope)',
-              fontSize: '0.8rem',
-              color: 'rgba(255,255,255,0.25)',
+              fontFamily: "'Manrope', system-ui, sans-serif",
+              fontSize: '0.95rem',
+              color: 'rgba(255,255,255,0.45)',
+              lineHeight: 1.65,
+              textAlign: 'center',
+              maxWidth: 300,
+            }}
+          >
+            Un espace sûr et confidentiel pour signaler et traiter le harcèlement.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+            {[
+              { label: "Conditions générales d'utilisation", href: '#' },
+              { label: 'Politique de confidentialité', href: '#' },
+            ].map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                style={{
+                  fontFamily: "'Manrope', system-ui, sans-serif",
+                  fontSize: '0.88rem',
+                  fontWeight: 600,
+                  color: 'rgba(255,255,255,0.45)',
+                  textDecoration: 'none',
+                  transition: 'color 0.2s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#2EAB7B')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+
+          {/* Logo — absolu à droite */}
+          <img
+            src="/assets/logo.PNG"
+            alt="Haven"
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: 64,
+              height: 64,
+              objectFit: 'contain',
+              opacity: 0.85,
+            }}
+          />
+        </div>
+
+        {/* Copyright */}
+        <div style={{ paddingTop: 24, textAlign: 'center' }}>
+          <p
+            style={{
+              fontFamily: "'Manrope', system-ui, sans-serif",
+              fontSize: '0.78rem',
+              color: 'rgba(255,255,255,0.2)',
             }}
           >
             © {year} Haven — Tous droits réservés.
           </p>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Giant HAVEN text with anchor replacing V */}
+      {/* HAVEN pleine largeur */}
       <motion.div
-        className="relative z-10 flex items-end justify-center overflow-hidden select-none"
-        style={{ height: 'clamp(80px, 18vw, 200px)', marginBottom: '-4px' }}
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          width: '100%',
+          overflowX: 'clip',
+        }}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 1.1, ease: 'easeOut' }}
       >
         <div
-          className="flex items-end leading-none"
           style={{
-            fontFamily: 'var(--font-fraunces)',
-            fontSize: 'clamp(80px, 18vw, 200px)',
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            fontFamily: "'Fraunces', Georgia, serif",
+            fontSize: 'calc(100vw / 3.1)',
+            transform: 'translateY(0.20em)',
             fontWeight: 700,
             letterSpacing: '-0.04em',
-            color: 'rgba(255,255,255,0.06)',
-            lineHeight: 0.85,
+            color: 'rgba(255,255,255,0.055)',
+            lineHeight: 1,
+            whiteSpace: 'nowrap',
+            userSelect: 'none',
           }}
         >
           <span>HA</span>
-          {/* V replaced by anchor */}
-          <span
-            className="inline-flex items-end"
+
+          {/* V remplacé par l'ancre */}
+          <img
+            src="/assets/anchor.png"
+            alt="V"
             style={{
-              height: 'clamp(80px, 18vw, 200px)',
-              position: 'relative',
+              height: '1em',
+              width: 'auto',
+              objectFit: 'contain',
+              opacity: 0.07,
+              filter: 'brightness(10)',
+              display: 'block',
+              alignSelf: 'flex-end',
+              margin: '0 -0.18em',
             }}
-          >
-            <img
-              src="/assets/anchor.png"
-              alt="V"
-              style={{
-                height: '78%',
-                width: 'auto',
-                objectFit: 'contain',
-                opacity: 0.09,
-                filter: 'brightness(10)',
-                alignSelf: 'flex-end',
-                marginBottom: '4%',
-              }}
-            />
-          </span>
+          />
+
           <span>EN</span>
         </div>
       </motion.div>
