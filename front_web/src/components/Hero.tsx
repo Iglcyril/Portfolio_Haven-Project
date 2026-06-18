@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
+import WaveDivider from './WaveDivider'
 
 const LINE1 = 'Un espace'
 const LINE2 = 'sûr.'
@@ -251,6 +252,9 @@ export default function Hero({ ready }: Props) {
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
         />
       </motion.div>
+
+      {/* Jonction ondulée vers la section Portails */}
+      <WaveDivider position="bottom" nextColor="#102F2B" height={60} />
     </section>
   )
 }

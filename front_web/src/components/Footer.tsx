@@ -5,7 +5,6 @@ export default function Footer() {
 
   return (
     <footer
-      id="contact"
       style={{ position: 'relative', background: '#0D2622', overflowY: 'hidden' }}
     >
       {/* Contenu principal */}

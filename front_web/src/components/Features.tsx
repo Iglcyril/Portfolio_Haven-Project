@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import WaveDivider from './WaveDivider'
 
 const FEATURES = [
   {
@@ -31,8 +32,13 @@ export default function Features() {
   return (
     <section
       id="fonctionnalites"
-      style={{ background: '#F9F6F1', padding: '120px 24px', overflow: 'hidden' }}
+      style={{ background: '#F9F6F1', padding: '120px 24px', overflow: 'hidden', position: 'relative' }}
     >
+      {/* Jonction ondulée depuis Portails */}
+      <WaveDivider position="top" nextColor="#102F2B" height={60} />
+      {/* Jonction ondulée vers Footer */}
+      <WaveDivider position="bottom" nextColor="#0D2622" height={60} />
+
       <div style={{ maxWidth: 860, margin: '0 auto' }}>
 
         {/* Header — centré, "Comment ça marche" plus grand */}
