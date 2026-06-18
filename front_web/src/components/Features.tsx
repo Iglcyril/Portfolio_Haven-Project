@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import WaveDivider from './WaveDivider'
+import { SmokeBackground } from './SmokeBackground'
 
 const FEATURES = [
   {
@@ -34,6 +35,8 @@ export default function Features() {
       id="fonctionnalites"
       style={{ background: '#F9F6F1', padding: '120px 24px', overflow: 'hidden', position: 'relative' }}
     >
+      <SmokeBackground smokeColor="#2EAB7B" opacity={0.09} />
+
       {/* Jonction ondulée depuis Portails */}
       <WaveDivider position="top" nextColor="#102F2B" height={60} />
       {/* Jonction ondulée vers Footer */}

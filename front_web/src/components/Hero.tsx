@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import WaveDivider from './WaveDivider'
+import { SmokeBackground } from './SmokeBackground'
 
 const LINE1 = 'Un espace'
 const LINE2 = 'sûr.'
@@ -104,6 +105,9 @@ export default function Hero({ ready }: Props) {
         background: '#F9F6F1',
       }}
     >
+      {/* Smoke WebGL background */}
+      <SmokeBackground smokeColor="#2EAB7B" opacity={0.09} />
+
       {/* Spotlight suivant la souris */}
       <div
         style={{
