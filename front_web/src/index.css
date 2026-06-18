@@ -38,3 +38,8 @@ body {
 #root {
   width: 100%;
 }
+
+.haven-search-input::placeholder {
+  color: var(--c-icon);
+  opacity: 1;
+}

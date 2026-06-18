@@ -5,7 +5,7 @@ const NAV_LINKS = [
   { label: 'Haven', href: '#hero' },
   { label: 'Portails', href: '#portails' },
   { label: 'Fonctionnalités', href: '#fonctionnalites' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Conditions', href: '#contact' },
 ]
 
 interface Props {

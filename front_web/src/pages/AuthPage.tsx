@@ -226,11 +226,27 @@ function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, 
   )
 }
 
+// ─── Dashboard routes per portal ─────────────────────────────────────────────
+
+const DASHBOARD_ROUTES: Record<PortalKey, string> = {
+  students:      '/dashboard/student',
+  parents:       '/dashboard/student',      // placeholder until parent dashboard
+  professionals: '/dashboard/student',      // placeholder until pro dashboard
+}
+
 // ─── Success screen ───────────────────────────────────────────────────────────
 
-function SuccessScreen({ mode }: { mode: Mode }) {
+import { useEffect } from 'react'
+
+function SuccessScreen({ mode, portalKey }: { mode: Mode; portalKey: PortalKey }) {
   const navigate = useNavigate()
   const isRegister = mode === 'register'
+  const destination = DASHBOARD_ROUTES[portalKey]
+
+  useEffect(() => {
+    const timer = setTimeout(() => navigate(destination), 1600)
+    return () => clearTimeout(timer)
+  }, [destination, navigate])
 
   return (
     <div style={{
@@ -286,12 +302,12 @@ function SuccessScreen({ mode }: { mode: Mode }) {
           marginBottom: 32,
         }}>
           {isRegister
-            ? 'Votre compte a bien été créé. La connexion au back-end et l\'accès aux dashboards seront disponibles prochainement.'
-            : 'Vous êtes connecté. L\'accès au dashboard sera disponible dès que le back-end sera branché.'}
+            ? 'Votre espace vous attend. Redirection en cours…'
+            : 'Vous êtes connecté. Redirection vers votre espace…'}
         </p>
 
         <motion.button
-          onClick={() => navigate('/')}
+          onClick={() => navigate(destination)}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           style={{
@@ -307,7 +323,7 @@ function SuccessScreen({ mode }: { mode: Mode }) {
             boxShadow: `0 8px 24px ${FORM_ACCENT}40`,
           }}
         >
-          Retour à l'accueil
+          Accéder à mon espace →
         </motion.button>
       </motion.div>
     </div>
@@ -319,10 +335,11 @@ function SuccessScreen({ mode }: { mode: Mode }) {
 interface FormPanelProps {
   mode: Mode
   config: PortalConfig
+  portalKey: PortalKey
   onModeChange: (m: Mode) => void
 }
 
-function FormPanel({ mode, config, onModeChange }: FormPanelProps) {
+function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -334,7 +351,7 @@ function FormPanel({ mode, config, onModeChange }: FormPanelProps) {
   const isRegister = mode === 'register'
 
   if (submitted) {
-    return <SuccessScreen mode={mode} />
+    return <SuccessScreen mode={mode} portalKey={portalKey} />
   }
 
   return (
@@ -724,7 +741,7 @@ export default function AuthPage() {
           }}
           transition={{ type: 'spring', stiffness: 280, damping: 34 }}
         >
-          <FormPanel mode={mode} config={config} onModeChange={setMode} />
+          <FormPanel mode={mode} config={config} portalKey={portalKey} onModeChange={setMode} />
         </motion.div>
 
         {/* Illustration panel */}
