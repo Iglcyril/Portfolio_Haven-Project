@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 const PORTALS = [
   {
@@ -9,6 +10,7 @@ const PORTALS = [
     textColor: '#fff',
     subtitleColor: 'rgba(255,255,255,0.7)',
     shadow: '0 16px 48px rgba(0,161,118,0.35)',
+    route: '/auth/students',
   },
   {
     label: 'Espace Parents',
@@ -18,6 +20,7 @@ const PORTALS = [
     textColor: '#fff',
     subtitleColor: 'rgba(255,255,255,0.6)',
     shadow: 'none',
+    route: '/auth/parents',
   },
   {
     label: 'Espace Professionnels',
@@ -27,6 +30,7 @@ const PORTALS = [
     textColor: '#fff',
     subtitleColor: 'rgba(255,255,255,0.55)',
     shadow: 'none',
+    route: '/auth/professionals',
   },
 ]
 
@@ -41,6 +45,8 @@ const cardVariants = {
 }
 
 export default function Portals() {
+  const navigate = useNavigate()
+
   return (
     <section
       id="portails"
@@ -109,6 +115,7 @@ export default function Portals() {
               transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             >
               <button
+                onClick={() => navigate(portal.route)}
                 style={{
                   width: '100%',
                   display: 'flex',

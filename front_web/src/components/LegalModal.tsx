@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
@@ -286,7 +287,7 @@ export default function LegalModal({ type, onClose }: Props) {
     }
   }, [onClose])
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
         key="backdrop"
@@ -385,6 +386,7 @@ export default function LegalModal({ type, onClose }: Props) {
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }
