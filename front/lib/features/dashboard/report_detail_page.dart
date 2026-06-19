@@ -406,9 +406,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    const Color _unratedColor = Color(0xFF9E9E9E);
+    const Color unratedColor = Color(0xFF9E9E9E);
     final Color color = widget.isManager
-        ? (_riskLevel != null ? _riskColors[_riskLevel]! : _unratedColor)
+        ? (_riskLevel != null ? _riskColors[_riskLevel]! : unratedColor)
         : ReportPriority.colors[widget.report.priority]!;
     final String priorityLabel = widget.isManager
         ? (_riskLevel?.toUpperCase() ?? 'NON ÉVALUÉ')
@@ -617,7 +617,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.add_circle_outline_rounded, size: 16, color: AppColors.primary),
+                                      const Icon(Icons.add_circle_outline_rounded, size: 16, color: AppColors.primary),
                                       const SizedBox(width: 6),
                                       Text(
                                         'Ajouter des informations',
@@ -781,7 +781,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.delete_outline_rounded, size: 18, color: const Color(0xFFE53935)),
+                                      const Icon(Icons.delete_outline_rounded, size: 18, color: Color(0xFFE53935)),
                                       const SizedBox(width: 8),
                                       Text(
                                         'Supprimer le signalement',
@@ -1058,7 +1058,7 @@ class _AddedInfoBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
         borderRadius: BorderRadius.circular(20),
-        border: Border(left: BorderSide(color: AppColors.primary, width: 3)),
+        border: const Border(left: BorderSide(color: AppColors.primary, width: 3)),
         boxShadow: isDark ? null : AppShadows.cardLight,
       ),
       padding: const EdgeInsets.all(16),

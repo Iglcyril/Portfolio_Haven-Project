@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _ThemeToggleButton(onTap: widget.onToggleTheme, isDark: isDark),
                   const SizedBox(height: 24),
-                  Center(child: _AppIcon()),
+                  const Center(child: _AppIcon()),
                   const SizedBox(height: 16),
                   Center(child: _TitleText(isDark: isDark)),
                   const SizedBox(height: 10),

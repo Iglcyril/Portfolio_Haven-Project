@@ -444,7 +444,7 @@ class _ChildChip extends StatelessWidget {
           Container(
             width: 7,
             height: 7,
-            decoration: BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+            decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
           Expanded(

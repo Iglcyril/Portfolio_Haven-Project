@@ -1036,6 +1036,7 @@ class HavenReportCard extends StatelessWidget {
   final VoidCallback onThreeDots;
 
   const HavenReportCard({
+    super.key,
     required this.report,
     required this.isDark,
     required this.onThreeDots,
@@ -1287,7 +1288,7 @@ class _MiniProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final steps = kProgressSteps;
+    const steps = kProgressSteps;
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,

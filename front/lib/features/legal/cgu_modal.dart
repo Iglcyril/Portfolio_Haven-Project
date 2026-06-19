@@ -327,7 +327,7 @@ class _CguSheetState extends State<_CguSheet> {
                   color: AppColors.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 16),
+                child: const Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 16),
               ),
               const SizedBox(width: 10),
               Expanded(

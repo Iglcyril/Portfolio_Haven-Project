@@ -1214,9 +1214,9 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.check_circle_rounded,
+                                    const Icon(Icons.check_circle_rounded,
                                         size: 16,
-                                        color: const Color(0xFF2EAB7B)),
+                                        color: Color(0xFF2EAB7B)),
                                     const SizedBox(width: 6),
                                     Text(
                                       'Signalement résolu',
@@ -1252,7 +1252,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Icon(Icons.add_rounded,
+                                        const Icon(Icons.add_rounded,
                                             size: 14,
                                             color: AppColors.primary),
                                         const SizedBox(width: 4),

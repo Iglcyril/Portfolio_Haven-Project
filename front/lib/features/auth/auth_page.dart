@@ -186,11 +186,11 @@ class _AuthPageState extends State<AuthPage> {
                                 ));
                               } else if (widget.portal == PortalType.professional) {
                                 // Mock users — remplacé par auth backend
-                                const _mockReferents = {
+                                const mockReferents = {
                                   'sophie.martin@haven.fr': 'Sophie Martin',
                                 };
                                 final email = _emailCtrl.text.trim().toLowerCase();
-                                final referentName = _mockReferents[email];
+                                final referentName = mockReferents[email];
                                 if (referentName != null) {
                                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                                     builder: (_) => ReferentDashboardPage(
@@ -310,7 +310,7 @@ class _PortalBadge extends StatelessWidget {
 class _Header extends StatelessWidget {
   final _AuthTab tab;
   final bool isDark;
-  const _Header({super.key, required this.tab, required this.isDark});
+  const _Header({required this.tab, required this.isDark});
 
   @override
   Widget build(BuildContext context) {

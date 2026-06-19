@@ -748,41 +748,6 @@ class _BubbleTailPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter _) => false;
 }
 
-// ─── Placeholder screens (2 & 3) ─────────────────────────────────────────────
-
-class _PlaceholderScreen extends StatelessWidget {
-  final int index;
-  const _PlaceholderScreen({required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(28, 52, 28, 120),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Écran $index',
-            style: GoogleFonts.fraunces(
-              fontSize: 40,
-              fontWeight: FontWeight.w700,
-              letterSpacing: -1.0,
-              color: AppColors.lightTextPrimary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Contenu à venir.',
-            style: GoogleFonts.manrope(
-              fontSize: 16,
-              color: AppColors.lightTextSecondary,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Progress dots ────────────────────────────────────────────────────────────
 
