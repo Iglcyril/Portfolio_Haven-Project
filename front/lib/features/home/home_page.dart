@@ -239,52 +239,52 @@ class _PortalButton extends StatelessWidget {
 
     if (customBgColor != null) {
       // Espace Parents : mint en light, style étudiant en dark
-      bgColor = isDark ? Colors.white.withOpacity(0.12) : customBgColor!;
+      bgColor = isDark ? Colors.white.withValues(alpha: 0.12) : customBgColor!;
       borderColor = isDark
-          ? Colors.white.withOpacity(0.15)
+          ? Colors.white.withValues(alpha: 0.15)
           : Colors.transparent;
       textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
       subtitleColor = isDark
-          ? Colors.white.withOpacity(0.65)
+          ? Colors.white.withValues(alpha: 0.65)
           : AppColors.lightTextSecondary;
       iconBgColor = isDark
-          ? Colors.white.withOpacity(0.15)
-          : AppColors.primary.withOpacity(0.1);
+          ? Colors.white.withValues(alpha: 0.15)
+          : AppColors.primary.withValues(alpha: 0.1);
       iconColor = isDark ? Colors.white : AppColors.primary;
       shadows = null;
     } else if (isFilled) {
       // Portail Étudiant : couleur la plus sombre en dark + glass, vert plein en light
       bgColor = isDark
-          ? AppColors.darkGradientTop.withOpacity(0.70)
+          ? AppColors.darkGradientTop.withValues(alpha: 0.70)
           : AppColors.studentButtonFill;
       borderColor = isDark
-          ? Colors.white.withOpacity(0.08)
+          ? Colors.white.withValues(alpha: 0.08)
           : Colors.transparent;
       textColor = Colors.white;
-      subtitleColor = Colors.white.withOpacity(0.65);
+      subtitleColor = Colors.white.withValues(alpha: 0.65);
       iconBgColor = isDark
-          ? Colors.white.withOpacity(0.10)
-          : Colors.white.withOpacity(0.15);
+          ? Colors.white.withValues(alpha: 0.10)
+          : Colors.white.withValues(alpha: 0.15);
       iconColor = Colors.white;
       shadows = null;
     } else {
-      bgColor = isDark ? Colors.white.withOpacity(0.07) : AppColors.warmWhite;
+      bgColor = isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.warmWhite;
       borderColor = isDark
-          ? Colors.white.withOpacity(0.15)
-          : Colors.black.withOpacity(0.08);
+          ? Colors.white.withValues(alpha: 0.15)
+          : Colors.black.withValues(alpha: 0.08);
       textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
       subtitleColor = isDark
-          ? Colors.white.withOpacity(0.55)
+          ? Colors.white.withValues(alpha: 0.55)
           : AppColors.lightTextSecondary;
       iconBgColor = isDark
-          ? Colors.white.withOpacity(0.12)
-          : AppColors.primary.withOpacity(0.1);
+          ? Colors.white.withValues(alpha: 0.12)
+          : AppColors.primary.withValues(alpha: 0.1);
       iconColor = isDark ? Colors.white : AppColors.primary;
       shadows = isDark
           ? null
           : [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 12,
                 offset: const Offset(0, 3),
               ),
@@ -292,9 +292,9 @@ class _PortalButton extends StatelessWidget {
     }
 
     final Color arrowColor = (isFilled || (customBgColor != null && isDark))
-        ? Colors.white.withOpacity(0.70)
+        ? Colors.white.withValues(alpha: 0.70)
         : (isDark
-            ? Colors.white.withOpacity(0.55)
+            ? Colors.white.withValues(alpha: 0.55)
             : AppColors.lightTextSecondary);
 
     final Widget card = Container(
@@ -369,8 +369,8 @@ class _EncryptionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = isDark
-        ? Colors.white.withOpacity(0.35)
-        : AppColors.lightTextSecondary.withOpacity(0.6);
+        ? Colors.white.withValues(alpha: 0.35)
+        : AppColors.lightTextSecondary.withValues(alpha: 0.6);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

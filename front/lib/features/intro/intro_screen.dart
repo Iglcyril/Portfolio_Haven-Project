@@ -593,7 +593,7 @@ class _TrustBadge extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.darkGradientBottom.withOpacity(0.15),
+                  color: AppColors.darkGradientBottom.withValues(alpha: 0.15),
                   blurRadius: 5,
                   spreadRadius: 0,
                   offset: const Offset(0, 3),
@@ -616,14 +616,14 @@ class _TrustBadge extends StatelessWidget {
                       end: Alignment.bottomRight,
                       stops: const [0.0, 0.5, 1.0],
                       colors: [
-                        AppColors.darkGradientBottom.withOpacity(0.30),
-                        AppColors.darkGradientBottom.withOpacity(0.18),
-                        AppColors.darkGradientTop.withOpacity(0.52),
+                        AppColors.darkGradientBottom.withValues(alpha: 0.30),
+                        AppColors.darkGradientBottom.withValues(alpha: 0.18),
+                        AppColors.darkGradientTop.withValues(alpha: 0.52),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: AppColors.darkGradientBottom.withOpacity(0.48),
+                      color: AppColors.darkGradientBottom.withValues(alpha: 0.48),
                       width: 1.5,
                     ),
                   ),
@@ -634,8 +634,8 @@ class _TrustBadge extends StatelessWidget {
                       end: Alignment.bottomCenter,
                       stops: const [0.0, 0.38, 1.0],
                       colors: [
-                        const Color(0xFFFFFFFF).withOpacity(0.11),
-                        const Color(0xFFFFFFFF).withOpacity(0.02),
+                        const Color(0xFFFFFFFF).withValues(alpha: 0.11),
+                        const Color(0xFFFFFFFF).withValues(alpha: 0.02),
                         Colors.transparent,
                       ],
                     ),

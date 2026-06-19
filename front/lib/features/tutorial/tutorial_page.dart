@@ -690,7 +690,7 @@ class _BlobPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.primary.withOpacity(0.11)
+      ..color = AppColors.primary.withValues(alpha: 0.11)
       ..style = PaintingStyle.fill;
 
     final cx = size.width / 2;
@@ -806,7 +806,7 @@ class _ProgressDots extends StatelessWidget {
           decoration: BoxDecoration(
             color: active
                 ? AppColors.primary
-                : AppColors.primary.withOpacity(0.22),
+                : AppColors.primary.withValues(alpha: 0.22),
             borderRadius: BorderRadius.circular(4),
           ),
         );
@@ -834,7 +834,7 @@ class _NextButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.30),
+              color: AppColors.primary.withValues(alpha: 0.30),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),

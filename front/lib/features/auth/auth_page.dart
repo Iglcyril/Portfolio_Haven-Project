@@ -261,7 +261,7 @@ class _TopBar extends StatelessWidget {
               isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
               size: 20,
               color: isDark
-                  ? Colors.white.withOpacity(0.9)
+                  ? Colors.white.withValues(alpha: 0.9)
                   : AppColors.lightTextPrimary,
             ),
           ),
@@ -286,7 +286,7 @@ class _PortalBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: color.withOpacity(isDark ? 0.12 : 0.08),
+          color: color.withValues(alpha: isDark ? 0.12 : 0.08),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
@@ -337,7 +337,7 @@ class _Header extends StatelessWidget {
             fontSize: 14,
             height: 1.5,
             color: isDark
-                ? Colors.white.withOpacity(0.55)
+                ? Colors.white.withValues(alpha: 0.55)
                 : AppColors.lightTextSecondary,
           ),
         ),
@@ -364,8 +364,8 @@ class _TabToggle extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06),
+            ? Colors.white.withValues(alpha: 0.08)
+            : Colors.black.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Row(
@@ -417,7 +417,7 @@ class _TabChip extends StatelessWidget {
             boxShadow: active && !isDark
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.09),
+                      color: Colors.black.withValues(alpha: 0.09),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -504,8 +504,8 @@ class _FormFields extends StatelessWidget {
                     : Icons.visibility_outlined,
                 size: 20,
                 color: isDark
-                    ? Colors.white.withOpacity(0.38)
-                    : AppColors.lightTextSecondary.withOpacity(0.6),
+                    ? Colors.white.withValues(alpha: 0.38)
+                    : AppColors.lightTextSecondary.withValues(alpha: 0.6),
               ),
             ),
           ),
@@ -567,14 +567,14 @@ class _HavenField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = isDark
-        ? Colors.white.withOpacity(0.10)
-        : Colors.black.withOpacity(0.08);
+        ? Colors.white.withValues(alpha: 0.10)
+        : Colors.black.withValues(alpha: 0.08);
     final hintColor = isDark
-        ? Colors.white.withOpacity(0.40)
-        : AppColors.lightTextSecondary.withOpacity(0.55);
+        ? Colors.white.withValues(alpha: 0.40)
+        : AppColors.lightTextSecondary.withValues(alpha: 0.55);
     final iconColor = isDark
-        ? Colors.white.withOpacity(0.55)
-        : AppColors.lightTextSecondary.withOpacity(0.75);
+        ? Colors.white.withValues(alpha: 0.55)
+        : AppColors.lightTextSecondary.withValues(alpha: 0.75);
 
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
@@ -650,8 +650,8 @@ class _RememberMe extends StatelessWidget {
                 color: value
                     ? AppColors.primary
                     : (isDark
-                        ? Colors.white.withOpacity(0.28)
-                        : Colors.black.withOpacity(0.20)),
+                        ? Colors.white.withValues(alpha: 0.28)
+                        : Colors.black.withValues(alpha: 0.20)),
                 width: 1.5,
               ),
             ),
@@ -666,7 +666,7 @@ class _RememberMe extends StatelessWidget {
               fontSize: 13,
               fontWeight: FontWeight.w500,
               color: isDark
-                  ? Colors.white.withOpacity(0.65)
+                  ? Colors.white.withValues(alpha: 0.65)
                   : AppColors.lightTextSecondary,
             ),
           ),
@@ -758,10 +758,10 @@ class _FooterState extends State<_Footer> {
   @override
   Widget build(BuildContext context) {
     final muted = widget.isDark
-        ? Colors.white.withOpacity(0.38)
-        : AppColors.lightTextSecondary.withOpacity(0.65);
+        ? Colors.white.withValues(alpha: 0.38)
+        : AppColors.lightTextSecondary.withValues(alpha: 0.65);
     final emphasis = widget.isDark
-        ? Colors.white.withOpacity(0.60)
+        ? Colors.white.withValues(alpha: 0.60)
         : AppColors.lightTextPrimary;
 
     return Text.rich(
