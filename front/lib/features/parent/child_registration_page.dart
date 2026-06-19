@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/theme/app_shadows.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import 'parent_dashboard_page.dart';
 
@@ -166,7 +167,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                                     : null,
                                 boxShadow: isDark
                                     ? null
-                                    : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
+                                    : AppShadows.cardMedium,
                               ),
                               child: Column(
                                 children: [

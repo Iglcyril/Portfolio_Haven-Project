@@ -7,6 +7,7 @@ import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_constants.dart';
+import '../../core/theme/app_shadows.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/glass_circle_button.dart';
@@ -536,7 +537,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border(left: BorderSide(color: color, width: 3)),
-                                boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+                                boxShadow: isDark ? null : AppShadows.cardLight,
                               ),
                               padding: const EdgeInsets.all(16),
                               child: Column(
@@ -652,7 +653,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
                                     borderRadius: BorderRadius.circular(18),
                                     border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
-                                    boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+                                    boxShadow: isDark ? null : AppShadows.cardLight,
                                   ),
                                   child: Row(
                                     children: [
@@ -690,7 +691,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
                                     borderRadius: BorderRadius.circular(18),
                                     border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
-                                    boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+                                    boxShadow: isDark ? null : AppShadows.cardLight,
                                   ),
                                   child: Row(
                                     children: [
@@ -869,7 +870,7 @@ class _DetailProgressTracker extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? Colors.white.withValues(alpha: 0.06) : AppColors.lightCard,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: isDark ? null : AppShadows.cardLight,
       ),
       child: Column(
         children: [
@@ -1058,7 +1059,7 @@ class _AddedInfoBubble extends StatelessWidget {
         color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
         borderRadius: BorderRadius.circular(20),
         border: Border(left: BorderSide(color: AppColors.primary, width: 3)),
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: isDark ? null : AppShadows.cardLight,
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1111,7 +1112,7 @@ class _AddInfoField extends StatelessWidget {
         color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
         borderRadius: BorderRadius.circular(20),
         border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: isDark ? null : AppShadows.cardLight,
       ),
       padding: const EdgeInsets.all(14),
       child: Column(

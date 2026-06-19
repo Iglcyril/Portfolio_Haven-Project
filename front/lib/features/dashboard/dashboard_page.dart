@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/theme/app_shadows.dart';
 import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import '../report/confidential_choice_page.dart';
@@ -354,8 +355,8 @@ class _StatCard extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(20),
         boxShadow: isFilled
-            ? [BoxShadow(color: AppColors.primary.withValues(alpha: 0.30), blurRadius: 12, offset: const Offset(0, 4))]
-            : (isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))]),
+            ? AppShadows.primaryGlow
+            : (isDark ? null : AppShadows.card),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -385,7 +386,7 @@ class _BreathingCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
+          boxShadow: isDark ? null : AppShadows.card,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -565,7 +566,7 @@ class _ReportCardState extends State<_ReportCard> {
         color: isDark ? Colors.white.withValues(alpha: 0.07) : AppColors.lightCard,
         borderRadius: BorderRadius.circular(24),
         border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.08)) : null,
-        boxShadow: isDark ? null : [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 2))],
+        boxShadow: isDark ? null : AppShadows.cardMedium,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
