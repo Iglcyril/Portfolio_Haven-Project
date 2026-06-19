@@ -1,13 +1,4 @@
-import type { ParentReport } from '../../../types'
-
 const STAGES = ['DÉPOSÉ', 'EXAMINÉ', 'EN COURS', 'RÉSOLU']
-
-export function getStage(report: ParentReport): number {
-  if (report.status === 'resolved' || report.status === 'archived' || report.progressPercent >= 90) return 3
-  if (report.progressPercent >= 60) return 2
-  if (report.progressPercent >= 30) return 1
-  return 0
-}
 
 export function ProgressTracker({ stage, color }: { stage: number; color: string }) {
   return (

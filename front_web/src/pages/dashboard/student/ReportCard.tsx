@@ -4,7 +4,8 @@ import type { Report } from '../../../types'
 import { SEVERITY_META } from '../../../constants/severity'
 import { formatDate } from '../../../utils/dateFormatting'
 import { ACCENT, STATUS_META } from './constants'
-import { ProgressTracker, getStage } from './ProgressTracker'
+import { ProgressTracker } from './ProgressTracker'
+import { getStage } from './progressUtils'
 
 export function ReportCard({ report, selected, onClick }: {
   report: Report

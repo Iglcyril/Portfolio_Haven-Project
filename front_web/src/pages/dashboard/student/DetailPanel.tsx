@@ -4,7 +4,8 @@ import type { Report } from '../../../types'
 import { SEVERITY_META } from '../../../constants/severity'
 import { useIsMobile } from '../../../hooks/useMediaQuery'
 import { ACCENT, STATUS_META } from './constants'
-import { ProgressTracker, getStage } from './ProgressTracker'
+import { ProgressTracker } from './ProgressTracker'
+import { getStage } from './progressUtils'
 import { Timeline } from './Timeline'
 
 export function DetailPanel({ report, onClose, onArchive }: { report: Report; onClose: () => void; onArchive: () => void }) {

@@ -5,7 +5,8 @@ import { SEVERITY_META } from '../../../constants/severity'
 import { formatDate } from '../../../utils/dateFormatting'
 import { useIsMobile } from '../../../hooks/useMediaQuery'
 import { ACCENT, STATUS_META } from './constants'
-import { ProgressTracker, getStage } from './ProgressTracker'
+import { ProgressTracker } from './ProgressTracker'
+import { getStage } from './progressUtils'
 
 export function DetailPanel({ report, child, onClose, onArchive }: {
   report: ParentReport
