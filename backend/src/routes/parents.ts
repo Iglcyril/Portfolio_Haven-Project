@@ -2,13 +2,19 @@ import { Elysia, t } from "elysia"
 
 // Traitement de la soumission du formulaire de contact des parents pour un suivi personnalisé
 export const parentsRoutes = new Elysia({ prefix: "/parents" })
-  .get("/report/:code", ({ params }) => {
-	const { code } = params
+  .get("/report/:code", ({ params, set }) => {
+  const { code } = params
+
+  // Vérification du format du code de suivi
+  if (!code.startsWith("HVN-")) {
+    set.status = 404
+    return { error: "Code de suivi invalide" }
+  }
 	const report = {
 	trackingCode: code,
 	studentName: "Jean Dupont",
 	incidentDate: "2024-05-15",
-	reportCategories: "harcelement_scolaire",
+	reportCategory: "harcelement_scolaire",
 	status: "en_cours",
 	supervisorName: "Mme Durand",
 	supervisorJob: "Conseillère principale d'éducation",
@@ -24,7 +30,7 @@ export const parentsRoutes = new Elysia({ prefix: "/parents" })
   .post("/contact", ({ body }) => {
 	const { parentName, parentEmail, message } = body
 	return {
-		confirmation: "Merci pour votre message. Nous allons vous contacter sous peu.",
+		message: "Merci pour votre message. Nous allons vous contacter sous peu.",
 		parentName,
 		parentEmail,
 	}
@@ -37,3 +43,35 @@ export const parentsRoutes = new Elysia({ prefix: "/parents" })
 			message: t.String({ minLength: 10 }),
 		})
 	})
+
+// Récupération du résumé complet du signalement pour les parents
+// A faire : remplacer par prisma.report.findUnique({ where: { trackingId: code }, include: { summary: true } })
+.get("/report/:code/summary", ({ params, set }) => {
+	const { code } = params
+
+	// Vérification du format du code de suivi
+	if (!code.startsWith("HVN-")) {
+		set.status = 404
+		return { error: "Code de suivi invalide" }
+	}
+
+	return {
+		trackingCode: code,
+		role: "victime",
+		report_type: "harcelement_scolaire",
+		anonymat_level: "partiel",
+		category: "cyberharcelement",
+		initial_feeling: "Je me sens très mal...",
+		report_status: "en_cours",
+		mood: "3",
+		is_crisis: false,
+		adult_contact: "oui",
+		contact_team: "oui",
+		establishment_id: "uuid-etablissement",
+		savedAt: "2026-06-10T08:00:00Z",
+		supervisorName: "Mme Durand",
+		supervisorJob: "Conseillère principale d'éducation",
+		supervisorContact: "g.durand@gmail.com",
+		nextSteps: "Suivi régulier avec la famille et l'école"
+	}
+})
