@@ -8,6 +8,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_constants.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/widgets/glass_circle_button.dart';
 import 'dashboard_page.dart';
 
 class ReportDetailPage extends StatefulWidget {
@@ -445,19 +446,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                           const Spacer(),
                           GestureDetector(
                             onTap: widget.onToggleTheme,
-                            child: ClipOval(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isDark ? Colors.white.withValues(alpha: 0.18) : Colors.black.withValues(alpha: 0.07),
-                                  ),
-                                  child: Icon(isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined, color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black, size: 20),
-                                ),
-                              ),
+                            child: GlassCircleButton(
+                              isDark: isDark,
+                              child: Icon(isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined, color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black, size: 20),
                             ),
                           ),
                         ],

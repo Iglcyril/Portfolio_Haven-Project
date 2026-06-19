@@ -1,10 +1,10 @@
-import 'dart:ui' show ImageFilter;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/glass_circle_button.dart';
 import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
@@ -244,7 +244,7 @@ class _TopBar extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => Navigator.of(context).pop(),
-          child: _GlassCircleBtn(
+          child: GlassCircleButton(
             isDark: isDark,
             child: Icon(
               Icons.arrow_back_ios_new_rounded,
@@ -255,7 +255,7 @@ class _TopBar extends StatelessWidget {
         ),
         GestureDetector(
           onTap: onToggleTheme,
-          child: _GlassCircleBtn(
+          child: GlassCircleButton(
             isDark: isDark,
             child: Icon(
               isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
@@ -267,32 +267,6 @@ class _TopBar extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _GlassCircleBtn extends StatelessWidget {
-  final bool isDark;
-  final Widget child;
-  const _GlassCircleBtn({required this.isDark, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipOval(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isDark
-                ? Colors.white.withOpacity(0.18)
-                : Colors.black.withOpacity(0.07),
-          ),
-          child: child,
-        ),
-      ),
     );
   }
 }

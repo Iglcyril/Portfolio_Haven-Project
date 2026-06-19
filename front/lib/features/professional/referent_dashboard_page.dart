@@ -6,6 +6,7 @@ import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/widgets/glass_circle_button.dart';
 
 // ─── Page principale ──────────────────────────────────────────────────────────
 
@@ -256,28 +257,18 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                           ),
                           GestureDetector(
                             onTap: widget.onToggleTheme,
-                            child: ClipOval(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.10)
-                                        : Colors.black.withValues(alpha: 0.06),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    isDark
-                                        ? Icons.light_mode_rounded
-                                        : Icons.dark_mode_rounded,
-                                    size: 18,
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.80)
-                                        : AppColors.lightTextSecondary,
-                                  ),
-                                ),
+                            child: GlassCircleButton(
+                              isDark: isDark,
+                              darkAlpha: 0.10,
+                              lightAlpha: 0.06,
+                              child: Icon(
+                                isDark
+                                    ? Icons.light_mode_rounded
+                                    : Icons.dark_mode_rounded,
+                                size: 18,
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.80)
+                                    : AppColors.lightTextSecondary,
                               ),
                             ),
                           ),
@@ -1108,29 +1099,19 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                           const SizedBox(width: 8),
                           GestureDetector(
                             onTap: widget.onToggleTheme,
-                            child: ClipOval(
-                              child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                                child: Container(
-                                  width: 36,
-                                  height: 36,
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.10)
-                                        : Colors.black.withValues(alpha: 0.06),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    isDark
-                                        ? Icons.light_mode_rounded
-                                        : Icons.dark_mode_rounded,
-                                    size: 16,
-                                    color: isDark
-                                        ? Colors.white.withValues(alpha: 0.80)
-                                        : AppColors.lightTextSecondary,
-                                  ),
-                                ),
+                            child: GlassCircleButton(
+                              isDark: isDark,
+                              size: 36,
+                              darkAlpha: 0.10,
+                              lightAlpha: 0.06,
+                              child: Icon(
+                                isDark
+                                    ? Icons.light_mode_rounded
+                                    : Icons.dark_mode_rounded,
+                                size: 16,
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.80)
+                                    : AppColors.lightTextSecondary,
                               ),
                             ),
                           ),

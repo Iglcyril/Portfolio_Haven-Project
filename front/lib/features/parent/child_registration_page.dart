@@ -1,9 +1,9 @@
-import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/widgets/glass_circle_button.dart';
 import 'parent_dashboard_page.dart';
 
 // ─── Modèle ───────────────────────────────────────────────────────────────────
@@ -96,24 +96,12 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
                           onTap: widget.onToggleTheme,
-                          child: ClipOval(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                              child: Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: isDark
-                                      ? Colors.white.withValues(alpha: 0.18)
-                                      : Colors.black.withValues(alpha: 0.07),
-                                ),
-                                child: Icon(
-                                  isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                                  color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
-                                  size: 20,
-                                ),
-                              ),
+                          child: GlassCircleButton(
+                            isDark: isDark,
+                            child: Icon(
+                              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                              color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
+                              size: 20,
                             ),
                           ),
                         ),

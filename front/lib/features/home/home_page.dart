@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/widgets/glass_circle_button.dart';
 import '../auth/auth_page.dart';
 import '../legal/cgu_modal.dart';
 
@@ -148,24 +149,12 @@ class _ThemeToggleButton extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8.0),
         child: GestureDetector(
           onTap: onTap,
-          child: ClipOval(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.18)
-                      : Colors.black.withValues(alpha: 0.07),
-                ),
-                child: Icon(
-                  isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                  color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black,
-                  size: 20,
-                ),
-              ),
+          child: GlassCircleButton(
+            isDark: isDark,
+            child: Icon(
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+              color: isDark ? Colors.white.withValues(alpha: 0.9) : Colors.black,
+              size: 20,
             ),
           ),
         ),

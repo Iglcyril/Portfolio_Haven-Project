@@ -1,9 +1,9 @@
-import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/widgets/glass_circle_button.dart';
 import 'professional_dashboard_page.dart';
 
 // ─── Modèle ───────────────────────────────────────────────────────────────────
@@ -139,7 +139,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                           children: [
                             GestureDetector(
                               onTap: () => Navigator.of(context).pop(),
-                              child: _GlassBtn(
+                              child: GlassCircleButton(
                                 isDark: isDark,
                                 child: Icon(
                                   Icons.arrow_back_ios_new_rounded,
@@ -152,7 +152,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                             ),
                             GestureDetector(
                               onTap: widget.onToggleTheme,
-                              child: _GlassBtn(
+                              child: GlassCircleButton(
                                 isDark: isDark,
                                 child: Icon(
                                   isDark
@@ -942,34 +942,6 @@ class _FieldDivider extends StatelessWidget {
       color: isDark
           ? Colors.white.withValues(alpha: 0.07)
           : Colors.black.withValues(alpha: 0.07),
-    );
-  }
-}
-
-// ─── Bouton glass ─────────────────────────────────────────────────────────────
-
-class _GlassBtn extends StatelessWidget {
-  final bool isDark;
-  final Widget child;
-  const _GlassBtn({required this.isDark, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipOval(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.18)
-                : Colors.black.withValues(alpha: 0.07),
-          ),
-          child: Center(child: child),
-        ),
-      ),
     );
   }
 }
