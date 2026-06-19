@@ -11,7 +11,23 @@ import 'report_detail_page.dart';
 
 // ─── Modèles ──────────────────────────────────────────────────────────────────
 
-enum ReportPriority { high, medium, low }
+enum ReportPriority {
+  high,
+  medium,
+  low;
+
+  static const Map<ReportPriority, Color> colors = {
+    ReportPriority.high: Color(0xFFE53935),
+    ReportPriority.medium: Color(0xFFFF8F00),
+    ReportPriority.low: AppColors.primary,
+  };
+
+  static const Map<ReportPriority, String> labels = {
+    ReportPriority.high: 'ÉLEVÉ',
+    ReportPriority.medium: 'MOYEN',
+    ReportPriority.low: 'FAIBLE',
+  };
+}
 
 enum ReportStatus { filed, reviewed, inProgress, resolved }
 
@@ -460,18 +476,6 @@ class _ReportCardState extends State<_ReportCard> {
   Timer? _timer;
   Duration _remaining = Duration.zero;
 
-  static const Map<ReportPriority, Color> _colors = {
-    ReportPriority.high: Color(0xFFE53935),
-    ReportPriority.medium: Color(0xFFFF8F00),
-    ReportPriority.low: AppColors.primary,
-  };
-
-  static const Map<ReportPriority, String> _badges = {
-    ReportPriority.high: 'ÉLEVÉ',
-    ReportPriority.medium: 'MOYEN',
-    ReportPriority.low: 'FAIBLE',
-  };
-
   @override
   void initState() {
     super.initState();
@@ -575,8 +579,8 @@ class _ReportCardState extends State<_ReportCard> {
 
   @override
   Widget build(BuildContext context) {
-    final color = _colors[widget.report.priority]!;
-    final badge = _badges[widget.report.priority]!;
+    final color = ReportPriority.colors[widget.report.priority]!;
+    final badge = ReportPriority.labels[widget.report.priority]!;
     final isDark = widget.isDark;
 
     return Container(

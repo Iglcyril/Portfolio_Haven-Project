@@ -70,18 +70,6 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   String? _riskLevel;
   String? _assignedTo;
 
-  static const Map<ReportPriority, Color> _colors = {
-    ReportPriority.high: Color(0xFFE53935),
-    ReportPriority.medium: Color(0xFFFF8F00),
-    ReportPriority.low: AppColors.primary,
-  };
-
-  static const Map<ReportPriority, String> _priorityLabels = {
-    ReportPriority.high: 'ÉLEVÉ',
-    ReportPriority.medium: 'MOYEN',
-    ReportPriority.low: 'FAIBLE',
-  };
-
   static const Map<ReportStatus, String> _statusLabels = {
     ReportStatus.filed: 'DÉPOSÉ',
     ReportStatus.reviewed: 'EXAMINÉ',
@@ -418,10 +406,10 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     const Color _unratedColor = Color(0xFF9E9E9E);
     final Color color = widget.isManager
         ? (_riskLevel != null ? _riskColors[_riskLevel]! : _unratedColor)
-        : _colors[widget.report.priority]!;
+        : ReportPriority.colors[widget.report.priority]!;
     final String priorityLabel = widget.isManager
         ? (_riskLevel?.toUpperCase() ?? 'NON ÉVALUÉ')
-        : _priorityLabels[widget.report.priority]!;
+        : ReportPriority.labels[widget.report.priority]!;
     final statusLabel = _statusLabels[widget.report.status]!;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(

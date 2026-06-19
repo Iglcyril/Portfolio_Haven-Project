@@ -361,17 +361,6 @@ class _ParentReportCard extends StatelessWidget {
     required this.onArchive,
   });
 
-  static const Map<ReportPriority, Color> _colors = {
-    ReportPriority.high: Color(0xFFE53935),
-    ReportPriority.medium: Color(0xFFFF8F00),
-    ReportPriority.low: AppColors.primary,
-  };
-
-  static const Map<ReportPriority, String> _badges = {
-    ReportPriority.high: 'ÉLEVÉ',
-    ReportPriority.medium: 'MOYEN',
-    ReportPriority.low: 'FAIBLE',
-  };
 
   String _initials(String fullName) {
     final parts = fullName.trim().split(' ');
@@ -565,8 +554,8 @@ class _ParentReportCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final report = parentReport.report;
-    final color = _colors[report.priority]!;
-    final badge = _badges[report.priority]!;
+    final color = ReportPriority.colors[report.priority]!;
+    final badge = ReportPriority.labels[report.priority]!;
 
     return Container(
         padding: const EdgeInsets.all(16),
