@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_constants.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../dashboard/dashboard_page.dart';
 import '../dashboard/report_detail_page.dart';
@@ -85,11 +86,7 @@ class _ProfessionalDashboardPageState
     _TeamMember('Claire', 'Rousseau', 'Assistant·e Social·e'),
   ];
 
-  static const _riskColors = {
-    'Faible': Color(0xFF2EAB7B),
-    'Moyen': Color(0xFFE67E22),
-    'Élevé': Color(0xFFC0392B),
-  };
+  static const _riskColors = AppConstants.riskColors;
 
   List<HavenReport> get _reports =>
       ReportStore.instance.reports.where((r) => !r.isArchivedByDirector).toList();
@@ -1377,11 +1374,7 @@ class _MiniProgressBar extends StatelessWidget {
     this.progressStage = 0,
   });
 
-  static const _riskColors = {
-    'Faible': Color(0xFF2EAB7B),
-    'Moyen': Color(0xFFE67E22),
-    'Élevé': Color(0xFFC0392B),
-  };
+  static const _riskColors = AppConstants.riskColors;
 
   Color get _activeColor => _riskColors[riskLevel] ?? AppColors.primary;
 

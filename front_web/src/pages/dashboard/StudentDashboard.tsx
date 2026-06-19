@@ -17,7 +17,9 @@ import {
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { getStudentReports, getCurrentStudent, EMERGENCY_CONTACTS } from '../../services/reports'
 import { useIsMobile } from '../../hooks/useMediaQuery'
-import type { Report, ReportStatus, Severity, User as UserType } from '../../types'
+import type { Report, ReportStatus, User as UserType } from '../../types'
+import { SEVERITY_META, SEVERITY_ORDER } from '../../constants/severity'
+import { formatDate } from '../../utils/dateFormatting'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -30,12 +32,6 @@ const NAV_ITEMS = [
   { label: 'Archivés',     href: '/dashboard/student?status=archived',  icon: <Archive size={16} /> },
 ]
 
-const SEVERITY_META: Record<Severity, { label: string; color: string; bg: string }> = {
-  high:   { label: 'Élevé',  color: '#C0392B', bg: 'rgba(192,57,43,0.12)' },
-  medium: { label: 'Moyen',  color: '#E67E22', bg: 'rgba(230,126,34,0.12)' },
-  low:    { label: 'Faible', color: '#2EAB7B', bg: 'rgba(46,171,123,0.12)' },
-}
-
 // archived uses CSS var so it works in both light and dark
 const STATUS_META: Record<ReportStatus, { label: string; color: string }> = {
   active:   { label: 'En cours', color: '#00A176' },
@@ -44,13 +40,8 @@ const STATUS_META: Record<ReportStatus, { label: string; color: string }> = {
 }
 
 type SortKey = 'date' | 'severity' | 'progress'
-const SEVERITY_ORDER: Severity[] = ['high', 'medium', 'low']
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso))
-}
 
 function sortReports(reports: Report[], key: SortKey): Report[] {
   return [...reports].sort((a, b) => {

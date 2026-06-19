@@ -17,6 +17,8 @@ import {
 } from '../../services/professionalData'
 import type { ProReport, TeamMember, ReportEvent, ProfessionalRole, Severity } from '../../types'
 import { useIsMobile } from '../../hooks/useMediaQuery'
+import { SEVERITY_COLOR, SEVERITY_LABEL, SEVERITY_ORDER_MAP } from '../../constants/severity'
+import { formatDate, formatShort } from '../../utils/dateFormatting'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -25,14 +27,6 @@ const STAGES   = ['DÉPOSÉ', 'EXAMINÉ', 'EN COURS', 'RÉSOLU']
 
 type SortKey      = 'severity' | 'date' | 'stage' | 'referent'
 type StatusFilter = 'active' | 'unassigned' | 'resolved' | 'archived'
-
-const SEVERITY_ORDER: Record<string, number> = { high: 0, medium: 1, low: 2, none: 3 }
-const SEVERITY_COLOR: Record<string, string>  = {
-  high: '#C0392B', medium: '#E67E22', low: '#2EAB7B', none: 'rgba(140,160,155,0.8)',
-}
-const SEVERITY_LABEL: Record<string, string>  = {
-  high: 'Élevé', medium: 'Moyen', low: 'Faible', none: 'À classer',
-}
 
 const ROLE_OPTIONS: { key: ProfessionalRole; label: string }[] = [
   { key: 'cpe',         label: 'CPE' },
@@ -45,12 +39,6 @@ const ROLE_OPTIONS: { key: ProfessionalRole; label: string }[] = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
-}
-function formatShort(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-}
 function severityKey(r: ProReport) { return r.severity ?? 'none' }
 
 // ─── Progress tracker (color driven by severity) ──────────────────────────────
@@ -1077,7 +1065,7 @@ export default function ProfessionalDashboard() {
       list = list.filter(r => r.assignedTo === user.fullName)
 
     return [...list].sort((a, b) => {
-      if (sort === 'severity') return SEVERITY_ORDER[severityKey(a)] - SEVERITY_ORDER[severityKey(b)]
+      if (sort === 'severity') return SEVERITY_ORDER_MAP[severityKey(a)] - SEVERITY_ORDER_MAP[severityKey(b)]
       if (sort === 'date')     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       if (sort === 'stage')    return b.progressStage - a.progressStage
       if (sort === 'referent') return (a.assignedTo ?? '').localeCompare(b.assignedTo ?? '')

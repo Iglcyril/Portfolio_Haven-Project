@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_constants.dart';
 import '../../core/widgets/anchor_background.dart';
 import 'dashboard_page.dart';
 
@@ -63,11 +64,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   final _addInfoController = TextEditingController();
   final List<_AddedInfo> _addedInfos = [];
 
-  static const _riskColors = {
-    'Faible': Color(0xFF2EAB7B),
-    'Moyen': Color(0xFFE67E22),
-    'Élevé': Color(0xFFC0392B),
-  };
+  static const _riskColors = AppConstants.riskColors;
 
   String? _riskLevel;
   String? _assignedTo;

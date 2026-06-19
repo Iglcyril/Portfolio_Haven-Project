@@ -13,16 +13,12 @@ import {
 } from '../../services/parentData'
 import { useIsMobile } from '../../hooks/useMediaQuery'
 import type { Child, ParentReport, ReportStatus, User as UserType, EstablishmentContact } from '../../types'
+import { SEVERITY_META, SEVERITY_ORDER } from '../../constants/severity'
+import { formatDate } from '../../utils/dateFormatting'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const ACCENT = '#2EAB7B'
-
-const SEVERITY_META = {
-  high:   { label: 'Élevé',  color: '#C0392B', bg: 'rgba(192,57,43,0.12)' },
-  medium: { label: 'Moyen',  color: '#E67E22', bg: 'rgba(230,126,34,0.12)' },
-  low:    { label: 'Faible', color: '#2EAB7B', bg: 'rgba(46,171,123,0.12)' },
-}
 
 const STATUS_META: Record<ReportStatus, { label: string; color: string }> = {
   active:   { label: 'En cours', color: '#2EAB7B' },
@@ -41,11 +37,6 @@ function getStage(report: ParentReport): number {
 }
 
 type SortKey = 'date' | 'severity' | 'progress'
-const SEVERITY_ORDER = ['high', 'medium', 'low']
-
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso))
-}
 
 function sortReports(reports: ParentReport[], key: SortKey) {
   return [...reports].sort((a, b) => {
