@@ -53,6 +53,9 @@ class Renderer {
   private fs: WebGLShader | null = null
   private buffer: WebGLBuffer | null = null
   private color: [number, number, number] = [0.18, 0.67, 0.48]
+  private uResolution: WebGLUniformLocation | null = null
+  private uTime: WebGLUniformLocation | null = null
+  private uColor: WebGLUniformLocation | null = null
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -101,9 +104,9 @@ class Renderer {
     const pos = gl.getAttribLocation(program, 'position')
     gl.enableVertexAttribArray(pos)
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0)
-    ;(program as any).resolution = gl.getUniformLocation(program, 'resolution')
-    ;(program as any).time = gl.getUniformLocation(program, 'time')
-    ;(program as any).u_color = gl.getUniformLocation(program, 'u_color')
+    this.uResolution = gl.getUniformLocation(program, 'resolution')
+    this.uTime = gl.getUniformLocation(program, 'time')
+    this.uColor = gl.getUniformLocation(program, 'u_color')
   }
 
   render(now = 0) {
@@ -113,9 +116,9 @@ class Renderer {
     gl.clear(gl.COLOR_BUFFER_BIT)
     gl.useProgram(program)
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.uniform2f((program as any).resolution, canvas.width, canvas.height)
-    gl.uniform1f((program as any).time, now * 1e-3)
-    gl.uniform3fv((program as any).u_color, this.color)
+    gl.uniform2f(this.uResolution, canvas.width, canvas.height)
+    gl.uniform1f(this.uTime, now * 1e-3)
+    gl.uniform3fv(this.uColor, this.color)
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
   }
 

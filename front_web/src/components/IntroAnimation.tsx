@@ -7,6 +7,19 @@ interface Props {
 
 const GRID = 4
 
+const CELLS = Array.from({ length: GRID * GRID }, (_, i) => i)
+
+const CELL_OFFSETS = CELLS.map((i) => {
+  const row = Math.floor(i / GRID)
+  const col = i % GRID
+  const cx = col - (GRID - 1) / 2
+  const cy = row - (GRID - 1) / 2
+  return {
+    initial: { x: cx * 220, y: cy * 220, rotate: (Math.random() - 0.5) * 60 },
+    shatter: { x: cx * 300, y: cy * 300, rotate: (Math.random() - 0.5) * 90 },
+  }
+})
+
 export default function IntroAnimation({ onComplete }: Props) {
   const [phase, setPhase] = useState<'assemble' | 'hold' | 'shatter' | 'done'>('assemble')
 
@@ -20,24 +33,6 @@ export default function IntroAnimation({ onComplete }: Props) {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
   }, [onComplete])
 
-  const cells = Array.from({ length: GRID * GRID }, (_, i) => i)
-
-  const getInitialOffset = (i: number) => {
-    const row = Math.floor(i / GRID)
-    const col = i % GRID
-    const cx = col - (GRID - 1) / 2
-    const cy = row - (GRID - 1) / 2
-    return { x: cx * 220, y: cy * 220, rotate: (Math.random() - 0.5) * 60 }
-  }
-
-  const getShatterOffset = (i: number) => {
-    const row = Math.floor(i / GRID)
-    const col = i % GRID
-    const cx = col - (GRID - 1) / 2
-    const cy = row - (GRID - 1) / 2
-    return { x: cx * 300, y: cy * 300, rotate: (Math.random() - 0.5) * 90 }
-  }
-
   return (
     <AnimatePresence>
       {phase !== 'done' && (
@@ -48,11 +43,10 @@ export default function IntroAnimation({ onComplete }: Props) {
           transition={{ duration: 0.5 }}
         >
           <div className="relative" style={{ width: 160, height: 160 }}>
-            {cells.map((i) => {
+            {CELLS.map((i) => {
               const row = Math.floor(i / GRID)
               const col = i % GRID
-              const init = getInitialOffset(i)
-              const shatter = getShatterOffset(i)
+              const { initial, shatter } = CELL_OFFSETS[i]
 
               return (
                 <motion.div
@@ -64,7 +58,7 @@ export default function IntroAnimation({ onComplete }: Props) {
                     top: `${(row / GRID) * 100}%`,
                     left: `${(col / GRID) * 100}%`,
                   }}
-                  initial={{ x: init.x, y: init.y, opacity: 0, rotate: init.rotate }}
+                  initial={{ x: initial.x, y: initial.y, opacity: 0, rotate: initial.rotate }}
                   animate={
                     phase === 'assemble' || phase === 'hold'
                       ? { x: 0, y: 0, opacity: 1, rotate: 0 }
