@@ -6,7 +6,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/theme/app_shadows.dart';
-import '../../core/widgets/glass_circle_button.dart';
+import '../../core/widgets/haven_app_bar.dart';
 import '../dashboard/dashboard_page.dart';
 import '../dashboard/report_detail_page.dart';
 
@@ -125,59 +125,42 @@ class _ParentAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Row(
-        children: [
-          // Bouton déconnexion
-          GestureDetector(
-            onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
-            child: Container(
-              height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.10)
-                    : Colors.black.withValues(alpha: 0.07),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.logout_rounded,
-                      size: 16,
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.70)
-                          : AppColors.lightTextSecondary),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Déconnexion',
-                    style: GoogleFonts.manrope(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.70)
-                          : AppColors.lightTextSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return HavenAppBar(
+      isDark: isDark,
+      onToggleTheme: onToggleTheme,
+      leading: GestureDetector(
+        onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.10)
+                : Colors.black.withValues(alpha: 0.07),
           ),
-          const Spacer(),
-          // Toggle dark/light
-          GestureDetector(
-            onTap: onToggleTheme,
-            child: GlassCircleButton(
-              isDark: isDark,
-              child: Icon(
-                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
-                size: 20,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.logout_rounded,
+                  size: 16,
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.70)
+                      : AppColors.lightTextSecondary),
+              const SizedBox(width: 6),
+              Text(
+                'Déconnexion',
+                style: GoogleFonts.manrope(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.70)
+                      : AppColors.lightTextSecondary,
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -307,7 +290,7 @@ class _ContactCard extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(Icons.phone_outlined, color: AppColors.primary, size: 20),
+              child: const Icon(Icons.phone_outlined, color: AppColors.primary, size: 20),
             ),
             const SizedBox(height: 8),
             Text(
@@ -402,7 +385,7 @@ class _ParentReportCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 child: Row(
                   children: [
-                    Icon(Icons.open_in_new_rounded, size: 20, color: AppColors.primary),
+                    const Icon(Icons.open_in_new_rounded, size: 20, color: AppColors.primary),
                     const SizedBox(width: 14),
                     Text('Voir le détail', style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.lightTextPrimary)),
                   ],

@@ -8,7 +8,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/theme/app_shadows.dart';
 import '../../core/widgets/circle_back_button.dart';
-import '../../core/widgets/glass_circle_button.dart';
+import '../../core/widgets/haven_app_bar.dart';
 import '../report/confidential_choice_page.dart';
 import 'report_detail_page.dart';
 
@@ -184,7 +184,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _DashAppBar(isDark: isDark, onToggleTheme: widget.onToggleTheme),
+                    HavenAppBar(
+                      isDark: isDark,
+                      onToggleTheme: widget.onToggleTheme,
+                      leading: CircleBackButton(
+                        isDark: isDark,
+                        onTap: () => Navigator.of(context).pop(),
+                      ),
+                    ),
                     Expanded(
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -239,40 +246,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 }
 
-// ─── App bar ──────────────────────────────────────────────────────────────────
-
-class _DashAppBar extends StatelessWidget {
-  final bool isDark;
-  final VoidCallback onToggleTheme;
-  const _DashAppBar({required this.isDark, required this.onToggleTheme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Row(
-        children: [
-          CircleBackButton(
-            isDark: isDark,
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          const Spacer(),
-          GestureDetector(
-            onTap: onToggleTheme,
-            child: GlassCircleButton(
-              isDark: isDark,
-              child: Icon(
-                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
-                size: 20,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Greeting ─────────────────────────────────────────────────────────────────
 
@@ -392,7 +365,7 @@ class _BreathingCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(Icons.self_improvement_rounded, color: AppColors.primary, size: 32),
+            const Icon(Icons.self_improvement_rounded, color: AppColors.primary, size: 32),
             const SizedBox(height: 8),
             Text('Respirer', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w600)),
           ],

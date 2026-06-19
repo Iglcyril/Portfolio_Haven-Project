@@ -9,7 +9,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/circle_back_button.dart';
-import '../../core/widgets/glass_circle_button.dart';
+import '../../core/widgets/haven_app_bar.dart';
 import '../report/anon_level.dart';
 
 class _Msg {
@@ -283,14 +283,12 @@ class _ChatAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      child: Row(
+    return HavenAppBar(
+      isDark: isDark,
+      onToggleTheme: onToggleTheme,
+      leading: CircleBackButton(isDark: isDark, onTap: onBack),
+      title: Row(
         children: [
-          CircleBackButton(
-            isDark: isDark,
-            onTap: onBack,
-          ),
           const SizedBox(width: 12),
           Stack(
             children: [
@@ -354,17 +352,6 @@ class _ChatAppBar extends StatelessWidget {
               ],
             ),
           ),
-          GestureDetector(
-            onTap: onToggleTheme,
-            child: GlassCircleButton(
-              isDark: isDark,
-              child: Icon(
-                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
-                size: 20,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -420,7 +407,7 @@ class _UserBanner extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              '$userName',
+              userName,
               style: GoogleFonts.manrope(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
