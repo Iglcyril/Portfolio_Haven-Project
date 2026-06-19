@@ -618,6 +618,7 @@ function TeamCard({
       boxShadow: 'var(--c-card-shadow)',
       display: 'flex', flexDirection: 'column', gap: 12,
       position: 'relative',
+      height: '100%', boxSizing: 'border-box',
     }}>
       {isDirector && (
         <button
@@ -1084,7 +1085,9 @@ export default function ProfessionalDashboard() {
     })
   }, [reports, status, sort, isDirector, user.fullName])
 
-  const activeCount     = reports.filter(r => r.status === 'active' && r.assignedTo).length
+  const activeCount     = isDirector
+    ? reports.filter(r => r.status === 'active' && r.assignedTo).length
+    : reports.filter(r => r.status === 'active' && r.assignedTo === user.fullName).length
   const unassignedCount = reports.filter(r => r.status === 'active' && !r.assignedTo).length
 
   // ── Nav items ──
@@ -1225,6 +1228,7 @@ export default function ProfessionalDashboard() {
                     initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.92 }}
+                    style={{ height: '100%' }}
                   >
                     <TeamCard
                       member={m}
