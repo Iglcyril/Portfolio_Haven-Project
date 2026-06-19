@@ -43,7 +43,11 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
   }, {
     body: t.Object({
       email:     t.String({ format: 'email' }),
-      password:  t.String({ minLength: 8 }),
+      // Minimum 8 caractères, au moins 1 majuscule, 1 minuscule et 1 chiffre
+      password:  t.String({
+        minLength: 8,
+        pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$'
+      }),
       firstName: t.Optional(t.String({ minLength: 2 })),
       lastName:  t.Optional(t.String({ minLength: 2 })),
       birthDate: t.Optional(t.String()),  // format YYYY-MM-DD ex: 2010-05-15
