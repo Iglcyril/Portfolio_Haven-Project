@@ -8,6 +8,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_constants.dart';
 import '../../core/widgets/anchor_background.dart';
+import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import 'dashboard_page.dart';
 
@@ -431,17 +432,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: Row(
                         children: [
-                          GestureDetector(
+                          CircleBackButton(
+                            isDark: isDark,
                             onTap: () => Navigator.of(context).pop(),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isDark ? Colors.white.withValues(alpha: 0.10) : Colors.black.withValues(alpha: 0.07),
-                              ),
-                              child: Icon(Icons.arrow_back_rounded, color: isDark ? Colors.white : Colors.black, size: 20),
-                            ),
                           ),
                           const Spacer(),
                           GestureDetector(
