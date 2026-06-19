@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_constants.dart';
 import '../../core/widgets/anchor_background.dart';
 import 'dashboard_page.dart';
@@ -168,7 +169,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 children: [
                   Text(
                     'Attribuer à…',
-                    style: GoogleFonts.fraunces(fontSize: 22, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.3),
+                    style: AppTextStyles.sheetTitle(isDark),
                   ),
                   const SizedBox(height: 16),
                   ...widget.teamMembers.map((member) {
@@ -196,7 +197,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 width: 38,
                                 height: 38,
                                 decoration: BoxDecoration(color: isDark ? AppColors.primary.withValues(alpha: 0.35) : AppColors.primary, shape: BoxShape.circle),
-                                child: Center(child: Text(member.initials, style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white))),
+                                child: Center(child: Text(member.initials, style: AppTextStyles.initials(fontSize: 13))),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
@@ -261,9 +262,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Niveau de risque', style: GoogleFonts.fraunces(fontSize: 22, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.3)),
+                  Text('Niveau de risque', style: AppTextStyles.sheetTitle(isDark)),
                   const SizedBox(height: 4),
-                  Text('Évaluez la gravité du signalement', style: GoogleFonts.manrope(fontSize: 13, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                  Text('Évaluez la gravité du signalement', style: AppTextStyles.subtitle(isDark)),
                   const SizedBox(height: 20),
                   ...List.generate(levels.length, (i) {
                     final level = levels[i];
@@ -382,7 +383,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                   ),
                   child: Text(
                     'Oui, supprimer',
-                    style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white),
+                    style: AppTextStyles.button(),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -514,7 +515,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     children: [
                                       Container(width: 5, height: 5, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
                                       const SizedBox(width: 4),
-                                      Text(priorityLabel, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: color, letterSpacing: 0.3)),
+                                      Text(priorityLabel, style: AppTextStyles.badge(color)),
                                     ],
                                   ),
                                 ),
@@ -526,7 +527,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     color: isDark ? Colors.white.withValues(alpha: 0.08) : Colors.black.withValues(alpha: 0.05),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Text(statusLabel, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: isDark ? Colors.white.withValues(alpha: 0.60) : AppColors.lightTextSecondary, letterSpacing: 0.3)),
+                                  child: Text(statusLabel, style: AppTextStyles.badge(isDark ? Colors.white.withValues(alpha: 0.60) : AppColors.lightTextSecondary)),
                                 ),
                               ],
                             ),
@@ -535,18 +536,12 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                             // Titre
                             Text(
                               widget.report.title,
-                              style: GoogleFonts.fraunces(
-                                fontSize: 26,
-                                fontWeight: FontWeight.w800,
-                                color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                                letterSpacing: -0.5,
-                                height: 1.15,
-                              ),
+                              style: AppTextStyles.pageTitle(isDark).copyWith(height: 1.15),
                             ),
                             const SizedBox(height: 6),
                             Text(
                               'Responsable : ${widget.report.counselor}',
-                              style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary),
+                              style: AppTextStyles.subtitle(isDark, fontWeight: FontWeight.w500),
                             ),
                             const SizedBox(height: 20),
 
@@ -700,7 +695,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text('Attribuer à', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                                            Text('Attribuer à', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)),
                                             Text(
                                               _assignedTo ?? 'Non attribué',
                                               style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: _assignedTo != null ? AppColors.primary : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
@@ -741,7 +736,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text('Niveau de risque', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                                            Text('Niveau de risque', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)),
                                             Row(
                                               children: [
                                                 if (_riskLevel != null) ...[
@@ -860,12 +855,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: GoogleFonts.manrope(
-        fontSize: 11,
-        fontWeight: FontWeight.w700,
-        color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
-        letterSpacing: 1.2,
-      ),
+      style: AppTextStyles.sectionLabel(isDark),
     );
   }
 }
@@ -1211,7 +1201,7 @@ class _AddInfoField extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.30), blurRadius: 8, offset: const Offset(0, 3))],
                   ),
-                  child: Text('Envoyer', style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text('Envoyer', style: AppTextStyles.button(fontSize: 13)),
                 ),
               ),
             ],

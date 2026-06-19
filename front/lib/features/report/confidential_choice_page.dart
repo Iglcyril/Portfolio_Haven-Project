@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import 'anon_level.dart';
 import '../chat/chat_page.dart';
@@ -195,11 +196,7 @@ class _UserBar extends StatelessWidget {
           child: Center(
             child: Text(
               'AM',
-              style: GoogleFonts.manrope(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
+              style: AppTextStyles.initials(),
             ),
           ),
         ),
@@ -209,11 +206,7 @@ class _UserBar extends StatelessWidget {
           children: [
             Text(
               'Alex Morgan',
-              style: GoogleFonts.manrope(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: isDark ? Colors.white : AppColors.lightTextPrimary,
-              ),
+              style: AppTextStyles.nameBold(isDark, fontSize: 16),
             ),
           ],
         ),
@@ -235,23 +228,11 @@ class _HeroText extends StatelessWidget {
       children: [
         Text(
           "Plus qu'une étape",
-          style: GoogleFonts.fraunces(
-            fontSize: 34,
-            fontWeight: FontWeight.w800,
-            color: isDark ? Colors.white : AppColors.lightTextPrimary,
-            letterSpacing: -0.5,
-            height: 1.1,
-          ),
+          style: AppTextStyles.heroTitle(isDark),
         ),
         Text(
           "Choisis ton niveau d'anonymat :",
-          style: GoogleFonts.fraunces(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: AppColors.primary,
-            letterSpacing: -0.3,
-            height: 1.2,
-          ),
+          style: AppTextStyles.sheetTitle(isDark).copyWith(color: AppColors.primary, height: 1.2),
         ),
       ],
     );
@@ -331,21 +312,12 @@ class _AnonCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.fraunces(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w700,
-                      color: textColor,
-                      letterSpacing: -0.1,
-                    ),
+                    style: AppTextStyles.cardTitle(isDark).copyWith(color: textColor),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     subtitle,
-                    style: GoogleFonts.manrope(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: subtitleColor,
-                    ),
+                    style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500).copyWith(color: subtitleColor),
                   ),
                 ],
               ),
@@ -413,11 +385,7 @@ class _EmergencyTile extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   'Urgences',
-                  style: GoogleFonts.manrope(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
+                  style: AppTextStyles.button(),
                 ),
               ],
             ),

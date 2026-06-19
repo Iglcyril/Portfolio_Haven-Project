@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../dashboard/dashboard_page.dart';
 import '../dashboard/report_detail_page.dart';
@@ -205,13 +206,7 @@ class _Greeting extends StatelessWidget {
       children: [
         Text(
           'Bienvenue sur le portail de suivi.',
-          style: GoogleFonts.fraunces(
-            fontSize: 30,
-            fontWeight: FontWeight.w800,
-            color: isDark ? Colors.white : AppColors.lightTextPrimary,
-            letterSpacing: -0.5,
-            height: 1.15,
-          ),
+          style: AppTextStyles.dashTitle(isDark).copyWith(height: 1.15),
         ),
         const SizedBox(height: 6),
         Text(
@@ -285,9 +280,9 @@ class _StatCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(value, style: GoogleFonts.fraunces(fontSize: 28, fontWeight: FontWeight.w800, color: valueColor, letterSpacing: -0.5, height: 1.0)),
+          Text(value, style: AppTextStyles.statValueLG(isDark).copyWith(color: valueColor)),
           const SizedBox(height: 4),
-          Text(label, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: labelColor)),
+          Text(label, style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w600).copyWith(color: labelColor)),
         ],
       ),
     );
@@ -327,11 +322,7 @@ class _ContactCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Contact',
-              style: GoogleFonts.manrope(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary,
-              ),
+              style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -350,12 +341,7 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       'SIGNALEMENTS',
-      style: GoogleFonts.manrope(
-        fontSize: 11,
-        fontWeight: FontWeight.w700,
-        color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
-        letterSpacing: 1.2,
-      ),
+      style: AppTextStyles.sectionLabel(isDark),
     );
   }
 }
@@ -526,12 +512,7 @@ class _ParentReportCard extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'Archiver ce signalement ?',
-                style: GoogleFonts.fraunces(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.dialogTitle(isDark).copyWith(fontWeight: FontWeight.w800),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
@@ -558,7 +539,7 @@ class _ParentReportCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [BoxShadow(color: AppColors.primary.withValues(alpha: 0.30), blurRadius: 12, offset: const Offset(0, 4))],
                   ),
-                  child: Text('Archiver', style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white), textAlign: TextAlign.center),
+                  child: Text('Archiver', style: AppTextStyles.button(), textAlign: TextAlign.center),
                 ),
               ),
               const SizedBox(height: 10),
@@ -616,11 +597,7 @@ class _ParentReportCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       _initials(parentReport.childName),
-                      style: GoogleFonts.manrope(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
+                      style: AppTextStyles.initials(),
                     ),
                   ),
                 ),
@@ -676,7 +653,7 @@ class _ParentReportCard extends StatelessWidget {
                               children: [
                                 Container(width: 5, height: 5, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
                                 const SizedBox(width: 4),
-                                Text(badge, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: color, letterSpacing: 0.3)),
+                                Text(badge, style: AppTextStyles.badge(color)),
                               ],
                             ),
                           ),

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_constants.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../dashboard/dashboard_page.dart';
 import '../dashboard/report_detail_page.dart';
@@ -126,12 +127,7 @@ class _ProfessionalDashboardPageState
             children: [
               Text(
                 report.caseNumber,
-                style: GoogleFonts.fraunces(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.dialogTitle(isDark),
               ),
               const SizedBox(height: 16),
               _SheetTile(
@@ -233,22 +229,12 @@ class _ProfessionalDashboardPageState
             children: [
               Text(
                 'Attribuer à…',
-                style: GoogleFonts.fraunces(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.sheetTitle(isDark),
               ),
               const SizedBox(height: 4),
               Text(
                 'Choisissez un membre de l\'équipe',
-                style: GoogleFonts.manrope(
-                  fontSize: 13,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.50)
-                      : AppColors.lightTextSecondary,
-                ),
+                style: AppTextStyles.subtitle(isDark),
               ),
               const SizedBox(height: 20),
               ..._teamMembers.map((member) {
@@ -296,11 +282,7 @@ class _ProfessionalDashboardPageState
                             child: Center(
                               child: Text(
                                 member.initials,
-                                style: GoogleFonts.manrope(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
+                                style: AppTextStyles.initials(fontSize: 13),
                               ),
                             ),
                           ),
@@ -375,22 +357,12 @@ class _ProfessionalDashboardPageState
             children: [
               Text(
                 'Niveau de risque',
-                style: GoogleFonts.fraunces(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.sheetTitle(isDark),
               ),
               const SizedBox(height: 4),
               Text(
                 'Évaluez la gravité du signalement',
-                style: GoogleFonts.manrope(
-                  fontSize: 13,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.50)
-                      : AppColors.lightTextSecondary,
-                ),
+                style: AppTextStyles.subtitle(isDark),
               ),
               const SizedBox(height: 20),
               ...List.generate(levels.length, (i) {
@@ -497,12 +469,7 @@ class _ProfessionalDashboardPageState
             children: [
               Text(
                 'Archiver ce signalement ?',
-                style: GoogleFonts.fraunces(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.dialogTitle(isDark),
               ),
               const SizedBox(height: 8),
               Text(
@@ -538,11 +505,7 @@ class _ProfessionalDashboardPageState
                   child: Center(
                     child: Text(
                       'Confirmer l\'archivage',
-                      style: GoogleFonts.manrope(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
-                      ),
+                      style: AppTextStyles.button(),
                     ),
                   ),
                 ),
@@ -589,24 +552,14 @@ class _ProfessionalDashboardPageState
             children: [
               Text(
                 'Signalements archivés',
-                style: GoogleFonts.fraunces(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.sheetTitle(isDark),
               ),
               const SizedBox(height: 4),
               Text(
                 _archivedReports.isEmpty
                     ? 'Aucun signalement archivé pour le moment'
                     : '${_archivedReports.length} signalement${_archivedReports.length > 1 ? 's' : ''} résolu${_archivedReports.length > 1 ? 's' : ''} et archivé${_archivedReports.length > 1 ? 's' : ''}',
-                style: GoogleFonts.manrope(
-                  fontSize: 13,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.50)
-                      : AppColors.lightTextSecondary,
-                ),
+                style: AppTextStyles.subtitle(isDark),
               ),
               if (_archivedReports.isNotEmpty) ...[
               const SizedBox(height: 20),
@@ -802,25 +755,11 @@ class _ProfessionalDashboardPageState
                             // ── Greeting ──────────────────────────────────
                             Text(
                               'Bienvenue sur le',
-                              style: GoogleFonts.fraunces(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w800,
-                                color: isDark
-                                    ? Colors.white
-                                    : AppColors.lightTextPrimary,
-                                letterSpacing: -0.5,
-                                height: 1.1,
-                              ),
+                              style: AppTextStyles.dashTitle(isDark),
                             ),
                             Text(
                               'portail de pilotage.',
-                              style: GoogleFonts.fraunces(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.primary,
-                                letterSpacing: -0.5,
-                                height: 1.15,
-                              ),
+                              style: AppTextStyles.dashTitle(isDark).copyWith(color: AppColors.primary, height: 1.15),
                             ),
 
                             const SizedBox(height: 28),
@@ -1086,13 +1025,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             value,
-            style: GoogleFonts.fraunces(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: isDark ? Colors.white : AppColors.lightTextPrimary,
-              letterSpacing: -0.3,
-              height: 1.0,
-            ),
+            style: AppTextStyles.statValueMD(isDark),
           ),
           const SizedBox(height: 2),
           Text(
@@ -1275,12 +1208,7 @@ class _CaseNumberBadge extends StatelessWidget {
             ),
             child: Text(
               caseNumber,
-              style: GoogleFonts.manrope(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: Colors.white.withValues(alpha: 0.85),
-                letterSpacing: 0.3,
-              ),
+              style: AppTextStyles.badge(Colors.white.withValues(alpha: 0.85), fontSize: 11),
             ),
           ),
         ),
@@ -1294,12 +1222,7 @@ class _CaseNumberBadge extends StatelessWidget {
       ),
       child: Text(
         caseNumber,
-        style: GoogleFonts.manrope(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: AppColors.lightTextSecondary,
-          letterSpacing: 0.3,
-        ),
+        style: AppTextStyles.badge(AppColors.lightTextSecondary, fontSize: 11),
       ),
     );
   }
@@ -1634,12 +1557,7 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
             children: [
               Text(
                 report.caseNumber,
-                style: GoogleFonts.fraunces(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.dialogTitle(isDark),
               ),
               const SizedBox(height: 20),
               _sheetTile(
@@ -1739,12 +1657,7 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
         ),
         title: Text(
           'Signalements actifs',
-          style: GoogleFonts.fraunces(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: isDark ? Colors.white : AppColors.lightTextPrimary,
-            letterSpacing: -0.3,
-          ),
+          style: AppTextStyles.dialogTitle(isDark),
         ),
         actions: [
           Padding(

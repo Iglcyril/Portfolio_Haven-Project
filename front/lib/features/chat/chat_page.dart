@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../report/anon_level.dart';
 
@@ -350,11 +351,7 @@ class _ChatAppBar extends StatelessWidget {
               children: [
                 Text(
                   'Haven Support',
-                  style: GoogleFonts.manrope(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  ),
+                  style: AppTextStyles.nameBold(isDark, fontSize: 15),
                 ),
                 Text(
                   'Dossier $caseNumber · Confidentiel',
@@ -444,11 +441,7 @@ class _UserBanner extends StatelessWidget {
             child: Center(
               child: Text(
                 userInitials,
-                style: GoogleFonts.manrope(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
+                style: AppTextStyles.initials(fontSize: 10),
               ),
             ),
           ),
@@ -474,12 +467,7 @@ class _UserBanner extends StatelessWidget {
             ),
             child: Text(
               anonLevel.label,
-              style: GoogleFonts.manrope(
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: AppColors.primary,
-                letterSpacing: 0.3,
-              ),
+              style: AppTextStyles.badge(AppColors.primary),
             ),
           ),
         ],
@@ -812,11 +800,7 @@ class _ActionRow extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         'Urgences',
-                        style: GoogleFonts.manrope(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
+                        style: AppTextStyles.button(fontSize: 14),
                       ),
                     ],
                   ),
@@ -844,11 +828,7 @@ class _ActionRow extends StatelessWidget {
                 children: [
                   Text(
                     'Envoyer',
-                    style: GoogleFonts.manrope(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
+                    style: AppTextStyles.button(fontSize: 14),
                   ),
                   const SizedBox(width: 6),
                   const Icon(Icons.send_rounded, color: Colors.white, size: 16),
@@ -1095,13 +1075,7 @@ class _ConfirmDialog extends StatelessWidget {
       ),
       content: Text(
         "Es-tu sûr(e) d'avoir tout dit ? Ton signalement sera transmis à l'équipe Haven.",
-        style: GoogleFonts.manrope(
-          fontSize: 14,
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.65)
-              : AppColors.lightTextSecondary,
-          height: 1.5,
-        ),
+        style: AppTextStyles.body(isDark, height: 1.5),
       ),
       actions: [
         TextButton(

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 
 // ─── Page principale ──────────────────────────────────────────────────────────
@@ -81,24 +82,14 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
           children: [
             Text(
               'Mes signalements archivés',
-              style: GoogleFonts.fraunces(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                letterSpacing: -0.3,
-              ),
+              style: AppTextStyles.sheetTitle(isDark),
             ),
             const SizedBox(height: 4),
             Text(
               _archived.isEmpty
                   ? 'Aucun signalement archivé'
                   : '${_archived.length} signalement${_archived.length > 1 ? 's' : ''} archivé${_archived.length > 1 ? 's' : ''}',
-              style: GoogleFonts.manrope(
-                fontSize: 13,
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.50)
-                    : AppColors.lightTextSecondary,
-              ),
+              style: AppTextStyles.subtitle(isDark),
             ),
             if (_archived.isNotEmpty) ...[
               const SizedBox(height: 20),
@@ -144,24 +135,14 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
             children: [
               Text(
                 'Signalements résolus',
-                style: GoogleFonts.fraunces(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                  letterSpacing: -0.3,
-                ),
+                style: AppTextStyles.sheetTitle(isDark),
               ),
               const SizedBox(height: 4),
               Text(
                 _resolved.isEmpty
                     ? 'Aucun signalement résolu en attente d\'archivage'
                     : '${_resolved.length} signalement${_resolved.length > 1 ? 's' : ''} résolu${_resolved.length > 1 ? 's' : ''}',
-                style: GoogleFonts.manrope(
-                  fontSize: 13,
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.50)
-                      : AppColors.lightTextSecondary,
-                ),
+                style: AppTextStyles.subtitle(isDark),
               ),
               if (_resolved.isNotEmpty) ...[
                 const SizedBox(height: 20),
@@ -352,14 +333,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Text(
                         'En cours',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: isDark
-                              ? Colors.white.withValues(alpha: 0.85)
-                              : AppColors.lightTextPrimary,
-                          letterSpacing: -0.3,
-                        ),
+                        style: AppTextStyles.sectionHeading(isDark),
                       ),
                     ),
 
@@ -616,12 +590,7 @@ class _ReferentReportCard extends StatelessWidget {
             ),
             child: Text(
               report.caseNumber,
-              style: GoogleFonts.manrope(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: Colors.white.withValues(alpha: 0.85),
-                letterSpacing: 0.3,
-              ),
+              style: AppTextStyles.badge(Colors.white.withValues(alpha: 0.85), fontSize: 11),
             ),
           ),
         ),
@@ -635,12 +604,7 @@ class _ReferentReportCard extends StatelessWidget {
       ),
       child: Text(
         report.caseNumber,
-        style: GoogleFonts.manrope(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: AppColors.lightTextSecondary,
-          letterSpacing: 0.3,
-        ),
+        style: AppTextStyles.badge(AppColors.lightTextSecondary, fontSize: 11),
       ),
     );
   }
@@ -863,13 +827,7 @@ class _ReferentStatCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               value,
-              style: GoogleFonts.fraunces(
-                fontSize: 22,
-                fontWeight: FontWeight.w800,
-                color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                letterSpacing: -0.3,
-                height: 1.0,
-              ),
+              style: AppTextStyles.statValueMD(isDark),
             ),
             const SizedBox(height: 2),
             Text(
@@ -947,12 +905,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
               children: [
                 Text(
                   'Ajouter un événement',
-                  style: GoogleFonts.fraunces(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white : AppColors.lightTextPrimary,
-                    letterSpacing: -0.3,
-                  ),
+                  style: AppTextStyles.dialogTitle(isDark),
                 ),
                 const SizedBox(height: 20),
                 // Choix du type
@@ -1123,14 +1076,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                           Expanded(
                             child: Text(
                               report.caseNumber,
-                              style: GoogleFonts.fraunces(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: isDark
-                                    ? Colors.white
-                                    : AppColors.lightTextPrimary,
-                                letterSpacing: -0.3,
-                              ),
+                              style: AppTextStyles.dialogTitle(isDark),
                             ),
                           ),
                           // Badge niveau de risque (lecture seule)
@@ -1271,11 +1217,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                       children: [
                                         Text(
                                           'Passer à : ${kProgressSteps[report.progressStage + 1]}',
-                                          style: GoogleFonts.manrope(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                          ),
+                                          style: AppTextStyles.button(fontSize: 13),
                                         ),
                                         const SizedBox(width: 6),
                                         const Icon(

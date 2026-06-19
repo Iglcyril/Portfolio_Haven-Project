@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
@@ -321,12 +322,7 @@ class _PortalBadge extends StatelessWidget {
             const SizedBox(width: 4),
             Text(
               label,
-              style: GoogleFonts.manrope(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: color,
-              ),
+              style: AppTextStyles.overline(color),
             ),
           ],
         ),
@@ -457,15 +453,7 @@ class _TabChip extends StatelessWidget {
           child: Text(
             label,
             textAlign: TextAlign.center,
-            style: GoogleFonts.manrope(
-              fontSize: 14,
-              fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-              color: active
-                  ? (isDark ? Colors.white : AppColors.lightTextPrimary)
-                  : (isDark
-                      ? Colors.white.withOpacity(0.40)
-                      : AppColors.lightTextSecondary),
-            ),
+            style: AppTextStyles.tabChip(isDark, active: active),
           ),
         ),
       ),
@@ -607,10 +595,6 @@ class _HavenField extends StatelessWidget {
     final bg = isDark
         ? Colors.white.withOpacity(0.10)
         : Colors.black.withOpacity(0.08);
-    final labelColor = isDark
-        ? Colors.white.withOpacity(0.55)
-        : AppColors.lightTextSecondary.withOpacity(0.70);
-    final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
     final hintColor = isDark
         ? Colors.white.withOpacity(0.40)
         : AppColors.lightTextSecondary.withOpacity(0.55);
@@ -630,12 +614,7 @@ class _HavenField extends StatelessWidget {
         children: [
           Text(
             label,
-            style: GoogleFonts.manrope(
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.9,
-              color: labelColor,
-            ),
+            style: AppTextStyles.fieldLabel(isDark),
           ),
           const SizedBox(height: 7),
           Row(
@@ -648,17 +627,10 @@ class _HavenField extends StatelessWidget {
                   obscureText: obscureText,
                   keyboardType: keyboardType,
                   textCapitalization: textCapitalization,
-                  style: GoogleFonts.manrope(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                    color: textColor,
-                  ),
+                  style: AppTextStyles.fieldInput(isDark),
                   decoration: InputDecoration(
                     hintText: hint,
-                    hintStyle: GoogleFonts.manrope(
-                      fontSize: 15,
-                      color: hintColor,
-                    ),
+                    hintStyle: AppTextStyles.fieldInput(isDark).copyWith(color: hintColor),
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsets.zero,

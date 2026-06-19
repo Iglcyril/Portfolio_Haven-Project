@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../auth/auth_page.dart';
 import '../legal/cgu_modal.dart';
 
@@ -196,13 +197,7 @@ class _TitleText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       'Haven',
-      style: GoogleFonts.fraunces(
-        fontSize: 48,
-        fontWeight: FontWeight.w600,
-        color: isDark ? Colors.white : AppColors.lightTextPrimary,
-        letterSpacing: -1.5,
-        height: 0.9,
-      ),
+      style: AppTextStyles.homeTitle(isDark),
     );
   }
 }
@@ -217,13 +212,7 @@ class _SubtitleText extends StatelessWidget {
     return Text(
       'Un espace sûr et confidentiel pour signaler\net traiter le harcèlement.',
       textAlign: TextAlign.center,
-      style: GoogleFonts.manrope(
-        fontSize: 14,
-        color: isDark
-            ? Colors.white.withOpacity(0.65)
-            : AppColors.lightTextSecondary,
-        height: 1.6,
-      ),
+      style: AppTextStyles.body(isDark, height: 1.6),
     );
   }
 }

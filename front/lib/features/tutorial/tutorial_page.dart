@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../user/user_home_page.dart';
 
 class TutorialPage extends StatefulWidget {
@@ -344,13 +345,7 @@ class _Screen1 extends StatelessWidget {
                       position: titleBigSlide,
                       child: Text(
                         'Salut toi !',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 52,
-                          fontWeight: FontWeight.w700,
-                          height: 1.0,
-                          letterSpacing: -1.5,
-                          color: AppColors.lightTextPrimary,
-                        ),
+                        style: AppTextStyles.tutorialBig(),
                       ),
                     ),
                   ),
@@ -361,13 +356,7 @@ class _Screen1 extends StatelessWidget {
                       position: titleSubSlide,
                       child: Text(
                         'Bienvenue sur Haven !',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                          letterSpacing: -0.5,
-                          color: AppColors.primary,
-                        ),
+                        style: AppTextStyles.tutorialSub(AppColors.primary),
                       ),
                     ),
                   ),
@@ -470,13 +459,7 @@ class _Screen2 extends StatelessWidget {
                       position: titleBigSlide,
                       child: Text(
                         'Tu es :',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 52,
-                          fontWeight: FontWeight.w700,
-                          height: 1.0,
-                          letterSpacing: -1.5,
-                          color: AppColors.lightTextPrimary,
-                        ),
+                        style: AppTextStyles.tutorialBig(),
                       ),
                     ),
                   ),
@@ -487,13 +470,7 @@ class _Screen2 extends StatelessWidget {
                       position: titleSubSlide,
                       child: Text(
                         'témoin ou victime\nde harcèlement ?',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                          letterSpacing: -0.5,
-                          color: AppColors.primary,
-                        ),
+                        style: AppTextStyles.tutorialSub(AppColors.primary),
                       ),
                     ),
                   ),
@@ -590,13 +567,7 @@ class _Screen3 extends StatelessWidget {
                       position: titleBigSlide,
                       child: Text(
                         'Une équipe',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 52,
-                          fontWeight: FontWeight.w700,
-                          height: 1.0,
-                          letterSpacing: -1.5,
-                          color: AppColors.lightTextPrimary,
-                        ),
+                        style: AppTextStyles.tutorialBig(),
                       ),
                     ),
                   ),
@@ -607,13 +578,7 @@ class _Screen3 extends StatelessWidget {
                       position: titleSubSlide,
                       child: Text(
                         'prendra en charge ton signalement !',
-                        style: GoogleFonts.fraunces(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
-                          height: 1.2,
-                          letterSpacing: -0.5,
-                          color: AppColors.primary,
-                        ),
+                        style: AppTextStyles.tutorialSub(AppColors.primary),
                       ),
                     ),
                   ),

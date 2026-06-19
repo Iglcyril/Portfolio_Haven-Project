@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../report/confidential_choice_page.dart';
 import 'report_detail_page.dart';
@@ -293,13 +294,7 @@ class _Greeting extends StatelessWidget {
       children: [
         Text(
           'Bonjour, Alex.',
-          style: GoogleFonts.fraunces(
-            fontSize: 34,
-            fontWeight: FontWeight.w800,
-            color: isDark ? Colors.white : AppColors.lightTextPrimary,
-            letterSpacing: -0.5,
-            height: 1.1,
-          ),
+          style: AppTextStyles.heroTitle(isDark),
         ),
         const SizedBox(height: 6),
         Text(
@@ -374,9 +369,9 @@ class _StatCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(value, style: GoogleFonts.fraunces(fontSize: 28, fontWeight: FontWeight.w800, color: valueColor, letterSpacing: -0.5, height: 1.0)),
+          Text(value, style: AppTextStyles.statValueLG(isDark).copyWith(color: valueColor)),
           const SizedBox(height: 4),
-          Text(label, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: labelColor)),
+          Text(label, style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w600).copyWith(color: labelColor)),
         ],
       ),
     );
@@ -406,7 +401,7 @@ class _BreathingCard extends StatelessWidget {
           children: [
             Icon(Icons.self_improvement_rounded, color: AppColors.primary, size: 32),
             const SizedBox(height: 8),
-            Text('Respirer', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+            Text('Respirer', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w600)),
           ],
         ),
       ),
@@ -428,12 +423,7 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           'MES SIGNALEMENTS',
-          style: GoogleFonts.manrope(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
-            letterSpacing: 1.2,
-          ),
+          style: AppTextStyles.sectionLabel(isDark),
         ),
         const Spacer(),
         GestureDetector(
@@ -650,7 +640,7 @@ class _ReportCardState extends State<_ReportCard> {
                             children: [
                               Container(width: 5, height: 5, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
                               const SizedBox(width: 4),
-                              Text(badge, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: color, letterSpacing: 0.3)),
+                              Text(badge, style: AppTextStyles.badge(color)),
                             ],
                           ),
                         ),
@@ -668,7 +658,7 @@ class _ReportCardState extends State<_ReportCard> {
                               children: [
                                 Icon(Icons.timer_outlined, size: 10, color: const Color(0xFFE53935).withValues(alpha: 0.85)),
                                 const SizedBox(width: 3),
-                                Text(_countdownLabel, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w700, color: const Color(0xFFE53935).withValues(alpha: 0.85))),
+                                Text(_countdownLabel, style: AppTextStyles.badge(const Color(0xFFE53935).withValues(alpha: 0.85))),
                               ],
                             ),
                           ),
