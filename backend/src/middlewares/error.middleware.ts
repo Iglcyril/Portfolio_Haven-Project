@@ -20,6 +20,7 @@ export type AppError =
   | 'USER_NOT_FOUND'        // Utilisateur introuvable en base
   | 'DELETE_TIMEOUT'        // Délai d'annulation de 5 minutes dépassé
   | 'STUDENT_NOT_FOUND'  // Aucun étudiant trouvé avec ces informations
+  | 'PARENT_NOT_FOUND'  // Aucun compte parent trouvé avec cet email
 
 /**
  * Table de correspondance : code d'erreur métier → HTTP status + message public.
@@ -34,7 +35,8 @@ const errorMap: Record<AppError, { status: number; message: string }> = {
   REPORT_NOT_FOUND:     { status: 404, message: 'Report not found' },
   USER_NOT_FOUND:       { status: 404, message: 'User not found' },
   DELETE_TIMEOUT:       { status: 403, message: 'Délai d\'annulation dépassé — impossible de supprimer ce signalement' },
-  STUDENT_NOT_FOUND:    { status: 404, message: 'Aucun étudiant trouvé avec ces informations' }
+  STUDENT_NOT_FOUND:    { status: 404, message: 'Aucun étudiant trouvé avec ces informations' },
+  PARENT_NOT_FOUND:     { status: 404, message: 'Aucun compte parent trouvé avec cet email' },
 }
 
 /**

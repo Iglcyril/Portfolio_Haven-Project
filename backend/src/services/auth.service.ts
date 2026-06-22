@@ -7,6 +7,7 @@
  *   - register   → crée un compte et retourne un JWT
  *   - login      → vérifie les credentials et retourne un JWT
  *   - getProfile → retourne le profil d'un utilisateur connecté
+ *   - listStaff  → retourne la liste des superviseurs et admins
  */
 
 import { PrismaClient } from '@prisma/client'
@@ -58,7 +59,6 @@ export const authService = {
         role,
         firstName,
         lastName,
-        // Convertit la date string en objet Date si fournie
         birthDate: birthDate ? new Date(birthDate) : undefined
       },
       select: {
@@ -84,8 +84,6 @@ export const authService = {
   /**
    * Authentifie un utilisateur existant.
    * Lance INVALID_CREDENTIALS si email ou mot de passe incorrect.
-   * Note : le message est volontairement vague pour ne pas révéler
-   * si c'est l'email ou le mot de passe qui est incorrect.
    */
   async login({ email, password }: LoginInput) {
     const user = await prisma.user.findUnique({ where: { email } })
@@ -129,5 +127,23 @@ export const authService = {
     })
     if (!user) throw new Error('USER_NOT_FOUND')
     return user
+  },
+
+  /**
+   * Retourne les comptes ADMIN et SUPERVISOR (équipe interne).
+   * Utilisé par GET /admin/team.
+   */
+  async listStaff() {
+    return prisma.user.findMany({
+      where: { role: { in: ['ADMIN', 'SUPERVISOR'] } },
+      select: {
+        id:        true,
+        email:     true,
+        role:      true,
+        firstName: true,
+        lastName:  true
+      }
+    })
   }
+
 }

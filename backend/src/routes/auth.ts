@@ -27,7 +27,7 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
    * Champs optionnels  : role, firstName, lastName, birthDate
    *
    * Note : pour les STUDENT, firstName, lastName et birthDate
-   * sont nécessaires pour le lien parent/enfant.
+   * sont nécessaires pour le lien parent/enfant via POST /parents/link-child.
    * Format birthDate : YYYY-MM-DD ex: 2010-05-15
    */
   .post('/register', async ({ body, set }) => {

@@ -5,12 +5,11 @@
  * Préfixe : /parents
  *
  * Routes :
- *   GET  /parents/report/:code       → suivi d'un rapport par tracking code
- *   GET  /parents/children/reports   → tous les rapports des enfants liés
- *   POST /parents/contact            → formulaire de contact pour les parents
- *   POST /parents/link-child         → lier un parent à son enfant
- *
- * Connecté à Prisma via reportService.findByTrackingId()
+ *   GET  /parents/report/:code         → suivi d'un rapport (JWT requis)
+ *   GET  /parents/report/:code/summary → résumé complet du signalement (JWT requis)
+ *   GET  /parents/children/reports     → tous les rapports des enfants liés (JWT requis)
+ *   POST /parents/contact              → formulaire de contact (public)
+ *   POST /parents/link-child           → lier un parent à son enfant (JWT requis)
  */
 
 import { Elysia, t } from 'elysia'
@@ -20,6 +19,7 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import { requireAuth, requireParent } from '../middlewares/auth.middleware'
 import { handleError } from '../middlewares/error.middleware'
 import { reportService } from '../services/report.service'
+import { contactService } from '../services/contact.service'
 
 // Prisma v7 — nécessite un adapter explicite pour la connexion PostgreSQL
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
@@ -30,13 +30,14 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
 
   /**
    * GET /parents/report/:code
-   * Réservé : utilisateurs connectés (Parent, Supervisor, Admin)
-   * Retourne le suivi d'un rapport via son tracking code depuis la base.
+   * Réservé : PARENT, SUPERVISOR, ADMIN
+   * Retourne le suivi d'un rapport via son tracking code.
+   * Le parent doit être connecté et lié à l'enfant via POST /parents/link-child.
    *
    * Réponses :
    *   200 → rapport complet
    *   401 → token absent ou invalide
-   *   403 → accès refusé
+   *   403 → accès refusé (pas lié à cet enfant)
    *   404 → rapport introuvable
    */
   .get('/report/:code', async ({ params, bearer, set }) => {
@@ -51,10 +52,49 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
   })
 
   /**
+   * GET /parents/report/:code/summary
+   * Réservé : PARENT, SUPERVISOR, ADMIN
+   * Retourne le résumé complet du signalement.
+   * Le parent doit être connecté et lié à l'enfant.
+   *
+   * Réponses :
+   *   200 → résumé complet
+   *   401 → token absent ou invalide
+   *   403 → accès refusé
+   *   404 → rapport introuvable
+   */
+  .get('/report/:code/summary', async ({ params, bearer, set }) => {
+    try {
+      const { userId, role } = requireAuth(bearer ?? '')
+      // Vérifie d'abord que le parent a accès au rapport
+      await reportService.findByTrackingId(params.code, userId, role)
+      // Puis retourne le résumé complet
+      const report = await reportService.getSummary(params.code)
+      return {
+        trackingCode:     report.trackingId,
+        role:             report.type,
+        category:         report.categorie,
+        anonymat_level:   report.anonymatLevel,
+        report_status:    report.status,
+        is_crisis:        report.crisisDetected,
+        establishment_id: report.etablissementId,
+        initial_feeling:  report.summary?.initialFeeling ?? null,
+        mood:             report.summary?.mood ?? null,
+        adult_contact:    report.summary?.adultContact ?? null,
+        contact_team:     report.summary?.contactTeam ?? null,
+        savedAt:          report.summary?.updatedAt ?? report.updatedAt
+      }
+    } catch (e) {
+      const { status, body } = handleError(e)
+      set.status = status
+      return body
+    }
+  })
+
+  /**
    * GET /parents/children/reports
    * Réservé : PARENT
    * Retourne automatiquement tous les rapports des enfants liés au parent connecté.
-   * Le parent n'a pas besoin du tracking code.
    *
    * Réponses :
    *   200 → liste des rapports des enfants
@@ -65,7 +105,6 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
     try {
       const { userId } = requireParent(bearer ?? '')
 
-      // Récupère tous les enfants liés au parent avec leurs rapports
       const children = await prisma.user.findMany({
         where: { parentId: userId },
         select: {
@@ -84,19 +123,14 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
               severity:       true,
               crisisDetected: true,
               createdAt:      true,
-              updatedAt:      true,
-              // On ne retourne pas le contenu — données sensibles
-              messages:       false
+              updatedAt:      true
             }
           }
         }
       })
 
       if (children.length === 0) {
-        return {
-          message:  'Aucun enfant lié à ce compte',
-          children: []
-        }
+        return { message: 'Aucun enfant lié à ce compte', children: [] }
       }
 
       return {
@@ -122,26 +156,21 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
    * POST /parents/contact
    * Public — pas de JWT requis
    * Permet à un parent de contacter l'équipe de suivi.
-   * À faire : envoyer un email à l'équipe de suivi
+   * Le message est sauvegardé en base via contactService.
    *
    * Réponses :
-   *   200 → message envoyé
+   *   200 → message envoyé et sauvegardé
    *   422 → body invalide
    */
   .post('/contact', async ({ body, set }) => {
     try {
-      const { parentName, parentEmail, message } = body
-
-      // À faire : envoyer un email à l'équipe de suivi
-      // ex: sendEmail({ to: 'equipe@haven.fr', from: parentEmail, body: message })
-
+      const saved = await contactService.create(body)
       return {
         message:     'Merci pour votre message. Nous allons vous contacter sous peu.',
-        parentName,
-        parentEmail,
-        sentAt: new Date().toISOString()
+        parentName:  saved.parentName,
+        parentEmail: saved.parentEmail,
+        sentAt:      saved.createdAt
       }
-
     } catch (e) {
       const { status, body } = handleError(e)
       set.status = status
@@ -160,7 +189,6 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
    * Réservé : PARENT
    * Permet à un parent de lier son compte à son enfant via
    * prénom, nom et date de naissance.
-   * Si l'étudiant est trouvé → lien créé automatiquement.
    *
    * Réponses :
    *   200 → lien créé avec succès
@@ -172,7 +200,6 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
     try {
       const { userId } = requireParent(bearer ?? '')
 
-      // Cherche l'étudiant correspondant en base
       const student = await prisma.user.findFirst({
         where: {
           firstName: body.firstName,
@@ -184,7 +211,6 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
 
       if (!student) throw new Error('STUDENT_NOT_FOUND')
 
-      // Crée le lien parent → enfant
       await prisma.user.update({
         where: { id: student.id },
         data:  { parentId: userId }

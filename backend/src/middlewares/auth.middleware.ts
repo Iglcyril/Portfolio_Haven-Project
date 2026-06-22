@@ -8,20 +8,19 @@
  *   - verifyToken       → vérifie et décode un JWT brut
  *   - requireRole       → vérifie le token ET le rôle autorisé
  *   - requireAuth       → autorise tous les rôles (juste connecté)
- *   - requireStudent    → autorise Student uniquement
  *   - requireSupervisor → autorise Supervisor uniquement
  *   - requireAdmin      → autorise Admin uniquement
  *   - requireParent     → autorise Parent uniquement
+ *   - requireStaff      → autorise Supervisor et Admin (staff pédagogique)
  */
 
 import jwt from 'jsonwebtoken'
 
 const JWT_SECRET = process.env.JWT_SECRET!
 
-// Contenu décodé d'un token JWT Haven
 export type JWTPayload = {
   userId: string
-  role: 'STUDENT' | 'ADMIN' | 'SUPERVISOR' | 'PARENT'
+  role: 'STUDENT' | 'SUPERVISOR' | 'ADMIN' | 'PARENT'
 }
 
 /**
@@ -40,13 +39,10 @@ export function verifyToken(token: string): JWTPayload {
  * Vérifie le token ET s'assure que le rôle de l'utilisateur
  * fait partie des rôles autorisés passés en paramètre.
  * Lance FORBIDDEN si le rôle n'est pas dans la liste.
- *
- * @param token        - Le bearer token extrait du header Authorization
- * @param allowedRoles - Liste des rôles qui peuvent accéder à cette route
  */
 export function requireRole(
   token: string,
-  allowedRoles: Array<'STUDENT' | 'ADMIN' | 'SUPERVISOR' | 'PARENT'>
+  allowedRoles: Array<'STUDENT' | 'SUPERVISOR' | 'ADMIN' | 'PARENT'>
 ): JWTPayload {
   const payload = verifyToken(token)
 
@@ -59,13 +55,9 @@ export function requireRole(
 
 // --- Raccourcis à utiliser directement dans les routes ---
 
-/** Toute personne connectée (Student, Admin, Supervisor ou Parent) */
+/** Toute personne connectée (Student, Supervisor, Admin ou Parent) */
 export const requireAuth = (t: string) =>
-  requireRole(t, ['STUDENT', 'ADMIN', 'SUPERVISOR', 'PARENT'])
-
-/** Réservé aux étudiants */
-export const requireStudent = (t: string) =>
-  requireRole(t, ['STUDENT'])
+  requireRole(t, ['STUDENT', 'SUPERVISOR', 'ADMIN', 'PARENT'])
 
 /** Réservé aux superviseurs (psychologues, staff pédagogique) */
 export const requireSupervisor = (t: string) =>
@@ -78,3 +70,7 @@ export const requireAdmin = (t: string) =>
 /** Réservé aux parents */
 export const requireParent = (t: string) =>
   requireRole(t, ['PARENT'])
+
+/** Réservé au staff pédagogique (Supervisor ET Admin) */
+export const requireStaff = (t: string) =>
+  requireRole(t, ['SUPERVISOR', 'ADMIN'])

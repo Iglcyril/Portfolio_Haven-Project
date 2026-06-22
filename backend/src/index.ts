@@ -28,7 +28,7 @@ import { authRoutes } from './routes/auth'
 import { adminRoutes } from './routes/admin'
 import { parentsRoutes } from './routes/parents'
 import { reportsRoutes } from './routes/reports'
-// import { chatRoutes } from './routes/chat.routes' → à ajouter quand Haven Lab fournit leur API
+// import { chatRoutes } from './routes/chat' → à ajouter quand Haven Lab fournit leur API
 
 // --- Validation des variables d'environnement ---
 const requiredEnv = ['DATABASE_URL', 'JWT_SECRET']
@@ -41,8 +41,13 @@ for (const key of requiredEnv) {
 
 const app = new Elysia()
 
+  // CORS — autorise les requêtes depuis le frontend Flutter
   .use(cors())
+
+  // Bearer — extrait le token du header Authorization: Bearer <token>
   .use(bearer())
+
+  // Swagger — documentation interactive accessible sur /swagger
   .use(swagger({
     documentation: {
       info: {
@@ -64,12 +69,13 @@ const app = new Elysia()
   }))
 
   // --- Routes ---
-  .use(authRoutes)    // /api/auth/*    → authentification
-  .use(adminRoutes)   // /api/admin/*   → administration
-  .use(parentsRoutes) // /api/parents/* → suivi parents
-  .use(reportsRoutes) // /api/reports/* → signalements
-  // .use(chatRoutes) // /api/chat/*    → chatbot Haven Lab (à venir)
+  .use(authRoutes)    // /auth/*     → authentification
+  .use(adminRoutes)   // /admin/*    → administration
+  .use(parentsRoutes) // /parents/*  → suivi parents
+  .use(reportsRoutes) // /reports/*  → signalements
+  // .use(chatRoutes) // /chat/*     → chatbot Haven Lab (à venir)
 
+  // Health check
   .get('/health', () => ({ status: 'ok', project: 'Haven', version: '0.1.0' }))
 
   .listen(process.env.PORT ?? 3000)

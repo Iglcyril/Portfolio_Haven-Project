@@ -26,11 +26,11 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
 const prisma = new PrismaClient({ adapter })
 
 export type CreateReportInput = {
-  userId:           string
+  userId?:          string  // Absent si signalement anonyme via le chatbot (pas de compte)
   type:             'victime' | 'temoin'
   category:         Categorie
   anonymatLevel:    AnonymatLevel
-  contenu:          string
+  contenu?:         string  // Peut être envoyé plus tard via addDeposition (flow chatbot en plusieurs étapes)
   establishment_id: string
   crisisDetected:   boolean
 }
@@ -41,6 +41,21 @@ export type UpdateStatusInput = {
 
 export type UpdateSeverityInput = {
   severity: Severity
+}
+
+export type SaveSummaryInput = {
+  classLevel?:           string
+  identity?:             string
+  initialFeeling?:       string
+  mood?:                 string
+  adultContact?:         string
+  contactTeam?:          string
+  witnessContext?:       string
+  victimInfo?:           string
+  victimIdentity?:       string
+  bullyInfo?:            string
+  bullyIdentity?:        string
+  situationDescription?: string
 }
 
 export const reportService = {
@@ -152,8 +167,8 @@ export const reportService = {
     // STUDENT → uniquement ses propres rapports
     if (role === 'STUDENT' && report.userId === userId) return report
 
-    // PARENT → uniquement les rapports de ses enfants liés
-    if (role === 'PARENT' && report.user.parentId === userId) return report
+    // PARENT → uniquement les rapports de ses enfants liés (signalement anonyme = jamais visible par un parent)
+    if (role === 'PARENT' && report.user?.parentId === userId) return report
 
     throw new Error('FORBIDDEN')
   },
@@ -188,6 +203,103 @@ export const reportService = {
       data:  { severity },
       select: { id: true, trackingId: true, severity: true, updatedAt: true }
     })
+  },
+
+  /**
+   * Ajoute la déposition complète de l'étudiant (message) à un rapport existant.
+   * Met à jour crisisDetected si des mots clés sont détectés, et fait avancer
+   * le statut de EN_ATTENTE vers EN_COURS.
+   * Lance REPORT_NOT_FOUND si le trackingId n'existe pas.
+   */
+  async addDeposition(trackingId: string, content: string, crisisDetected: boolean) {
+    const report = await prisma.report.findUnique({ where: { trackingId } })
+    if (!report) throw new Error('REPORT_NOT_FOUND')
+
+    await prisma.chatMessage.create({
+      data: { reportId: report.id, sender: 'USER', content }
+    })
+
+    return prisma.report.update({
+      where: { trackingId },
+      data: {
+        crisisDetected: report.crisisDetected || crisisDetected,
+        status: report.status === ReportStatus.EN_ATTENTE ? ReportStatus.EN_COURS : report.status
+      },
+      select: { trackingId: true, status: true, crisisDetected: true, updatedAt: true }
+    })
+  },
+
+  /**
+   * Retourne les informations publiques d'un rapport via son trackingId,
+   * sans authentification (parcours parent par code de suivi).
+   * Lance REPORT_NOT_FOUND si le trackingId n'existe pas.
+   */
+  async findPublicByTrackingId(trackingId: string) {
+    const report = await prisma.report.findUnique({
+      where: { trackingId },
+      select: { trackingId: true, status: true, categorie: true }
+    })
+    if (!report) throw new Error('REPORT_NOT_FOUND')
+    return report
+  },
+
+  /**
+   * Sauvegarde (ou met à jour) le résumé narratif détaillé d'un rapport,
+   * collecté par le chatbot. Ne touche jamais aux champs déjà gérés par
+   * create()/addDeposition() (categorie, anonymatLevel, crisisDetected...)
+   * pour éviter qu'une donnée fiable soit écrasée par une valeur de webhook.
+   * Lance REPORT_NOT_FOUND si le trackingId n'existe pas.
+   */
+  async saveSummary(trackingId: string, data: SaveSummaryInput) {
+    const report = await prisma.report.findUnique({ where: { trackingId } })
+    if (!report) throw new Error('REPORT_NOT_FOUND')
+
+    return prisma.reportSummary.upsert({
+      where: { reportId: report.id },
+      create: { reportId: report.id, ...data },
+      update: data
+    })
+  },
+
+  /**
+   * Retourne le résumé complet d'un rapport (champs du Report + ReportSummary associé).
+   * Utilisé par GET /admin/reports/:id/summary et GET /parents/report/:code/summary.
+   * Lance REPORT_NOT_FOUND si le trackingId n'existe pas.
+   */
+  async getSummary(trackingId: string) {
+    const report = await prisma.report.findUnique({
+      where: { trackingId },
+      include: { summary: true }
+    })
+    if (!report) throw new Error('REPORT_NOT_FOUND')
+    return report
+  },
+
+  /**
+   * Assigne un référent (SUPERVISOR ou ADMIN) à un rapport.
+   * Lance REPORT_NOT_FOUND si le rapport n'existe pas,
+   * USER_NOT_FOUND si le referentId ne correspond à aucun membre du staff.
+   */
+  async assign(trackingId: string, referentId: string) {
+    const report = await prisma.report.findUnique({ where: { trackingId } })
+    if (!report) throw new Error('REPORT_NOT_FOUND')
+
+    const referent = await prisma.user.findFirst({
+      where: { id: referentId, role: { in: ['ADMIN', 'SUPERVISOR'] } }
+    })
+    if (!referent) throw new Error('USER_NOT_FOUND')
+
+    await prisma.report.update({
+      where: { trackingId },
+      data: { assignedToId: referent.id }
+    })
+
+    return {
+      trackingCode: trackingId,
+      referent_id: referent.id,
+      referent_name: [referent.firstName, referent.lastName].filter(Boolean).join(' ') || referent.email,
+      assignedAt: new Date().toISOString()
+    }
   },
 
   /**
