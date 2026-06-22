@@ -1,17 +1,9 @@
 import { Elysia, t } from "elysia"
- 
-// creation of tracking number
-function generateTrackingCode(): string {
-	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	const randomPart = (length: number) =>
-    Array.from({ length }, () =>
-      chars[Math.floor(Math.random() * chars.length)]
-    ).join("")
- 
-// HVN-XXXX-XXXX => HVN pour Haven, suivi de 8 caractères alphanumériques divisés en deux groupes de 4 pour faciliter la lecture
-  return `HVN-${randomPart(4)}-${randomPart(4)}`
-}
- 
+import { bearer } from "@elysiajs/bearer"
+import { requireAuth } from "../middlewares/auth.middleware"
+import { handleError } from "../middlewares/error.middleware"
+import { reportService } from "../services/report.service"
+
 // création d'une liste de mots clés pour déclencher une alerte, à compléter prendre en compte niveau orthographe.
 const alertKeywords = ["suicide", "me suicider", "me tuer", "je veux mourir", "je ne veux plus vivre", "je veux me faire du mal"
 	, "je veux me tuer", "en finir", "violer", "viol",  
@@ -49,68 +41,96 @@ const reportCategories = t.Union([
  
 // traitement d'un nouveau signalement avec génération du suivi et détection mots clés
 export const reportsRoutes = new Elysia({ prefix: "/reports" })
-  .post("/", ({ body }) => {
-    const trackingCode = generateTrackingCode()
-	const crisisAlert = containsAlertKeywords(body.contenu)
-	return {
-		trackingCode,
-		statut: "recu",
-		crisisDetected: crisisAlert,
-		createdAt: new Date().toISOString(),
-		// si mots clés détectés, on ajoute numéro urgence avec message réconfortant
-		...(crisisAlert && {
-			urgence: {
-				message: "Tu n'es pas seul (e), Contacte immédiatement :",
-				numero: [
-					{ nom: "Prévention suicide", numero: "3114" },
-					{ nom: "Enfance en danger", numero: "119" },
-					{ nom: "Cyberharcèlement", numero: "3018" },
-					{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
-				]
-			}
+  .use(bearer())
+  // Pas d'authentification obligatoire : le chatbot crée des signalements anonymes, sans compte.
+  // Si un bearer valide est fourni (utilisateur connecté), le rapport lui est rattaché.
+  .post("/", async ({ body, bearer, set }) => {
+	try {
+		let userId: string | undefined
+		if (bearer) {
+			try { userId = requireAuth(bearer).userId } catch { /* token absent ou invalide : signalement anonyme */ }
+		}
+
+		const crisisAlert = body.contenu ? containsAlertKeywords(body.contenu) : false
+
+		const report = await reportService.create({
+			userId,
+			type: body.type,
+			category: body.categorie,
+			anonymatLevel: body.anonymat_level,
+			contenu: body.contenu,
+			establishment_id: body.etablissement_id,
+			crisisDetected: crisisAlert
 		})
+
+		return {
+			trackingCode: report.trackingId,
+			statut: report.status,
+			crisisDetected: report.crisisDetected,
+			createdAt: report.createdAt,
+			// si mots clés détectés, on ajoute numéro urgence avec message réconfortant
+			...(crisisAlert && {
+				urgence: {
+					message: "Tu n'es pas seul (e), Contacte immédiatement :",
+					numero: [
+						{ nom: "Prévention suicide", numero: "3114" },
+						{ nom: "Enfance en danger", numero: "119" },
+						{ nom: "Cyberharcèlement", numero: "3018" },
+						{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
+					]
+				}
+			})
+		}
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
   },{
     // Validation des données entrantes
     body: t.Object({
       type: reportType,
       anonymat_level: anonymatLevel,
-      contenu: t.String({ minLength: 10 }),
+      // Optionnel : le chatbot crée d'abord le signalement vide, le contenu arrive ensuite via POST /:code
+      contenu: t.Optional(t.String({ minLength: 10 })),
       categorie: reportCategories,
       etablissement_id: t.String()
     })
   })
  
   // Mise à jour de la déposition après soumission du signalement
-  // A faire : remplacer par prisma.report.update({ where: { trackingId: code }, data: { content } })
-  .patch("/:code", ({ params, body, set }) => {
+  // En POST (et non PATCH) : c'est la méthode envoyée par le webhook du chatbot Typebot.
+  // Pas d'authentification : même logique que POST / (signalement anonyme possible, accessible par trackingCode)
+  .post("/:code", async ({ params, body, set }) => {
 	const { code } = params
- 
-	// Vérification format du code
-	if (!code.startsWith("HVN-")) {
-		set.status = 404
-		return { error: "Signalement non trouvé" }
-	}
- 
-	const crisisAlert = containsAlertKeywords(body.content)
- 
-	return {
-		trackingCode: code,
-		statut: "deposition_reçue",
-		crisisDetected: crisisAlert,
-		updatedAt: new Date().toISOString(),
-		// si mots clés détectés dans la déposition, on renvoie les numéros d'urgence
-		...(crisisAlert && {
-			urgence: {
-				message: "Tu n'es pas seul(e), Contacte immédiatement :",
-				numero: [
-					{ nom: "Prévention suicide", numero: "3114" },
-					{ nom: "Enfance en danger", numero: "119" },
-					{ nom: "Cyberharcèlement", numero: "3018" },
-					{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
-				]
-			}
-		})
+
+	try {
+		const crisisAlert = containsAlertKeywords(body.content)
+
+		const report = await reportService.addDeposition(code, body.content, crisisAlert)
+
+		return {
+			trackingCode: report.trackingId,
+			statut: report.status,
+			crisisDetected: report.crisisDetected,
+			updatedAt: report.updatedAt,
+			// si mots clés détectés dans la déposition, on renvoie les numéros d'urgence
+			...(report.crisisDetected && {
+				urgence: {
+					message: "Tu n'es pas seul(e), Contacte immédiatement :",
+					numero: [
+						{ nom: "Prévention suicide", numero: "3114" },
+						{ nom: "Enfance en danger", numero: "119" },
+						{ nom: "Cyberharcèlement", numero: "3018" },
+						{ nom: "Pour les personnes sourd-aveugles", numero: "114" },
+					]
+				}
+			})
+		}
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
   }, {
 	// Validation des données entrantes
@@ -121,51 +141,66 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
  
   // Sauvegarde du résumé complet du signalement pour l'équipe pédagogique
   // A faire : remplacer par prisma.report.update({ where: { trackingId: code }, data: { ...body } })
+  // Noms de champs alignés sur ce que le webhook du chatbot Typebot envoie réellement (variantes "victime/témoin")
   .post("/:code/summary", ({ params, body, set }) => {
 	const { code } = params
- 
+
 	// Vérification format du code
 	if (!code.startsWith("HVN-")) {
 		set.status = 404
 		return { error: "Signalement non trouvé" }
 	}
- 
+
 	return {
 		trackingCode: code,
-		statut: "resume_enregistre",
+		statut: "EN_COURS",
 		savedAt: new Date().toISOString(),
 		data: {
 			role: body.role,
-			report_type: body.report_type,
+			type_signalement: body.type_signalement,
 			anonymat_level: body.anonymat_level,
-			class_level: body.class_level,
-			identity: body.identity,
+			classe: body.classe,
+			identite: body.identite,
 			category: body.category,
-			initial_feeling: body.initial_feeling,
-			report_status: body.report_status,
-			mood: body.mood,
+			ressenti_initial: body.ressenti_initial,
+			statut: body.statut,
+			humeur: body.humeur,
 			is_crisis: body.is_crisis,
-			adult_contact: body.adult_contact,
-			contact_team: body.contact_team,
+			contact_adulte: body.contact_adulte,
+			interpeller_equipe: body.interpeller_equipe,
 			establishment_id: body.establishment_id,
+			contexte_vu: body.contexte_vu,
+			infos_victime: body.infos_victime,
+			identite_victime: body.identite_victime,
+			infos_harceleur: body.infos_harceleur,
+			identite_harceleur: body.identite_harceleur,
+			description_situation: body.description_situation,
 		}
 	}
   }, {
-	// Validation des données entrantes tous les champs optionnels car certains peuvent être vides selon le parcours
+	// Validation des données entrantes : tout est optionnel car les deux variantes du chatbot
+	// (signalement en tant que victime/témoin) n'envoient pas exactement les mêmes champs
 	body: t.Object({
+		tracking_code: t.Optional(t.String()),
 		role: t.Optional(t.String()),
-		report_type: t.Optional(t.String()),
+		type_signalement: t.Optional(t.String()),
 		anonymat_level: t.Optional(t.String()),
-		class_level: t.Optional(t.String()),
-		identity: t.Optional(t.String()),
+		classe: t.Optional(t.String()),
+		identite: t.Optional(t.String()),
 		category: t.Optional(t.String()),
-		initial_feeling: t.Optional(t.String()),
-		report_status: t.Optional(t.String()),
-		mood: t.Optional(t.String()),
+		ressenti_initial: t.Optional(t.String()),
+		statut: t.Optional(t.String()),
+		humeur: t.Optional(t.String()),
 		is_crisis: t.Optional(t.String()),
-		adult_contact: t.Optional(t.String()),
-		contact_team: t.Optional(t.String()),
+		contact_adulte: t.Optional(t.String()),
+		interpeller_equipe: t.Optional(t.String()),
 		establishment_id: t.Optional(t.String()),
+		contexte_vu: t.Optional(t.String()),
+		infos_victime: t.Optional(t.String()),
+		identite_victime: t.Optional(t.String()),
+		infos_harceleur: t.Optional(t.String()),
+		identite_harceleur: t.Optional(t.String()),
+		description_situation: t.Optional(t.String()),
 	})
   })
  
