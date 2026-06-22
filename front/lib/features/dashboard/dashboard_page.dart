@@ -183,8 +183,19 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
+  static String _categorieLabel(String categorie) => switch (categorie) {
+    'harcelement_scolaire' => 'Harcèlement scolaire',
+    'violence_physique'    => 'Violence physique',
+    'violence_verbale'     => 'Violence verbale',
+    'cyberharcelement'     => 'Cyberharcèlement',
+    'discrimination'       => 'Discrimination',
+    'mal_etre'             => 'Mal-être',
+    _                      => 'Autre',
+  };
+
   ReportItem _toItem(ApiReport r) {
     final date = '${r.createdAt.day} ${_months[r.createdAt.month - 1]}';
+    final typeLabel = r.type == 'temoin' ? 'Témoin' : 'Victime';
     return ReportItem(
       caseNumber: r.trackingId,
       priority: r.severity == 'ELEVE'
@@ -192,9 +203,7 @@ class _DashboardPageState extends State<DashboardPage> {
           : r.severity == 'MOYEN'
               ? ReportPriority.medium
               : ReportPriority.low,
-      title: r.type == 'victime'
-          ? 'Victime de harcèlement'
-          : 'Témoin de harcèlement',
+      title: '${_categorieLabel(r.categorie)} · $typeLabel',
       date: date,
       counselor: r.assignedTo?.fullName ?? 'Non assigné',
       status: switch (r.status) {
@@ -207,7 +216,7 @@ class _DashboardPageState extends State<DashboardPage> {
         'partiel' => 'Semi-anonyme',
         _ => 'Identité visible',
       },
-      initialText: '',
+      initialText: r.deposition ?? '',
       submittedAt: r.createdAt,
       actions: const [],
     );

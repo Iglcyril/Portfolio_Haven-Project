@@ -108,6 +108,12 @@ export const reportService = {
       }
     })
 
+    if (contenu) {
+      await prisma.chatMessage.create({
+        data: { reportId: report.id, sender: 'USER', content: contenu }
+      })
+    }
+
     return report
   },
 
@@ -137,6 +143,12 @@ export const reportService = {
         userId: ['SUPERVISOR', 'ADMIN'].includes(role) ? true : false,
         assignedTo: {
           select: { id: true, firstName: true, lastName: true, email: true }
+        },
+        messages: {
+          take: 1,
+          where: { sender: 'USER' },
+          orderBy: { createdAt: 'asc' },
+          select: { content: true }
         }
       }
     })

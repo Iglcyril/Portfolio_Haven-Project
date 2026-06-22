@@ -39,6 +39,7 @@ class ApiReport {
   final String severity;      // 'BAS' | 'MOYEN' | 'ELEVE'
   final DateTime createdAt;
   final ApiAssignee? assignedTo;
+  final String? deposition;
 
   const ApiReport({
     required this.id,
@@ -51,9 +52,15 @@ class ApiReport {
     required this.severity,
     required this.createdAt,
     this.assignedTo,
+    this.deposition,
   });
 
-  factory ApiReport.fromJson(Map<String, dynamic> j) => ApiReport(
+  factory ApiReport.fromJson(Map<String, dynamic> j) {
+    final msgs = j['messages'] as List?;
+    final deposition = msgs != null && msgs.isNotEmpty
+        ? (msgs[0] as Map<String, dynamic>)['content'] as String?
+        : null;
+    return ApiReport(
         id: j['id'] as String,
         trackingId: j['trackingId'] as String,
         type: j['type'] as String,
@@ -66,7 +73,9 @@ class ApiReport {
         assignedTo: j['assignedTo'] != null
             ? ApiAssignee.fromJson(j['assignedTo'] as Map<String, dynamic>)
             : null,
-      );
+        deposition: deposition,
+    );
+  }
 }
 
 class ApiChild {

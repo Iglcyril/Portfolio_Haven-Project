@@ -286,16 +286,40 @@ class _ChatPageState extends State<ChatPage> {
     AnonLevel.none    => 'pas_anonyme',
   };
 
+  String _detectType() {
+    for (final m in _messages.where((m) => !m.isBot && m.text != null)) {
+      final t = m.text!.toLowerCase();
+      if (t.contains('subi')) return 'victime';
+      if (t.contains('vu')) return 'temoin';
+    }
+    return 'victime';
+  }
+
+  String _detectCategorie() {
+    for (final m in _messages.where((m) => !m.isBot && m.text != null)) {
+      final t = m.text!.toLowerCase();
+      if (t.contains('discrimination'))               return 'discrimination';
+      if (t.contains('cyber'))                        return 'cyberharcelement';
+      if (t.contains('physique'))                     return 'violence_physique';
+      if (t.contains('verbale'))                      return 'violence_verbale';
+      if (t.contains('mal'))                          return 'mal_etre';
+      if (t.contains('harc') || t.contains('harcè')) return 'harcelement_scolaire';
+    }
+    return 'autre';
+  }
+
   Future<void> _createReport() async {
-    final userText = _messages
+    final userTexts = _messages
         .where((m) => !m.isBot && m.text != null)
         .map((m) => m.text!)
-        .join(' | ');
+        .join('\n');
 
     try {
       await ApiClient.post('/reports', {
         'anonymat_level': _anonLevelStr,
-        if (userText.length >= 10) 'contenu': userText,
+        'type':           _detectType(),
+        'categorie':      _detectCategorie(),
+        if (userTexts.length >= 10) 'contenu': userTexts,
       });
     } catch (_) {}
   }
