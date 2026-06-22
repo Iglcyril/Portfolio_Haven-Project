@@ -35,6 +35,7 @@ class _Msg {
 class ChatPage extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final AnonLevel anonLevel;
+  final String reportType;
   final VoidCallback onSend;
   final String userName;
   final String userInitials;
@@ -43,6 +44,7 @@ class ChatPage extends StatefulWidget {
     super.key,
     required this.onToggleTheme,
     required this.anonLevel,
+    required this.reportType,
     required this.onSend,
     this.userName = 'Utilisateur',
     this.userInitials = '?',
@@ -65,9 +67,24 @@ class _ChatPageState extends State<ChatPage> {
   String? _sessionId;
   List<String> _choiceItems = [];
   late final DateTime _openedAt;
+  bool _nextUserMsgIsDeposition = false;
+  String? _depositionText;
 
   static const _typebotId = 'my-typebot-9nx8sja';
   static const _typebotBase = 'https://typebot.co/api/v1';
+
+  static const _depositionInputIds = {
+    // Victime — "lache toi" (4 branches)
+    'u72984u5v2hsk4mertwnmusy',
+    'zmzs11vcb5blip76iq1duy6q',
+    'vd950kgass4bfwxgr5iwjqn4',
+    'dak9jt1u7cxeij726ndwpfu8',
+    // Témoin — "décris moi la situation" (4 branches)
+    'yu4rbgx951gh4zbo8f7gvn2a',
+    'oy840bapvcxnjepe01v0ekhd',
+    'd0icmwix9txp71h0a1e9j9hm',
+    'hwf5f311ia6xgyv1rofd4yz7',
+  };
 
   final List<_Msg> _messages = [];
 
@@ -153,12 +170,16 @@ class _ChatPageState extends State<ChatPage> {
           .toList();
     }
 
+    final inputId = input?['id'] as String?;
     setState(() {
       for (final t in texts) {
         _messages.add(_Msg(text: t, isBot: true, time: DateTime.now()));
       }
       _choiceItems = choices;
       _botTyping = false;
+      if (inputId != null && _depositionInputIds.contains(inputId)) {
+        _nextUserMsgIsDeposition = true;
+      }
     });
     for (final t in texts) {
       _tryLinkReport(t);
@@ -227,6 +248,10 @@ class _ChatPageState extends State<ChatPage> {
         media: media,
         isVideo: isVideo,
       ));
+      if (_nextUserMsgIsDeposition && content.isNotEmpty) {
+        _depositionText = content;
+        _nextUserMsgIsDeposition = false;
+      }
       if (text == null) _textCtrl.clear();
     });
     _scrollToBottom();
@@ -286,15 +311,6 @@ class _ChatPageState extends State<ChatPage> {
     AnonLevel.none    => 'pas_anonyme',
   };
 
-  String _detectType() {
-    for (final m in _messages.where((m) => !m.isBot && m.text != null)) {
-      final t = m.text!.toLowerCase();
-      if (t.contains('subi')) return 'victime';
-      if (t.contains('vu')) return 'temoin';
-    }
-    return 'victime';
-  }
-
   String _detectCategorie() {
     for (final m in _messages.where((m) => !m.isBot && m.text != null)) {
       final t = m.text!.toLowerCase();
@@ -309,17 +325,13 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _createReport() async {
-    final userTexts = _messages
-        .where((m) => !m.isBot && m.text != null)
-        .map((m) => m.text!)
-        .join('\n');
-
     try {
       await ApiClient.post('/reports', {
         'anonymat_level': _anonLevelStr,
-        'type':           _detectType(),
+        'type':           widget.reportType,
         'categorie':      _detectCategorie(),
-        if (userTexts.length >= 10) 'contenu': userTexts,
+        if (_depositionText != null && _depositionText!.length >= 10)
+          'contenu': _depositionText,
       });
     } catch (_) {}
   }

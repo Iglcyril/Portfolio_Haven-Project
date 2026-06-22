@@ -14,7 +14,8 @@ import '../chat/report_submitted_page.dart';
 
 class ConfidentialChoicePage extends StatefulWidget {
   final VoidCallback onToggleTheme;
-  const ConfidentialChoicePage({super.key, required this.onToggleTheme});
+  final String reportType;
+  const ConfidentialChoicePage({super.key, required this.onToggleTheme, required this.reportType});
 
   @override
   State<ConfidentialChoicePage> createState() => _ConfidentialChoicePageState();
@@ -98,6 +99,7 @@ class _ConfidentialChoicePageState extends State<ConfidentialChoicePage> {
                                         builder: (_) => ChatPage(
                                           onToggleTheme: widget.onToggleTheme,
                                           anonLevel: _selected!,
+                                          reportType: widget.reportType,
                                           userName: AuthService.currentUser?.fullName ?? 'Utilisateur',
                                           userInitials: _UserBar._initials(AuthService.currentUser?.fullName),
                                           onSend: () => Navigator.of(context).push(

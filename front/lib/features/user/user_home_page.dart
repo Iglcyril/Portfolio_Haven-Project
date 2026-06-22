@@ -50,6 +50,7 @@ class UserHomePage extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (_) => ConfidentialChoicePage(
                               onToggleTheme: onToggleTheme,
+                              reportType: 'victime',
                             ),
                           ),
                         ),
@@ -65,6 +66,7 @@ class UserHomePage extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (_) => ConfidentialChoicePage(
                               onToggleTheme: onToggleTheme,
+                              reportType: 'temoin',
                             ),
                           ),
                         ),

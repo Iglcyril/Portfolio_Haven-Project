@@ -222,6 +222,25 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  Future<void> _openNewReport() async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final reportType = await showModalBottomSheet<String>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _ReportTypeSheet(isDark: isDark),
+    );
+    if (reportType == null || !mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => ConfidentialChoicePage(
+          onToggleTheme: widget.onToggleTheme,
+          reportType: reportType,
+        ),
+      ),
+    );
+    if (mounted) _fetchReports();
+  }
+
   void _archiveReport(ReportItem report) {
     setState(() => _reports.remove(report));
   }
@@ -290,13 +309,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       const SizedBox(height: 28),
                                       _SectionHeader(
                                         isDark: isDark,
-                                        onNewReport: () => Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) => ConfidentialChoicePage(
-                                              onToggleTheme: widget.onToggleTheme,
-                                            ),
-                                          ),
-                                        ).then((_) => _fetchReports()),
+                                        onNewReport: _openNewReport,
                                       ),
                                       const SizedBox(height: 12),
                                       if (_reports.isEmpty)
@@ -694,9 +707,30 @@ class _ReportCardState extends State<_ReportCard> {
                             ],
                           ),
                         ),
-                        // Badge countdown
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.report.title,
+                      style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.4, height: 1.2),
+                    ),
+                    const SizedBox(height: 5),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.08),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            widget.report.anonLabel,
+                            style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
+                          ),
+                        ),
                         if (_canDelete) ...[
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                             decoration: BoxDecoration(
@@ -714,23 +748,6 @@ class _ReportCardState extends State<_ReportCard> {
                           ),
                         ],
                       ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.report.title,
-                      style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.4, height: 1.2),
-                    ),
-                    const SizedBox(height: 5),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.08),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        widget.report.anonLabel,
-                        style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
-                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -883,5 +900,116 @@ class _ProgressTracker extends StatelessWidget {
 
   Widget _line(bool filled, Color active, Color inactive) {
     return Container(height: 2, decoration: BoxDecoration(color: filled ? active : inactive, borderRadius: BorderRadius.circular(1)));
+  }
+}
+
+// ─── Report type sheet ────────────────────────────────────────────────────────
+
+class _ReportTypeSheet extends StatelessWidget {
+  final bool isDark;
+  const _ReportTypeSheet({required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = isDark ? const Color(0xFF1C1C2E) : Colors.white;
+    final textPrimary = isDark ? Colors.white : AppColors.lightTextPrimary;
+    final textSub = isDark ? Colors.white54 : AppColors.lightTextSecondary;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Nouveau signalement',
+              style: GoogleFonts.manrope(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: textPrimary)),
+          const SizedBox(height: 4),
+          Text('Tu signales en tant que…',
+              style: GoogleFonts.manrope(fontSize: 13, color: textSub)),
+          const SizedBox(height: 20),
+          _TypeTile(
+            isDark: isDark,
+            icon: Icons.person_outline_rounded,
+            title: 'Victime',
+            subtitle: 'Tu as vécu une situation de harcèlement',
+            filled: true,
+            onTap: () => Navigator.of(context).pop('victime'),
+          ),
+          const SizedBox(height: 10),
+          _TypeTile(
+            isDark: isDark,
+            icon: Icons.remove_red_eye_outlined,
+            title: 'Témoin',
+            subtitle: "Tu as été témoin d'une situation",
+            filled: false,
+            onTap: () => Navigator.of(context).pop('temoin'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TypeTile extends StatelessWidget {
+  final bool isDark;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool filled;
+  final VoidCallback onTap;
+
+  const _TypeTile({
+    required this.isDark,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.filled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = filled
+        ? AppColors.studentButtonFill
+        : (isDark ? Colors.white.withValues(alpha: 0.08) : AppColors.lightCard);
+    final textColor = filled ? Colors.white : (isDark ? Colors.white : AppColors.lightTextPrimary);
+    final subColor = filled ? Colors.white.withValues(alpha: 0.65) : (isDark ? Colors.white54 : AppColors.lightTextSecondary);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(20)),
+        child: Row(
+          children: [
+            Icon(icon, color: filled ? Colors.white : AppColors.primary, size: 22),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: GoogleFonts.manrope(
+                          fontSize: 15, fontWeight: FontWeight.w700, color: textColor)),
+                  Text(subtitle,
+                      style: GoogleFonts.manrope(
+                          fontSize: 12, fontWeight: FontWeight.w500, color: subColor)),
+                ],
+              ),
+            ),
+            Icon(Icons.arrow_forward_ios_rounded,
+                size: 14, color: filled ? Colors.white70 : (isDark ? Colors.white38 : AppColors.lightTextSecondary)),
+          ],
+        ),
+      ),
+    );
   }
 }
