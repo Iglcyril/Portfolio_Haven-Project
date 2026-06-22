@@ -1,16 +1,20 @@
 import { Elysia, t } from "elysia"
 import { requireAdmin } from "../middlewares/auth.middleware"
+import { handleError } from "../middlewares/error.middleware"
+import { reportService } from "../services/report.service"
+import { authService } from "../services/auth.service"
 
 // Route d'administration pour la gestion des signalements et des utilisateurs
 export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 // liste de tous les signalements avec filtrage
-  .get("/reports", ({query, headers, set}) => {
+  .get("/reports", async ({query, headers, set}) => {
 
 	//Vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	let payload
 	try {
-		requireAdmin(token)
+		payload = requireAdmin(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -22,47 +26,31 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	}
 	const { status } = query
 
-	    // A faire : remplacer par une vraie requête Prisma → prisma.report.findMany()
-    const reports = [
-      {
-        trackingCode: "HVN-AB12-CD34",
-        status: "urgent",
-        category: "harcelement_scolaire",
-        severite: "HIGH",
-        createdAt: "2026-05-15T10:30:00Z"
-      },
-      {
-        trackingCode: "HVN-EF56-GH78",
-        status: "en_cours",
-        category: "cyberharcelement",
-        severite: "MEDIUM",
-        createdAt: "2026-05-20T14:00:00Z"
-      },
-      {
-        trackingCode: "HVN-IJ90-KL12",
-        status: "traite",
-        category: "mal_etre",
-        severite: "LOW",
-        createdAt: "2026-05-22T09:15:00Z"
-      }
-    ]
+	try {
+		const reports = await reportService.findAll(payload.userId, payload.role)
 
-    // Filtrer par status si fourni
-    const filtered = status
-      ? reports.filter(r => r.status === status)
-      : reports
+		// Filtrer par status si fourni
+		const filtered = status
+			? reports.filter(r => r.status === status)
+			: reports
 
-    return {
-      data: filtered,
-      total: filtered.length
-    }
+		return {
+			data: filtered,
+			total: filtered.length
+		}
+	} catch (e) {
+		const { status: httpStatus, body: err } = handleError(e)
+		set.status = httpStatus
+		return err
+	}
   })
 
-  .get ("/reports/:id", ({params, headers, set}) => {
+  .get ("/reports/:id", async ({params, headers, set}) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
+	let payload
 	try {
-		requireAdmin(token)
+		payload = requireAdmin(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -73,21 +61,14 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 		return { error: "Accès refusé" }
 	}
 	const { id } = params
-	// A faire : remplacer par une vraie requête Prisma -> prisma.report.findUnique({ where: { trackingCode: id } })
-	// vérification format id
-	if (!id.startsWith("HVN-")) {
-		set.status = 404
-		return { error: "Signalement non trouvé" }
-	}
 
-	const report = {
-	trackingCode: id,
-	status: "en_cours",
-	category: "harcelement_scolaire",
-	level: "HIGH",
-	createdAt: "2026-05-15T10:30:00Z"
+	try {
+		return await reportService.findByTrackingId(id, payload.userId, payload.role)
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
-	return report
 	})
 
 	.get("/reports/:id/summary", ({ params, headers, set }) => {
@@ -171,7 +152,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	})
 })
 
-	.patch("/reports/:id", ({ params, body, headers, set }) => {
+	.patch("/reports/:id", async ({ params, body, headers, set }) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
@@ -186,33 +167,37 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 		return { error: "Accès refusé" }
 	}
 	const { id } = params
-
-	// vérification format id
-	if (!id.startsWith("HVN-")) {
-		set.status = 404
-		return { error: "Signalement non trouvé" }
-	}
-
-	// A faire : remplacer par une vraie requête Prisma -> prisma.report.update({ where: { trackingCode: id }, data: { ...body } })
 	const { status, category, level, assigne_a, note_interne } = body
 
-	return {
-		trackingCode: id,
-		status: status || "en_cours",
-		category: category || "harcelement_scolaire",
-		level: level || "ELEVE",
-		assigne_a: assigne_a || null,
-		note_interne: note_interne || null,
-		updatedAt: new Date().toISOString()
+	try {
+		// category, assigne_a et note_interne n'ont pas de colonne correspondante sur Report :
+		// ils sont validés mais pas encore persistés (pas de support schéma pour l'instant)
+		let updatedStatus, updatedSeverity
+		if (status) updatedStatus = await reportService.updateStatus(id, { status })
+		if (level) updatedSeverity = await reportService.updateSeverity(id, { severity: level })
+
+		return {
+			trackingCode: id,
+			status: updatedStatus?.status ?? status ?? "EN_COURS",
+			category: category || "harcelement_scolaire",
+			level: updatedSeverity?.severity ?? level ?? "ELEVE",
+			assigne_a: assigne_a || null,
+			note_interne: note_interne || null,
+			updatedAt: updatedSeverity?.updatedAt ?? updatedStatus?.updatedAt ?? new Date().toISOString()
+		}
+	} catch (e) {
+		const { status: httpStatus, body: err } = handleError(e)
+		set.status = httpStatus
+		return err
 	}
 	},{
   // Validation des données entrantes tous les champs sont optionnels
   body: t.Object({
     status: t.Optional(t.Union([
-      t.Literal("urgent"),
-      t.Literal("en_cours"),
-      t.Literal("traite"),
-      t.Literal("archive")
+      t.Literal("EN_ATTENTE"),
+      t.Literal("EN_COURS"),
+      t.Literal("RESOLU"),
+      t.Literal("ARCHIVE")
     ])),
     assigne_a: t.Optional(t.String()),
     note_interne: t.Optional(t.String()),
@@ -233,7 +218,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
   })
   })
 
- .get("/stats", ({query, headers, set}) => {
+ .get("/stats", async ({query, headers, set}) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
@@ -249,43 +234,19 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	}
 
 	const { establishment_id } = query
-	// A faire : remplacer par une vraie requête Prisma -> prisma.report.groupBy({ by: ['category'], where: { establishment_id } })
 
-	return {
-	  establishment_id,
-	  // repartition par catégories
-	  by_category: [
-		{ category: "harcelement_scolaire", count: 10 },
-		{ category: "violence_physique", count: 2 },
-		{ category: "violence_verbale", count: 1 },
-		{ category: "cyberharcelement", count: 5 },
-		{ category: "discrimination", count: 0 },
-		{ category: "mal_etre", count: 3 },
-		{ category: "autre", count: 0 }
-	  ],
-	  // repartition par statut
-	  by_status: [
-		{ status: "urgent", count: 4 },
-		{ status: "en_cours", count: 8 },
-		{ status: "traite", count: 5 },
-		{ status: "archive", count: 1 }
-	  ],
-	  // repartition par niveau de gravité
-	  by_level: [
-		{ level: "BAS", count: 6 },
-		{ level: "MOYEN", count: 7 },
-		{ level: "ELEVE", count: 5 },
-	  ],
-	  // chiffres clés à voir si implémenté
-	  total_reports: 20,
-	  resolution_amount: "50%",
-	  average_resolution_time: "3 jours"
+	try {
+		return await reportService.getStats(establishment_id)
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
   })
 
 // A faire : remplacer par une requète prisma data team
 
- .get("/team", ({query, headers, set}) => {
+ .get("/team", async ({query, headers, set}) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
@@ -305,42 +266,30 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	// Hiérarchie des rôles
 	const hierarchy = ["SUPERVISOR", "ADMIN", "RECTORAT"]
 
-	// A faire : remplacer par prisma.user.findMany({ where: { role: team_info } })
-	const team = [
-		{
-			id: 1,
-			name: "Alice Dupont",
-			role: "ADMIN",
-			email: "alice.dupont@example.com",
-			dispo: "Libre",
-			assigned_cases: 5,
-		},
-		{
-			id: 2,
-			name: "Bob Martin",
-			role: "SUPERVISOR",
-			email: "bob.martin@example.com",
-			dispo: "Occupé",
-			assigned_cases: 3
-		},
-		{
-			id: 3,
-			name: "Claire Durand",
-			role: "SUPERVISOR",
-			email: "claire.durand@example.com",
-			dispo: "Absent",
-			assigned_cases: 2
+	try {
+		const staff = await authService.listStaff()
+		// dispo et assigned_cases n'ont pas de colonne correspondante (pas de champ
+		// disponibilité sur User, pas de relation d'assignation sur Report) : absents pour l'instant
+		const team = staff.map(member => ({
+			id: member.id,
+			name: [member.firstName, member.lastName].filter(Boolean).join(" ") || member.email,
+			role: member.role,
+			email: member.email
+		}))
+
+		// Filtrer par rôle si fourni, sinon retourner toute l'équipe
+		const filtered = team_info
+			? team.filter(m => m.role === team_info.toUpperCase())
+			: team
+
+		return {
+			hierarchy,
+			total: filtered.length,
+			team_info: filtered
 		}
-	]
-
-	// Filtrer par rôle si fourni, sinon retourner toute l'équipe
-	const filtered = team_info
-		? team.filter(m => m.role === team_info.toUpperCase())
-		: team
-
-	return {
-		hierarchy,
-		total: filtered.length,
-		team_info: filtered
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
  })
