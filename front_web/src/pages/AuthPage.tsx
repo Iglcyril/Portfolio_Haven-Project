@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { register, login } from '../services/authService'
 import { useAuth } from '../contexts/AuthContext'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import {
-  User, Mail, Lock, Eye, EyeOff, ArrowRight, Check,
+  User, Mail, Lock, Eye, EyeOff, ArrowRight, Check, Calendar, X,
 } from 'lucide-react'
 import LegalModal from '../components/LegalModal'
 
@@ -169,6 +169,111 @@ function IllustrationPanel({ config }: { config: PortalConfig }) {
   )
 }
 
+// ─── Date picker JJ / MM / AAAA (adapté de ParentOnboarding) ─────────────────
+
+const MONTHS_FR = [
+  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+]
+
+function AuthDatePicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const parts = value ? value.split('-') : ['', '', '']
+  const [day,   setDay]   = useState(parts[2] ?? '')
+  const [month, setMonth] = useState(parts[1] ?? '')
+  const [year,  setYear]  = useState(parts[0] ?? '')
+
+  const monthRef = useRef<HTMLInputElement>(null)
+  const yearRef  = useRef<HTMLInputElement>(null)
+
+  const emit = (d: string, m: string, y: string) => {
+    if (d && m && y && y.length === 4) {
+      onChange(`${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`)
+    } else {
+      onChange('')
+    }
+  }
+
+  const onDay = (raw: string) => {
+    const v = raw.replace(/\D/g, '').slice(0, 2)
+    setDay(v); emit(v, month, year)
+    if (v.length === 2) monthRef.current?.focus()
+  }
+  const onMonth = (raw: string) => {
+    const v = raw.replace(/\D/g, '').slice(0, 2)
+    setMonth(v); emit(day, v, year)
+    if (v.length === 2) yearRef.current?.focus()
+  }
+  const onYear = (raw: string) => {
+    const v = raw.replace(/\D/g, '').slice(0, 4)
+    setYear(v); emit(day, month, v)
+  }
+
+  const monthLabel = month && parseInt(month) >= 1 && parseInt(month) <= 12
+    ? MONTHS_FR[parseInt(month) - 1]
+    : null
+
+  const seg: React.CSSProperties = {
+    border: 'none', outline: 'none', background: 'transparent',
+    fontFamily: "'Manrope', sans-serif", fontSize: '0.93rem',
+    fontWeight: 500, color: '#0D2622', textAlign: 'center', padding: 0,
+  }
+
+  return (
+    <div style={{
+      padding: '11px 16px 13px',
+      background: 'rgba(13,38,34,0.06)',
+      borderRadius: 24,
+      display: 'flex', flexDirection: 'column', gap: 7,
+    }}>
+      <span style={{
+        fontFamily: "'Manrope', sans-serif", fontSize: '0.66rem', fontWeight: 700,
+        letterSpacing: '0.10em', textTransform: 'uppercase', color: 'rgba(13,38,34,0.42)',
+      }}>
+        Date de naissance
+      </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <span style={{ color: 'rgba(13,38,34,0.40)', display: 'flex', flexShrink: 0 }}>
+          <Calendar size={16} />
+        </span>
+        <input type="text" inputMode="numeric" maxLength={2} value={day}
+          onChange={e => onDay(e.target.value)} placeholder="JJ"
+          style={{ ...seg, width: 26 }} />
+        <span style={{ color: 'rgba(13,38,34,0.35)', fontFamily: "'Manrope', sans-serif", fontSize: '0.93rem' }}>/</span>
+        {monthLabel ? (
+          <button onClick={() => { setMonth(''); setYear(''); onChange(''); setTimeout(() => monthRef.current?.focus(), 0) }}
+            style={{
+              border: 'none', borderRadius: 6, padding: '2px 8px',
+              background: 'rgba(46,171,123,0.15)', color: '#2EAB7B',
+              fontFamily: "'Manrope', sans-serif", fontSize: '0.84rem',
+              fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
+            }}>
+            {monthLabel}
+          </button>
+        ) : (
+          <input ref={monthRef} type="text" inputMode="numeric" maxLength={2} value={month}
+            onChange={e => onMonth(e.target.value)} placeholder="MM"
+            style={{ ...seg, width: 26 }} />
+        )}
+        <span style={{ color: 'rgba(13,38,34,0.35)', fontFamily: "'Manrope', sans-serif", fontSize: '0.93rem' }}>/</span>
+        <input ref={yearRef} type="text" inputMode="numeric" maxLength={4} value={year}
+          onChange={e => onYear(e.target.value)} placeholder="AAAA"
+          style={{ ...seg, width: 42 }} />
+        {value && (
+          <button onClick={() => { setDay(''); setMonth(''); setYear(''); onChange('') }}
+            style={{
+              marginLeft: 'auto', width: 20, height: 20, borderRadius: '50%',
+              border: 'none', background: 'rgba(13,38,34,0.08)', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: 'rgba(13,38,34,0.42)', flexShrink: 0,
+            }}>
+            <X size={11} />
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 // ─── Haven input ──────────────────────────────────────────────────────────────
 
 interface InputProps {
@@ -179,9 +284,11 @@ interface InputProps {
   onChange: (v: string) => void
   icon: React.ReactNode
   suffix?: React.ReactNode
+  max?: string
+  min?: string
 }
 
-function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, suffix }: InputProps) {
+function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, suffix, max, min }: InputProps) {
   return (
     <div style={{
       padding: '11px 16px 13px',
@@ -210,6 +317,8 @@ function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, 
           value={value}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
+          max={max}
+          min={min}
           style={{
             flex: 1,
             border: 'none',
@@ -220,6 +329,7 @@ function HavenInput({ label, placeholder, type = 'text', value, onChange, icon, 
             fontWeight: 500,
             color: '#0D2622',
             minWidth: 0,
+            colorScheme: 'light',
           }}
         />
         {suffix}
@@ -348,26 +458,43 @@ interface FormPanelProps {
 }
 
 function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [name, setName]           = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName]   = useState('')
+  const [birthDate, setBirthDate] = useState('')
+  const [email, setEmail]         = useState('')
+  const [password, setPassword]   = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe] = useState(false)
+  const [rememberMe, setRememberMe]     = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading]     = useState(false)
+  const [error, setError]         = useState<string | null>(null)
   const [legalModal, setLegalModal] = useState<'cgu' | 'privacy' | null>(null)
 
   const { setUser } = useAuth()
-  const isRegister = mode === 'register'
+  const isRegister   = mode === 'register'
+  const isStudent    = portalKey === 'students'
 
   async function handleSubmit() {
     setError(null)
+
+    if (isRegister && isStudent && (!firstName.trim() || !lastName.trim() || !email.trim())) {
+      setError('Prénom, nom et email sont obligatoires.')
+      return
+    }
+
     setLoading(true)
     try {
       let user
       if (isRegister) {
-        user = await register(portalKey, name, email, password, rememberMe)
+        let profile: { firstName: string; lastName: string; birthDate?: string }
+        if (isStudent) {
+          profile = { firstName: firstName.trim(), lastName: lastName.trim(), birthDate }
+        } else {
+          const parts = name.trim().split(/\s+/)
+          profile = { firstName: parts[0] ?? '', lastName: (parts.slice(1).join(' ') || parts[0]) ?? '' }
+        }
+        user = await register(portalKey, email, password, rememberMe, profile)
       } else {
         user = await login(email, password, rememberMe)
       }
@@ -556,7 +683,25 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
             transition={{ duration: 0.18 }}
             style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
           >
-            {isRegister && (
+            {isRegister && isStudent && (
+              <>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <HavenInput label="Prénom" placeholder="Prénom"
+                      value={firstName} onChange={setFirstName} icon={<User size={16} />} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <HavenInput label="Nom" placeholder="Nom de famille"
+                      value={lastName} onChange={setLastName} icon={<User size={16} />} />
+                  </div>
+                </div>
+                <AuthDatePicker value={birthDate} onChange={setBirthDate} />
+                <HavenInput label="Email" placeholder="votre@email.com"
+                  type="email" value={email} onChange={setEmail} icon={<Mail size={16} />} />
+              </>
+            )}
+
+            {isRegister && !isStudent && (
               <HavenInput
                 label="Nom complet"
                 placeholder="Votre nom"
@@ -566,14 +711,16 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
               />
             )}
 
-            <HavenInput
-              label="Email"
-              placeholder="votre@email.com"
-              type="email"
-              value={email}
-              onChange={setEmail}
-              icon={<Mail size={16} />}
-            />
+            {!(isRegister && isStudent) && (
+              <HavenInput
+                label="Email"
+                placeholder="votre@email.com"
+                type="email"
+                value={email}
+                onChange={setEmail}
+                icon={<Mail size={16} />}
+              />
+            )}
 
             <HavenInput
               label="Mot de passe"

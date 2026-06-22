@@ -202,8 +202,8 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
 
       const student = await prisma.user.findFirst({
         where: {
-          firstName: body.firstName,
-          lastName:  body.lastName,
+          firstName: { equals: body.firstName, mode: 'insensitive' },
+          lastName:  { equals: body.lastName,  mode: 'insensitive' },
           birthDate: new Date(body.birthDate),
           role:      'STUDENT'
         }

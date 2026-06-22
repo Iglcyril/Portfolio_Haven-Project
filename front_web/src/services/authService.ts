@@ -25,20 +25,17 @@ const PORTAL_TO_ROLE: Record<PortalKey, Role> = {
 
 export async function register(
   portal: PortalKey,
-  name: string,
   email: string,
   password: string,
   persistent: boolean,
+  profile: { firstName: string; lastName: string; birthDate?: string },
 ): Promise<AuthUser> {
-  const parts = name.trim().split(/\s+/)
-  const firstName = parts[0]
-  const lastName = parts.slice(1).join(' ') || parts[0]
-
   const data = await api.post<AuthResponse>('/auth/register', {
     email,
     password,
-    firstName,
-    lastName,
+    firstName: profile.firstName,
+    lastName:  profile.lastName,
+    birthDate: profile.birthDate,
     role: PORTAL_TO_ROLE[portal],
   })
 

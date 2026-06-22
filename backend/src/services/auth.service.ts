@@ -45,6 +45,10 @@ export const authService = {
    * Lance EMAIL_ALREADY_EXISTS si l'email existe déjà.
    */
   async register({ email, password, role = 'STUDENT', firstName, lastName, birthDate }: RegisterInput) {
+    if (role === 'STUDENT' && (!firstName?.trim() || !lastName?.trim() || !birthDate)) {
+      throw new Error('STUDENT_FIELDS_REQUIRED')
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } })
     if (existing) {
       throw new Error('EMAIL_ALREADY_EXISTS')

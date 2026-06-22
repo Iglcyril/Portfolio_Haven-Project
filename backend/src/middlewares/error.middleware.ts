@@ -12,15 +12,16 @@
 
 // Liste exhaustive des erreurs métier de l'application
 export type AppError =
-  | 'INVALID_TOKEN'         // Token JWT absent, expiré ou falsifié
-  | 'FORBIDDEN'             // Rôle insuffisant pour cette action
-  | 'EMAIL_ALREADY_EXISTS'  // Tentative de register avec un email déjà pris
-  | 'INVALID_CREDENTIALS'   // Email ou mot de passe incorrect au login
-  | 'REPORT_NOT_FOUND'      // Rapport introuvable en base
-  | 'USER_NOT_FOUND'        // Utilisateur introuvable en base
-  | 'DELETE_TIMEOUT'        // Délai d'annulation de 5 minutes dépassé
-  | 'STUDENT_NOT_FOUND'  // Aucun étudiant trouvé avec ces informations
-  | 'PARENT_NOT_FOUND'  // Aucun compte parent trouvé avec cet email
+  | 'INVALID_TOKEN'          // Token JWT absent, expiré ou falsifié
+  | 'FORBIDDEN'              // Rôle insuffisant pour cette action
+  | 'EMAIL_ALREADY_EXISTS'   // Tentative de register avec un email déjà pris
+  | 'INVALID_CREDENTIALS'    // Email ou mot de passe incorrect au login
+  | 'REPORT_NOT_FOUND'       // Rapport introuvable en base
+  | 'USER_NOT_FOUND'         // Utilisateur introuvable en base
+  | 'DELETE_TIMEOUT'         // Délai d'annulation de 5 minutes dépassé
+  | 'STUDENT_NOT_FOUND'      // Aucun étudiant trouvé avec ces informations
+  | 'PARENT_NOT_FOUND'       // Aucun compte parent trouvé avec cet email
+  | 'STUDENT_FIELDS_REQUIRED' // Prénom, nom et date de naissance manquants pour un élève
 
 /**
  * Table de correspondance : code d'erreur métier → HTTP status + message public.
@@ -35,8 +36,9 @@ const errorMap: Record<AppError, { status: number; message: string }> = {
   REPORT_NOT_FOUND:     { status: 404, message: 'Signalement introuvable' },
   USER_NOT_FOUND:       { status: 404, message: 'Utilisateur introuvable' },
   DELETE_TIMEOUT:       { status: 403, message: 'Délai d\'annulation dépassé — impossible de supprimer ce signalement' },
-  STUDENT_NOT_FOUND:    { status: 404, message: 'Aucun élève trouvé avec ces informations' },
-  PARENT_NOT_FOUND:     { status: 404, message: 'Aucun compte parent trouvé avec cet email' },
+  STUDENT_NOT_FOUND:       { status: 404, message: 'Aucun élève trouvé avec ces informations' },
+  PARENT_NOT_FOUND:        { status: 404, message: 'Aucun compte parent trouvé avec cet email' },
+  STUDENT_FIELDS_REQUIRED: { status: 422, message: 'Prénom, nom et date de naissance sont obligatoires pour un compte élève' },
 }
 
 /**
