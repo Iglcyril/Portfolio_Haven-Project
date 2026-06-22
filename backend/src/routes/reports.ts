@@ -170,43 +170,37 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 	}
   })
 
-  // Sauvegarde du résumé complet du signalement pour l'équipe pédagogique
-  // A faire : remplacer par prisma.report.update({ where: { trackingId: code }, data: { ...body } })
-  // Noms de champs alignés sur ce que le webhook du chatbot Typebot envoie réellement (variantes "victime/témoin")
-  .post("/:code/summary", ({ params, body, set }) => {
+  // Sauvegarde du résumé narratif complet du signalement, collecté par le chatbot.
+  // Noms de champs alignés sur ce que le webhook du chatbot Typebot envoie réellement (variantes "victime/témoin").
+  // role/anonymat_level/category/is_crisis/establishment_id sont acceptés (compat webhook) mais pas ré-écrits :
+  // ces champs sont déjà gérés de façon fiable par create()/addDeposition() et ne doivent pas être écrasés.
+  .post("/:code/summary", async ({ params, body, set }) => {
 	const { code } = params
 
-	// Vérification format du code
-	if (!code.startsWith("HVN-")) {
-		set.status = 404
-		return { error: "Signalement non trouvé" }
-	}
+	try {
+		const summary = await reportService.saveSummary(code, {
+			classLevel: body.classe,
+			identity: body.identite,
+			initialFeeling: body.ressenti_initial,
+			mood: body.humeur,
+			adultContact: body.contact_adulte,
+			contactTeam: body.interpeller_equipe,
+			witnessContext: body.contexte_vu,
+			victimInfo: body.infos_victime,
+			victimIdentity: body.identite_victime,
+			bullyInfo: body.infos_harceleur,
+			bullyIdentity: body.identite_harceleur,
+			situationDescription: body.description_situation
+		})
 
-	return {
-		trackingCode: code,
-		statut: "EN_COURS",
-		savedAt: new Date().toISOString(),
-		data: {
-			role: body.role,
-			type_signalement: body.type_signalement,
-			anonymat_level: body.anonymat_level,
-			classe: body.classe,
-			identite: body.identite,
-			category: body.category,
-			ressenti_initial: body.ressenti_initial,
-			statut: body.statut,
-			humeur: body.humeur,
-			is_crisis: body.is_crisis,
-			contact_adulte: body.contact_adulte,
-			interpeller_equipe: body.interpeller_equipe,
-			establishment_id: body.establishment_id,
-			contexte_vu: body.contexte_vu,
-			infos_victime: body.infos_victime,
-			identite_victime: body.identite_victime,
-			infos_harceleur: body.infos_harceleur,
-			identite_harceleur: body.identite_harceleur,
-			description_situation: body.description_situation,
+		return {
+			trackingCode: code,
+			savedAt: summary.updatedAt
 		}
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
   }, {
 	// Validation des données entrantes : tout est optionnel car les deux variantes du chatbot
