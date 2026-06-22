@@ -155,6 +155,21 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 	}
   })
 
+  // Annulation d'un signalement par son auteur (sous 5 minutes) ou par le staff (à tout moment).
+  // La logique de propriétaire/délai est entièrement gérée par reportService.delete.
+  .delete("/:code", async ({ params, bearer, set }) => {
+	const { code } = params
+
+	try {
+		const { userId, role } = requireAuth(bearer ?? "")
+		return await reportService.delete(code, userId, role)
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
+	}
+  })
+
   // Sauvegarde du résumé complet du signalement pour l'équipe pédagogique
   // A faire : remplacer par prisma.report.update({ where: { trackingId: code }, data: { ...body } })
   // Noms de champs alignés sur ce que le webhook du chatbot Typebot envoie réellement (variantes "victime/témoin")
