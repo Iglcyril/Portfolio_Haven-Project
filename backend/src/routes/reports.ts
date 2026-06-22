@@ -138,7 +138,23 @@ export const reportsRoutes = new Elysia({ prefix: "/reports" })
 		content: t.String({ minLength: 10 }),
 	})
   })
- 
+
+  // Consultation de son propre signalement par un utilisateur connecté.
+  // L'accès (STUDENT → ses rapports, PARENT → ceux de ses enfants, SUPERVISOR/ADMIN → tout)
+  // est entièrement géré par reportService.findByTrackingId.
+  .get("/:code", async ({ params, bearer, set }) => {
+	const { code } = params
+
+	try {
+		const { userId, role } = requireAuth(bearer ?? "")
+		return await reportService.findByTrackingId(code, userId, role)
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
+	}
+  })
+
   // Sauvegarde du résumé complet du signalement pour l'équipe pédagogique
   // A faire : remplacer par prisma.report.update({ where: { trackingId: code }, data: { ...body } })
   // Noms de champs alignés sur ce que le webhook du chatbot Typebot envoie réellement (variantes "victime/témoin")
