@@ -8,7 +8,7 @@ import DashboardLayout from '../../layouts/DashboardLayout'
 import {
   getProReports, getTeamMembers, getDirector, getReferentUser,
   updateStatus, updateSeverity, assignReferent,
-  ROLE_LABELS, type BackendSeverity, type BackendStatus,
+  type BackendSeverity, type BackendStatus,
 } from '../../services/professionalData'
 import type { User, ProReport, TeamMember, ReportEvent, Severity } from '../../types'
 import { SEVERITY_ORDER_MAP } from '../../constants/severity'
@@ -155,7 +155,7 @@ export default function ProfessionalDashboard() {
       if (sort === 'referent') return (a.assignedTo ?? '').localeCompare(b.assignedTo ?? '')
       return 0
     })
-  }, [reports, status, sort, isDirector, user.fullName])
+  }, [reports, status, sort, isDirector, user?.fullName])
 
   const activeCount     = isDirector
     ? reports.filter(r => r.status === 'active' && r.assignedTo).length
