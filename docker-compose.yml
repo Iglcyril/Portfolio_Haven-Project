@@ -1,18 +1,47 @@
 services:
+
+  # ── Frontend web (React/Vite → Nginx) ─────────────────────────────────────
   front_web:
     build:
       context: ./front_web
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:4000
     ports:
       - "3000:80"
     restart: unless-stopped
 
-  # back:        # décommenté quand le backend sera prêt
-  #   build:
-  #     context: ./haven-backend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "4000:4000"
-  #   environment:
-  #     - DATABASE_URL=...
-  #   restart: unless-stopped
+  # ── Backend (Bun/Elysia/Prisma) ───────────────────────────────────────────
+  back:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:3000"
+    environment:
+      - DATABASE_URL=postgresql://haven:${POSTGRES_PASSWORD:-haven_dev}@postgres:5432/haven_db
+      - JWT_SECRET=${JWT_SECRET}
+      - PORT=3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=haven
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-haven_dev}
+      - POSTGRES_DB=haven_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U haven -d haven_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
