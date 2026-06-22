@@ -1,0 +1,18 @@
+services:
+  front_web:
+    build:
+      context: ./front_web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+  # back:        # décommenté quand le backend sera prêt
+  #   build:
+  #     context: ./haven-backend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4000:4000"
+  #   environment:
+  #     - DATABASE_URL=...
+  #   restart: unless-stopped
