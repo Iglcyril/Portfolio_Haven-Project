@@ -287,7 +287,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               onToggleTheme: widget.onToggleTheme,
                                             ),
                                           ),
-                                        ),
+                                        ).then((_) => _fetchReports()),
                                       ),
                                       const SizedBox(height: 12),
                                       if (_reports.isEmpty)

@@ -280,14 +280,35 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  String get _anonLevelStr => switch (widget.anonLevel) {
+    AnonLevel.full    => 'total',
+    AnonLevel.partial => 'partiel',
+    AnonLevel.none    => 'pas_anonyme',
+  };
+
+  Future<void> _createReport() async {
+    final userText = _messages
+        .where((m) => !m.isBot && m.text != null)
+        .map((m) => m.text!)
+        .join(' | ');
+
+    try {
+      await ApiClient.post('/reports', {
+        'anonymat_level': _anonLevelStr,
+        if (userText.length >= 10) 'contenu': userText,
+      });
+    } catch (_) {}
+  }
+
   void _confirmSend() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       builder: (_) => _ConfirmDialog(
         isDark: isDark,
-        onConfirm: () {
+        onConfirm: () async {
           Navigator.pop(context);
+          await _createReport();
           widget.onSend();
         },
         onCancel: () => Navigator.pop(context),

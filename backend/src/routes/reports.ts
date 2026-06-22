@@ -106,11 +106,11 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
 
       const report = await reportService.create({
         userId,
-        type:             body.type,
-        category:         body.categorie,
+        type:             body.type ?? 'victime',
+        category:         body.categorie ?? 'autre',
         anonymatLevel:    body.anonymat_level,
         contenu:          body.contenu,
-        establishment_id: body.etablissement_id,
+        establishment_id: body.etablissement_id ?? 'non_specifie',
         crisisDetected:   crisisAlert
       })
 
@@ -139,12 +139,11 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
     }
   }, {
     body: t.Object({
-      type:             reportType,
       anonymat_level:   anonymatLevel,
-      // Optionnel — le chatbot peut créer un rapport vide et ajouter le contenu ensuite
-      contenu:          t.Optional(t.String({ minLength: 10 })),
-      categorie:        reportCategories,
-      etablissement_id: t.String()
+      type:             t.Optional(reportType),
+      contenu:          t.Optional(t.String({ minLength: 1 })),
+      categorie:        t.Optional(reportCategories),
+      etablissement_id: t.Optional(t.String())
     })
   })
 
