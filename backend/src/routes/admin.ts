@@ -71,7 +71,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	}
 	})
 
-	.get("/reports/:id/summary", ({ params, headers, set }) => {
+	.get("/reports/:id/summary", async ({ params, headers, set }) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
@@ -88,35 +88,39 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 	const { id } = params
 
-	// vérification format id
-	if (!id.startsWith("HVN-")) {
-		set.status = 404
-		return { error: "Signalement non trouvé" }
-	}
-
-	// A faire : remplacer par prisma.report.findUnique({ where: { trackingId: id }, include: { summary: true } })
-	return {
-		trackingCode: id,
-		role: "victime",
-		report_type: "harcelement_scolaire",
-		anonymat_level: "partiel",
-		class_level: "3ème",
-		identity: null,
-		category: "cyberharcelement",
-		content: "Je me fais harceler depuis plusieurs semaines...",
-		initial_feeling: "Très mal",
-		report_status: "en_cours",
-		mood: "2",
-		is_crisis: false,
-		adult_contact: "oui",
-		contact_team: "oui",
-		establishment_id: "uuid-etablissement",
-		createdAt: "2026-06-10T08:00:00Z",
-		updatedAt: new Date().toISOString()
+	try {
+		const report = await reportService.getSummary(id)
+		return {
+			trackingCode: report.trackingId,
+			role: report.type,
+			category: report.categorie,
+			anonymat_level: report.anonymatLevel,
+			status: report.status,
+			is_crisis: report.crisisDetected,
+			establishment_id: report.etablissementId,
+			classe: report.summary?.classLevel ?? null,
+			identite: report.summary?.identity ?? null,
+			ressenti_initial: report.summary?.initialFeeling ?? null,
+			humeur: report.summary?.mood ?? null,
+			contact_adulte: report.summary?.adultContact ?? null,
+			interpeller_equipe: report.summary?.contactTeam ?? null,
+			contexte_vu: report.summary?.witnessContext ?? null,
+			infos_victime: report.summary?.victimInfo ?? null,
+			identite_victime: report.summary?.victimIdentity ?? null,
+			infos_harceleur: report.summary?.bullyInfo ?? null,
+			identite_harceleur: report.summary?.bullyIdentity ?? null,
+			description_situation: report.summary?.situationDescription ?? null,
+			createdAt: report.createdAt,
+			updatedAt: report.summary?.updatedAt ?? report.updatedAt
+		}
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
 })
 
-	.post("/reports/:id/assign", ({ params, body, headers, set }) => {
+	.post("/reports/:id/assign", async ({ params, body, headers, set }) => {
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
@@ -133,18 +137,12 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 
 	const { id } = params
 
-	// vérification format id
-	if (!id.startsWith("HVN-")) {
-		set.status = 404
-		return { error: "Signalement non trouvé" }
-	}
-
-	// A faire : remplacer par prisma.report.update({ where: { trackingId: id }, data: { assignedTo: body.referent_id } })
-	return {
-		trackingCode: id,
-		referent_id: body.referent_id,
-		referent_name: "Alice Dupont",
-		assignedAt: new Date().toISOString()
+	try {
+		return await reportService.assign(id, body.referent_id)
+	} catch (e) {
+		const { status, body: err } = handleError(e)
+		set.status = status
+		return err
 	}
 }, {
 	body: t.Object({
