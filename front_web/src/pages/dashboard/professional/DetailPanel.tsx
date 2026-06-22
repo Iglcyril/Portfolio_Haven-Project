@@ -5,7 +5,8 @@ import type { ProReport, TeamMember, ReportEvent, Severity } from '../../../type
 import { SEVERITY_COLOR } from '../../../constants/severity'
 import { formatDate } from '../../../utils/dateFormatting'
 import { useIsMobile } from '../../../hooks/useMediaQuery'
-import { EVENT_TYPES, EVENT_COLORS, MOCK_REFERENT } from '../../../services/professionalData'
+import { EVENT_TYPES, EVENT_COLORS } from '../../../services/professionalData'
+import { useAuth } from '../../../contexts/AuthContext'
 import { PRIMARY, STAGES, severityKey } from './constants'
 import { ProgressTracker } from './ProgressTracker'
 import { SeverityBadge } from './SeverityBadge'
@@ -25,13 +26,18 @@ export function DetailPanel({
   isDirector: boolean
   team: TeamMember[]
   onClose: () => void
-  onAssign: (id: string, name: string | undefined) => void
+  onAssign: (id: string, memberId: string | undefined, name: string | undefined) => void
   onSetSeverity: (id: string, severity: Severity) => void
   onAdvanceStage: (id: string) => void
   onAddEvent: (id: string, event: Omit<ReportEvent, 'id'>) => void
   onArchive: (id: string) => void
 }) {
   const isMobile = useIsMobile()
+  const { user: authUser } = useAuth()
+  const actorName = authUser
+    ? ([authUser.firstName, authUser.lastName].filter(Boolean).join(' ') || authUser.email)
+    : 'Référent'
+
   const [eventType, setEventType]       = useState(EVENT_TYPES[0])
   const [eventComment, setEventComment] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
@@ -172,7 +178,7 @@ export function DetailPanel({
                   }}
                 >
                   <button
-                    onClick={() => { onAssign(report.id, undefined); setShowDropdown(false) }}
+                    onClick={() => { onAssign(report.id, undefined, undefined); setShowDropdown(false) }}
                     style={dropItemStyle}
                   >
                     <span style={{ color: '#E67E22', fontStyle: 'italic' }}>Retirer l'attribution</span>
@@ -180,7 +186,7 @@ export function DetailPanel({
                   {team.map(m => (
                     <button
                       key={m.id}
-                      onClick={() => { onAssign(report.id, m.fullName); setShowDropdown(false) }}
+                      onClick={() => { onAssign(report.id, m.id, m.fullName); setShowDropdown(false) }}
                       style={{ ...dropItemStyle, background: report.assignedTo === m.fullName ? `${PRIMARY}15` : 'transparent' }}
                     >
                       <div style={{
@@ -369,7 +375,7 @@ export function DetailPanel({
                   type: eventType,
                   comment: eventComment.trim() || undefined,
                   createdAt: new Date().toISOString(),
-                  actor: MOCK_REFERENT.fullName,
+                  actor: actorName,
                 })
                 setEventComment('')
               }}

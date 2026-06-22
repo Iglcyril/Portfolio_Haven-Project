@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -6,9 +6,11 @@ import {
 } from 'lucide-react'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import {
-  MOCK_DIRECTOR, MOCK_REFERENT, MOCK_TEAM, MOCK_PRO_REPORTS, ROLE_LABELS,
+  getProReports, getTeamMembers, getDirector, getReferentUser,
+  updateStatus, updateSeverity, assignReferent,
+  ROLE_LABELS, type BackendSeverity, type BackendStatus,
 } from '../../services/professionalData'
-import type { ProReport, TeamMember, ReportEvent, Severity } from '../../types'
+import type { User, ProReport, TeamMember, ReportEvent, Severity } from '../../types'
 import { SEVERITY_ORDER_MAP } from '../../constants/severity'
 import { PRIMARY, type SortKey, type StatusFilter, severityKey } from './professional/constants'
 import { ReportCard } from './professional/ReportCard'
@@ -29,26 +31,68 @@ export default function ProfessionalDashboard() {
   const status = (searchParams.get('status') ?? 'active') as StatusFilter
 
   const isDirector = role === 'director'
-  const user = isDirector ? MOCK_DIRECTOR : MOCK_REFERENT
 
-  const [reports, setReports] = useState<ProReport[]>(MOCK_PRO_REPORTS)
-  const [team, setTeam]       = useState<TeamMember[]>(MOCK_TEAM)
+  const [user, setUser]           = useState<User | null>(null)
+  const [reports, setReports]     = useState<ProReport[]>([])
+  const [team, setTeam]           = useState<TeamMember[]>([])
+  const [loading, setLoading]     = useState(true)
   const [selectedId, setSelectedId]       = useState<string | null>(null)
   const [sort, setSort]                   = useState<SortKey>('severity')
   const [showAddMember, setShowAddMember] = useState(false)
 
+  useEffect(() => {
+    Promise.all([
+      isDirector ? getDirector() : getReferentUser(),
+      getProReports(),
+      getTeamMembers(),
+    ])
+      .then(([u, r, t]) => { setUser(u); setReports(r); setTeam(t) })
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [isDirector])
+
   const selectedReport = reports.find(r => r.id === selectedId) ?? null
 
-  const handleAssign = (id: string, name: string | undefined) =>
+  const SEVERITY_TO_BACKEND: Record<Severity, BackendSeverity> = {
+    high: 'ELEVE', medium: 'MOYEN', low: 'BAS',
+  }
+
+  const STAGE_TO_STATUS: Record<number, BackendStatus> = {
+    1: 'EN_COURS', 2: 'EN_COURS', 3: 'RESOLU',
+  }
+
+  const handleAssign = async (id: string, memberId: string | undefined, name: string | undefined) => {
+    const report = reports.find(r => r.id === id)
+    if (!report) return
     setReports(prev => prev.map(r => r.id === id ? { ...r, assignedTo: name } : r))
+    if (memberId) {
+      try {
+        await assignReferent(report.caseNumber, memberId)
+      } catch (e) {
+        console.error('Assign failed:', e)
+        setReports(prev => prev.map(r => r.id === id ? { ...r, assignedTo: report.assignedTo } : r))
+      }
+    }
+  }
 
-  const handleSetSeverity = (id: string, severity: Severity) =>
+  const handleSetSeverity = async (id: string, severity: Severity) => {
+    const report = reports.find(r => r.id === id)
+    if (!report) return
     setReports(prev => prev.map(r => r.id === id ? { ...r, severity } : r))
+    try {
+      await updateSeverity(report.caseNumber, SEVERITY_TO_BACKEND[severity])
+    } catch (e) {
+      console.error('Severity update failed:', e)
+      setReports(prev => prev.map(r => r.id === id ? { ...r, severity: report.severity } : r))
+    }
+  }
 
-  const handleAdvanceStage = (id: string) =>
+  const handleAdvanceStage = async (id: string) => {
+    const report = reports.find(r => r.id === id)
+    if (!report || report.progressStage >= 3) return
+    const next = report.progressStage + 1
     setReports(prev => prev.map(r => {
-      if (r.id !== id || r.progressStage >= 3) return r
-      const next = r.progressStage + 1
+      if (r.id !== id) return r
       return {
         ...r, progressStage: next,
         status: next >= 3 ? 'resolved' : r.status,
@@ -56,6 +100,13 @@ export default function ProfessionalDashboard() {
         updatedAt: new Date().toISOString(),
       }
     }))
+    try {
+      await updateStatus(report.caseNumber, STAGE_TO_STATUS[next] ?? 'EN_COURS')
+    } catch (e) {
+      console.error('Stage advance failed:', e)
+      setReports(prev => prev.map(r => r.id === id ? report : r))
+    }
+  }
 
   const handleAddEvent = (id: string, event: Omit<ReportEvent, 'id'>) =>
     setReports(prev => prev.map(r =>
@@ -74,9 +125,17 @@ export default function ProfessionalDashboard() {
   const handleRemoveMember = (id: string) =>
     setTeam(prev => prev.filter(m => m.id !== id))
 
-  const handleArchive = (id: string) => {
+  const handleArchive = async (id: string) => {
+    const report = reports.find(r => r.id === id)
+    if (!report) return
     setReports(prev => prev.map(r => r.id === id ? { ...r, status: 'archived' as const } : r))
     setSelectedId(null)
+    try {
+      await updateStatus(report.caseNumber, 'ARCHIVE')
+    } catch (e) {
+      console.error('Archive failed:', e)
+      setReports(prev => prev.map(r => r.id === id ? report : r))
+    }
   }
 
   const filtered = useMemo(() => {
@@ -86,7 +145,7 @@ export default function ProfessionalDashboard() {
     if (status === 'resolved')   list = list.filter(r => r.status === 'resolved')
     if (status === 'archived')   list = list.filter(r => r.status === 'archived')
 
-    if (!isDirector && (status === 'active' || status === 'resolved'))
+    if (!isDirector && user && (status === 'active' || status === 'resolved'))
       list = list.filter(r => r.assignedTo === user.fullName)
 
     return [...list].sort((a, b) => {
@@ -100,7 +159,7 @@ export default function ProfessionalDashboard() {
 
   const activeCount     = isDirector
     ? reports.filter(r => r.status === 'active' && r.assignedTo).length
-    : reports.filter(r => r.status === 'active' && r.assignedTo === user.fullName).length
+    : reports.filter(r => r.status === 'active' && r.assignedTo === user?.fullName).length
   const unassignedCount = reports.filter(r => r.status === 'active' && !r.assignedTo).length
 
   const base = `/dashboard/professional?role=${role}`
@@ -168,10 +227,18 @@ export default function ProfessionalDashboard() {
     }}>
       <div style={{ width: 6, height: 6, borderRadius: '50%', background: isDirector ? '#C0392B' : PRIMARY, flexShrink: 0 }} />
       <span style={{ fontSize: 12, fontWeight: 700, color: isDirector ? '#E74C3C' : PRIMARY }}>
-        {isDirector ? 'Directeur·rice' : ROLE_LABELS[MOCK_TEAM[0].role]}
+        {isDirector ? 'Directeur·rice' : 'Référent·e'}
       </span>
     </div>
   )
+
+  if (loading || !user) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', color: 'var(--c-text-muted)', fontFamily: "'Manrope', sans-serif" }}>
+        Chargement…
+      </div>
+    )
+  }
 
   return (
     <DashboardLayout
