@@ -520,7 +520,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}",
-              "body": "{\n  \"contenu\": \"{{content}}\"\n}"
+              "body": "{\n  \"content\": \"{{content}}\"\n}"
             }
           }
         },
@@ -570,7 +570,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}",
-              "body": "{\n  \"contenu\": \"{{content}}\"\n}"
+              "body": "{\n  \"content\": \"{{content}}\"\n}"
             }
           }
         },
@@ -620,7 +620,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}",
-              "body": "{\n  \"contenu\": \"{{content}}\"\n}"
+              "body": "{\n  \"content\": \"{{content}}\"\n}"
             }
           }
         },
@@ -670,7 +670,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}",
-              "body": "{\n  \"contenu\": \"{{content}}\"\n}"
+              "body": "{\n  \"content\": \"{{content}}\"\n}"
             }
           }
         },
