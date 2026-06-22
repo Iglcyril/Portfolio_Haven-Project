@@ -1,30 +1,34 @@
 import { Elysia, t } from "elysia"
+import { handleError } from "../middlewares/error.middleware"
+import { reportService } from "../services/report.service"
 
 // Traitement de la soumission du formulaire de contact des parents pour un suivi personnalisé
 export const parentsRoutes = new Elysia({ prefix: "/parents" })
-  .get("/report/:code", ({ params, set }) => {
+  .get("/report/:code", async ({ params, set }) => {
   const { code } = params
 
-  // Vérification du format du code de suivi
-  if (!code.startsWith("HVN-")) {
-    set.status = 404
-    return { error: "Code de suivi invalide" }
+  try {
+	const report = await reportService.findPublicByTrackingId(code)
+
+	// supervisorName/Job/Contact, actionsTaken et nextSteps n'ont pas de colonne
+	// correspondante (pas d'assignation de référent ni de notes de suivi pour l'instant)
+	return {
+		trackingCode: report.trackingId,
+		reportCategory: report.categorie,
+		status: report.status,
+		supervisorName: "Mme Durand",
+		supervisorJob: "Conseillère principale d'éducation",
+		supervisorContact: "g.durand@gmail.com",
+		actionsTaken: [
+			"Contactez l'école pour obtenir des informations supplémentaires"
+		],
+		nextSteps: "Suivi régulier avec la famille et l'école pour assurer la sécurité de l'enfant"
+	}
+  } catch (e) {
+	const { status, body: err } = handleError(e)
+	set.status = status
+	return err
   }
-	const report = {
-	trackingCode: code,
-	studentName: "Jean Dupont",
-	incidentDate: "2024-05-15",
-	reportCategory: "harcelement_scolaire",
-	status: "en_cours",
-	supervisorName: "Mme Durand",
-	supervisorJob: "Conseillère principale d'éducation",
-	supervisorContact: "g.durand@gmail.com",
-	actionsTaken: [
-		"Contactez l'école pour obtenir des informations supplémentaires"
-	],
-	nextSteps: "Suivi régulier avec la famille et l'école pour assurer la sécurité de l'enfant"
-}
-	return report
   })
 	// Retour des parents avec message, contact et nom pour un suivi personnalisé
   .post("/contact", ({ body }) => {
@@ -62,7 +66,7 @@ export const parentsRoutes = new Elysia({ prefix: "/parents" })
 		anonymat_level: "partiel",
 		category: "cyberharcelement",
 		initial_feeling: "Je me sens très mal...",
-		report_status: "en_cours",
+		report_status: "EN_COURS",
 		mood: "3",
 		is_crisis: false,
 		adult_contact: "oui",
