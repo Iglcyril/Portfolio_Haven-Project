@@ -1,0 +1,156 @@
+// schema.prisma
+// --------------
+// Schéma de base de données Haven.
+// C'est la source de vérité de votre base - toute modification
+// de la structure passe par ici, jamais directement en SQL.
+//
+// Après chaque modification :
+//   1. bunx --bun prisma migrate dev --name nom_de_la_modif
+//   2. bunx --bun prisma generate
+//
+// Note Prisma v7 : la connexion DATABASE_URL est gérée
+// dans prisma.config.ts - ne pas remettre url ici.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- Enums ---
+
+enum Role {
+  STUDENT     // Élève - peut créer et voir ses rapports
+  SUPERVISOR  // Psychologue / staff pédagogique - gère tous les rapports
+  PARENT      // Parent - peut suivre les rapports de son enfant
+  ADMIN       // Administrateur de la plateforme
+}
+
+// Cycle de vie d'un rapport
+enum ReportStatus {
+  EN_ATTENTE  // Rapport soumis, pas encore traité
+  EN_COURS    // Un superviseur a pris en charge le rapport
+  RESOLU      // Situation traitée et clôturée
+  ARCHIVE     // Rapport résolu et archivé
+}
+
+// Niveau de gravité
+enum Severity {
+  BAS    // Badge vert sur le dashboard
+  MOYEN  // Badge orange sur le dashboard
+  ELEVE  // Badge rouge — priorité maximale
+}
+
+// Niveau d'anonymat choisi par l'étudiant au moment du signalement
+enum AnonymatLevel {
+  total        // Identité complètement cachée
+  partiel      // Identité visible uniquement pour le superviseur
+  pas_anonyme  // Identité visible pour tous les intervenants
+}
+
+// Catégories de signalement
+enum Categorie {
+  harcelement_scolaire
+  violence_physique
+  violence_verbale
+  cyberharcelement
+  discrimination
+  mal_etre
+  autre
+}
+
+// --- Tables ---
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(STUDENT)
+  firstName    String?   // Prénom - requis pour les STUDENT et PARENT
+  lastName     String?   // Nom - requis pour les STUDENT et PARENT
+  birthDate    DateTime? // Date de naissance - requis pour les STUDENT
+  createdAt    DateTime  @default(now())
+
+  // Lien parent → enfant
+  parentId     String?
+  parent       User?     @relation("ParentChild", fields: [parentId], references: [id])
+  children     User[]    @relation("ParentChild")
+
+  reports         Report[]
+  assignedReports Report[] @relation("AssignedReports") // Dossiers dont ce membre du staff est le référent
+}
+
+model Report {
+  id              String        @id @default(cuid())
+  trackingId      String        @unique   // Identifiant lisible ex: HVN-XXXX-XXXX
+  userId          String?       // Optionnel : un signalement via le chatbot peut être anonyme, sans compte
+  user            User?         @relation(fields: [userId], references: [id])
+  type            String        // victime ou temoin
+  categorie       Categorie     @default(autre)
+  anonymatLevel   AnonymatLevel @default(pas_anonyme)
+  isAnonymous     Boolean       @default(false)
+  status          ReportStatus  @default(EN_ATTENTE)
+  severity        Severity      @default(BAS)
+  crisisDetected  Boolean       @default(false)
+  etablissementId String
+  // Référent (SUPERVISOR/ADMIN) en charge du dossier
+  assignedToId    String?
+  assignedTo      User?         @relation("AssignedReports", fields: [assignedToId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  messages        ChatMessage[]
+  analytics       Analytics?
+  summary         ReportSummary?
+}
+
+// Données narratives détaillées collectées par le chatbot (résumé complet du signalement).
+// Séparé de Report pour ne pas alourdir le modèle principal avec des champs optionnels
+// spécifiques au parcours conversationnel.
+model ReportSummary {
+  id                   String   @id @default(uuid())
+  reportId             String   @unique
+  report               Report   @relation(fields: [reportId], references: [id])
+  classLevel           String?  // classe
+  identity             String?  // identite (si pas anonyme)
+  initialFeeling       String?  // ressenti_initial
+  mood                 String?  // humeur
+  adultContact         String?  // contact_adulte (oui/non)
+  contactTeam          String?  // interpeller_equipe (oui/non)
+  witnessContext       String?  // contexte_vu (parcours témoin)
+  victimInfo           String?  // infos_victime (parcours témoin)
+  victimIdentity       String?  // identite_victime (parcours témoin)
+  bullyInfo            String?  // infos_harceleur
+  bullyIdentity        String?  // identite_harceleur
+  situationDescription String?  // description_situation
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+// Message de contact envoyé par un parent via le formulaire (pas lié à un signalement précis)
+model ParentMessage {
+  id          String   @id @default(uuid())
+  parentName  String
+  parentEmail String
+  message     String
+  createdAt   DateTime @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  reportId  String
+  report    Report   @relation(fields: [reportId], references: [id])
+  sender    String   // USER ou BOT
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Analytics {
+  id        String   @id @default(uuid())
+  reportId  String   @unique
+  report    Report   @relation(fields: [reportId], references: [id])
+  keywords  String[]
+  riskScore Float    @default(0)
+  createdAt DateTime @default(now())
+}
