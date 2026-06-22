@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia"
-import { requireAdmin } from "../middlewares/auth.middleware"
+import { requireStaff } from "../middlewares/auth.middleware"
 import { handleError } from "../middlewares/error.middleware"
 import { reportService } from "../services/report.service"
 import { authService } from "../services/auth.service"
@@ -14,7 +14,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	let payload
 	try {
-		payload = requireAdmin(token)
+		payload = requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -50,7 +50,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	let payload
 	try {
-		payload = requireAdmin(token)
+		payload = requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -75,7 +75,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
-		requireAdmin(token)
+		requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -120,7 +120,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
-		requireAdmin(token)
+		requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -156,7 +156,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
-		requireAdmin(token)
+		requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -222,7 +222,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
-		requireAdmin(token)
+		requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
@@ -250,7 +250,7 @@ export const adminRoutes = new Elysia({ prefix: "/admin" })
 	// vérification du token d'authentification et des droits d'accès
 	const token = headers.authorization?.replace("Bearer ", "") ?? ""
 	try {
-		requireAdmin(token)
+		requireStaff(token)
 	}
 	catch (e: any) {
 		if (e.message === "INVALID_TOKEN") {
