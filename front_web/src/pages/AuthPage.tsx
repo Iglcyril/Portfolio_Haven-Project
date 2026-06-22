@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
+import { register, login } from '../services/authService'
+import { useAuth } from '../contexts/AuthContext'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import {
   User, Mail, Lock, Eye, EyeOff, ArrowRight, Check,
@@ -352,9 +354,31 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [legalModal, setLegalModal] = useState<'cgu' | 'privacy' | null>(null)
 
+  const { setUser } = useAuth()
   const isRegister = mode === 'register'
+
+  async function handleSubmit() {
+    setError(null)
+    setLoading(true)
+    try {
+      let user
+      if (isRegister) {
+        user = await register(portalKey, name, email, password, rememberMe)
+      } else {
+        user = await login(email, password, rememberMe)
+      }
+      setUser(user)
+      setSubmitted(true)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (submitted) {
     return <SuccessScreen mode={mode} portalKey={portalKey} />
@@ -638,22 +662,37 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
           </motion.div>
         </AnimatePresence>
 
+        {/* Erreur */}
+        {error && (
+          <p style={{
+            marginTop: 16,
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: '0.83rem',
+            color: '#E53935',
+            textAlign: 'center',
+            fontWeight: 600,
+          }}>
+            {error}
+          </p>
+        )}
+
         {/* CTA */}
         <motion.button
-          onClick={() => setSubmitted(true)}
-          whileHover={{ scale: 1.02, boxShadow: `0 14px 36px ${FORM_ACCENT}50` }}
-          whileTap={{ scale: 0.98 }}
+          onClick={handleSubmit}
+          disabled={loading}
+          whileHover={loading ? {} : { scale: 1.02, boxShadow: `0 14px 36px ${FORM_ACCENT}50` }}
+          whileTap={loading ? {} : { scale: 0.98 }}
           style={{
-            marginTop: 28,
+            marginTop: 16,
             padding: '15px',
             borderRadius: 9999,
             border: 'none',
-            background: FORM_ACCENT,
+            background: loading ? `${FORM_ACCENT}80` : FORM_ACCENT,
             color: '#fff',
             fontFamily: "'Manrope', sans-serif",
             fontSize: '0.97rem',
             fontWeight: 700,
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -661,8 +700,10 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
             boxShadow: `0 8px 24px ${FORM_ACCENT}38`,
           }}
         >
-          {isRegister ? 'Créer mon compte' : 'Se connecter'}
-          <ArrowRight size={16} strokeWidth={2.5} />
+          {loading
+            ? 'Chargement…'
+            : isRegister ? 'Créer mon compte' : 'Se connecter'}
+          {!loading && <ArrowRight size={16} strokeWidth={2.5} />}
         </motion.button>
 
         {/* Legal note */}

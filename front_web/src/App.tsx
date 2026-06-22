@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { AuthProvider } from './contexts/AuthContext'
 import LandingPage from './pages/LandingPage'
 import AuthPage from './pages/AuthPage'
 import StudentDashboard from './pages/dashboard/StudentDashboard'
@@ -10,7 +11,8 @@ import ProfessionalDashboard from './pages/dashboard/ProfessionalDashboard'
 
 export default function App() {
   return (
-    <ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth/:portal" element={<AuthPage />} />
@@ -20,6 +22,7 @@ export default function App() {
         <Route path="/onboarding/professional" element={<ProfessionalOnboarding />} />
         <Route path="/dashboard/professional" element={<ProfessionalDashboard />} />
       </Routes>
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProvider>
   )
 }
