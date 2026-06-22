@@ -28,14 +28,14 @@ export type AppError =
  * de détails techniques (stack trace, requête SQL, etc.)
  */
 const errorMap: Record<AppError, { status: number; message: string }> = {
-  INVALID_TOKEN:        { status: 401, message: 'Invalid or expired token' },
-  FORBIDDEN:            { status: 403, message: 'Access denied' },
-  EMAIL_ALREADY_EXISTS: { status: 409, message: 'Email already in use' },
-  INVALID_CREDENTIALS:  { status: 401, message: 'Invalid email or password' },
-  REPORT_NOT_FOUND:     { status: 404, message: 'Report not found' },
-  USER_NOT_FOUND:       { status: 404, message: 'User not found' },
+  INVALID_TOKEN:        { status: 401, message: 'Token invalide ou expiré' },
+  FORBIDDEN:            { status: 403, message: 'Accès refusé' },
+  EMAIL_ALREADY_EXISTS: { status: 409, message: 'Cette adresse email est déjà utilisée' },
+  INVALID_CREDENTIALS:  { status: 401, message: 'Email ou mot de passe incorrect' },
+  REPORT_NOT_FOUND:     { status: 404, message: 'Signalement introuvable' },
+  USER_NOT_FOUND:       { status: 404, message: 'Utilisateur introuvable' },
   DELETE_TIMEOUT:       { status: 403, message: 'Délai d\'annulation dépassé — impossible de supprimer ce signalement' },
-  STUDENT_NOT_FOUND:    { status: 404, message: 'Aucun étudiant trouvé avec ces informations' },
+  STUDENT_NOT_FOUND:    { status: 404, message: 'Aucun élève trouvé avec ces informations' },
   PARENT_NOT_FOUND:     { status: 404, message: 'Aucun compte parent trouvé avec cet email' },
 }
 
@@ -61,5 +61,5 @@ export function handleError(e: unknown): { status: number; body: object } {
 
   // Erreur inattendue — on log côté serveur mais on n'expose rien au client
   console.error('[Haven] Unhandled error:', e)
-  return { status: 500, body: { error: 'Internal server error' } }
+  return { status: 500, body: { error: 'Une erreur interne est survenue' } }
 }

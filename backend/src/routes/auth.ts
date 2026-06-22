@@ -42,15 +42,15 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
     }
   }, {
     body: t.Object({
-      email:     t.String({ format: 'email' }),
-      // Minimum 8 caractères, au moins 1 majuscule, 1 minuscule et 1 chiffre
+      email:     t.String({ format: 'email', error: 'Adresse email invalide' }),
       password:  t.String({
         minLength: 8,
-        pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$'
+        pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$',
+        error: 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre'
       }),
-      firstName: t.Optional(t.String({ minLength: 2 })),
-      lastName:  t.Optional(t.String({ minLength: 2 })),
-      birthDate: t.Optional(t.String()),  // format YYYY-MM-DD ex: 2010-05-15
+      firstName: t.Optional(t.String({ minLength: 2, error: 'Le prénom doit contenir au moins 2 caractères' })),
+      lastName:  t.Optional(t.String({ minLength: 2, error: 'Le nom doit contenir au moins 2 caractères' })),
+      birthDate: t.Optional(t.String()),
       role: t.Optional(t.Union([
         t.Literal('STUDENT'),
         t.Literal('SUPERVISOR'),
