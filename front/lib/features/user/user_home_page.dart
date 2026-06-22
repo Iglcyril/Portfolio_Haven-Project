@@ -6,6 +6,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
+import '../../core/services/auth_service.dart';
 import '../report/confidential_choice_page.dart';
 import '../dashboard/dashboard_page.dart';
 
@@ -116,6 +117,13 @@ class _TopBar extends StatelessWidget {
   final VoidCallback onToggleTheme;
   const _TopBar({required this.isDark, required this.onToggleTheme});
 
+  static String _initials(String? name) {
+    if (name == null || name.isEmpty) return '?';
+    final parts = name.trim().split(' ').where((p) => p.isNotEmpty).toList();
+    if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+    return parts[0][0].toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -131,7 +139,7 @@ class _TopBar extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              'AM',
+              _initials(AuthService.currentUser?.fullName),
               style: AppTextStyles.initials(),
             ),
           ),
@@ -151,7 +159,7 @@ class _TopBar extends StatelessWidget {
               ),
             ),
             Text(
-              'Alex Morgan',
+              AuthService.currentUser?.fullName ?? 'Utilisateur',
               style: AppTextStyles.nameBold(isDark, fontSize: 16),
             ),
           ],

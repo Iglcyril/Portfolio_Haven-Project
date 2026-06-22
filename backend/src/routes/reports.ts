@@ -237,6 +237,23 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
   })
 
   /**
+   * POST /reports/:code/link
+   * Bearer requis — rattache un signalement anonyme créé par Typebot
+   * au compte de l'étudiant connecté. Appelé automatiquement par Flutter
+   * quand le bot affiche le code de suivi dans la conversation.
+   */
+  .post('/:code/link', async ({ params, bearer, set }) => {
+    try {
+      const { userId } = requireAuth(bearer ?? '')
+      return await reportService.link(params.code, userId)
+    } catch (e) {
+      const { status, body } = handleError(e)
+      set.status = status
+      return body
+    }
+  })
+
+  /**
    * POST /reports/:code/summary
    * Pas d'authentification — envoyé par le webhook Typebot
    * Sauvegarde le résumé complet du signalement collecté par le chatbot.

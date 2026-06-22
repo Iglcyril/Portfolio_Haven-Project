@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show ImageFilter;
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +13,8 @@ import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/haven_app_bar.dart';
 import '../report/anon_level.dart';
+import '../../core/services/storage_service.dart';
+import '../../core/services/api_client.dart';
 
 class _Msg {
   final String? text;
@@ -40,8 +44,8 @@ class ChatPage extends StatefulWidget {
     required this.onToggleTheme,
     required this.anonLevel,
     required this.onSend,
-    this.userName = 'Alex Morgan',
-    this.userInitials = 'AM',
+    this.userName = 'Utilisateur',
+    this.userInitials = '?',
   });
 
   @override
@@ -56,37 +60,21 @@ class _ChatPageState extends State<ChatPage> {
 
   bool _speechReady = false;
   bool _listening = false;
-  bool _showQuickReplies = true;
+  bool _botTyping = false;
 
-  static const _caseNumber = '#HVN-8829';
+  String? _sessionId;
+  List<String> _choiceItems = [];
+  late final DateTime _openedAt;
 
-  static const _quickReplies = [
-    'En classe',
-    'En ligne / messages',
-    'Sur le campus',
-    "Je ne sais pas",
-  ];
+  static const _typebotId = 'my-typebot-9nx8sja';
+  static const _typebotBase = 'https://typebot.co/api/v1';
 
-  late final List<_Msg> _messages;
+  final List<_Msg> _messages = [];
 
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    _messages = [
-      _Msg(
-        text:
-            "Bonjour — ici tu es libre de partager ce qui t'arrive. Rien ne sort d'ici sans ton accord.",
-        isBot: true,
-        time: now,
-      ),
-      _Msg(
-        text:
-            "Je suis là pour t'aider. Peux-tu me décrire ce qui s'est passé ?",
-        isBot: true,
-        time: now,
-      ),
-    ];
+    _openedAt = DateTime.now();
     _speech
         .initialize(
           onStatus: (s) {
@@ -101,6 +89,111 @@ class _ChatPageState extends State<ChatPage> {
         .then((ok) {
           if (mounted) setState(() => _speechReady = ok);
         });
+    _startTypebot();
+  }
+
+  Future<void> _startTypebot() async {
+    if (mounted) setState(() => _botTyping = true);
+    try {
+      final token = await StorageService.getToken();
+      final bodyMap = <String, dynamic>{};
+      if (token != null) {
+        bodyMap['prefilledVariables'] = {'token': token};
+      }
+      final res = await http.post(
+        Uri.parse('$_typebotBase/typebots/$_typebotId/startChat'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(bodyMap),
+      );
+      if (!mounted) return;
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      _sessionId = data['sessionId'] as String?;
+      _handleTypebotResponse(data);
+    } catch (_) {
+      if (mounted) setState(() => _botTyping = false);
+    }
+  }
+
+  Future<void> _continueTypebot(String message) async {
+    if (_sessionId == null) return;
+    setState(() {
+      _botTyping = true;
+      _choiceItems = [];
+    });
+    try {
+      final res = await http.post(
+        Uri.parse('$_typebotBase/sessions/$_sessionId/continueChat'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'message': message}),
+      );
+      if (!mounted) return;
+      final data = jsonDecode(res.body) as Map<String, dynamic>;
+      _handleTypebotResponse(data);
+    } catch (_) {
+      if (mounted) setState(() => _botTyping = false);
+    }
+  }
+
+  void _handleTypebotResponse(Map<String, dynamic> data) {
+    final msgs = data['messages'] as List? ?? [];
+    final input = data['input'] as Map<String, dynamic>?;
+
+    final texts = <String>[];
+    for (final m in msgs) {
+      final t = _parseMessage(m as Map<String, dynamic>);
+      if (t != null && t.isNotEmpty) texts.add(t);
+    }
+
+    List<String> choices = [];
+    if (input != null && input['type'] == 'choice input') {
+      final items = input['items'] as List? ?? [];
+      choices = items
+          .map((i) => (i as Map<String, dynamic>)['content'] as String? ?? '')
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+
+    setState(() {
+      for (final t in texts) {
+        _messages.add(_Msg(text: t, isBot: true, time: DateTime.now()));
+      }
+      _choiceItems = choices;
+      _botTyping = false;
+    });
+    for (final t in texts) {
+      _tryLinkReport(t);
+    }
+    _scrollToBottom();
+  }
+
+  String? _parseMessage(Map<String, dynamic> msg) {
+    if (msg['type'] != 'text') return null;
+    final content = msg['content'] as Map<String, dynamic>?;
+    if (content == null) return null;
+    final richText = content['richText'] as List?;
+    if (richText != null) return _extractRichText(richText);
+    return content['plainText'] as String? ?? content['html'] as String?;
+  }
+
+  String _extractRichText(List richText) {
+    final buffer = StringBuffer();
+    for (final block in richText) {
+      final b = block as Map<String, dynamic>;
+      for (final child in (b['children'] as List? ?? [])) {
+        buffer.write((child as Map<String, dynamic>)['text'] as String? ?? '');
+      }
+    }
+    return buffer.toString().trim();
+  }
+
+  static final _trackingCodeRe = RegExp(r'HVN-[A-Z0-9]{4}-[A-Z0-9]{4}');
+
+  Future<void> _tryLinkReport(String text) async {
+    final match = _trackingCodeRe.firstMatch(text);
+    if (match == null) return;
+    try {
+      await ApiClient.post('/reports/${match.group(0)!}/link', {});
+    } catch (_) {}
   }
 
   @override
@@ -135,9 +228,9 @@ class _ChatPageState extends State<ChatPage> {
         isVideo: isVideo,
       ));
       if (text == null) _textCtrl.clear();
-      _showQuickReplies = false;
     });
     _scrollToBottom();
+    if (content.isNotEmpty) _continueTypebot(content);
   }
 
   Future<void> _toggleListening() async {
@@ -220,7 +313,6 @@ class _ChatPageState extends State<ChatPage> {
                   children: [
                     _ChatAppBar(
                       isDark: isDark,
-                      caseNumber: _caseNumber,
                       onBack: () => Navigator.of(context).pop(),
                       onToggleTheme: widget.onToggleTheme,
                     ),
@@ -234,11 +326,11 @@ class _ChatPageState extends State<ChatPage> {
                       child: _ChatList(
                         isDark: isDark,
                         messages: _messages,
-                        showQuickReplies: _showQuickReplies,
-                        quickReplies: _quickReplies,
+                        choiceItems: _choiceItems,
+                        botTyping: _botTyping,
                         controller: _scrollCtrl,
-                        onQuickReply: (r) => _send(text: r),
-                        openedAt: _messages.first.time,
+                        onChoiceSelected: (r) => _send(text: r),
+                        openedAt: _openedAt,
                       ),
                     ),
                     _ActionRow(
@@ -270,13 +362,11 @@ class _ChatPageState extends State<ChatPage> {
 
 class _ChatAppBar extends StatelessWidget {
   final bool isDark;
-  final String caseNumber;
   final VoidCallback onBack;
   final VoidCallback onToggleTheme;
 
   const _ChatAppBar({
     required this.isDark,
-    required this.caseNumber,
     required this.onBack,
     required this.onToggleTheme,
   });
@@ -340,7 +430,7 @@ class _ChatAppBar extends StatelessWidget {
                   style: AppTextStyles.nameBold(isDark, fontSize: 15),
                 ),
                 Text(
-                  'Dossier $caseNumber · Confidentiel',
+                  'Confidentiel',
                   style: GoogleFonts.manrope(
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
@@ -440,26 +530,26 @@ class _UserBanner extends StatelessWidget {
 class _ChatList extends StatelessWidget {
   final bool isDark;
   final List<_Msg> messages;
-  final bool showQuickReplies;
-  final List<String> quickReplies;
+  final List<String> choiceItems;
+  final bool botTyping;
   final ScrollController controller;
-  final ValueChanged<String> onQuickReply;
+  final ValueChanged<String> onChoiceSelected;
   final DateTime openedAt;
 
   const _ChatList({
     required this.isDark,
     required this.messages,
-    required this.showQuickReplies,
-    required this.quickReplies,
+    required this.choiceItems,
+    required this.botTyping,
     required this.controller,
-    required this.onQuickReply,
+    required this.onChoiceSelected,
     required this.openedAt,
   });
 
   @override
   Widget build(BuildContext context) {
-    final itemCount =
-        1 + messages.length + (showQuickReplies ? 1 : 0);
+    final showChoices = choiceItems.isNotEmpty;
+    final itemCount = 1 + messages.length + (botTyping ? 1 : 0) + (showChoices ? 1 : 0);
 
     return ListView.builder(
       controller: controller,
@@ -468,14 +558,21 @@ class _ChatList extends StatelessWidget {
       itemBuilder: (_, i) {
         if (i == 0) return _DateSeparator(isDark: isDark, time: openedAt);
         final msgIndex = i - 1;
-        if (showQuickReplies && msgIndex == messages.length) {
+        if (msgIndex < messages.length) {
+          return _BubbleRow(isDark: isDark, msg: messages[msgIndex]);
+        }
+        final extra = msgIndex - messages.length;
+        if (botTyping && extra == 0) {
+          return _TypingIndicator(isDark: isDark);
+        }
+        if (showChoices) {
           return _QuickRepliesRow(
             isDark: isDark,
-            replies: quickReplies,
-            onTap: onQuickReply,
+            replies: choiceItems,
+            onTap: onChoiceSelected,
           );
         }
-        return _BubbleRow(isDark: isDark, msg: messages[msgIndex]);
+        return const SizedBox.shrink();
       },
     );
   }
@@ -635,6 +732,85 @@ class _VideoThumb extends StatelessWidget {
   }
 }
 
+// ─── Typing indicator ─────────────────────────────────────────────────────────
+
+class _TypingIndicator extends StatefulWidget {
+  final bool isDark;
+  const _TypingIndicator({required this.isDark});
+
+  @override
+  State<_TypingIndicator> createState() => _TypingIndicatorState();
+}
+
+class _TypingIndicatorState extends State<_TypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bubbleColor = widget.isDark
+        ? const Color(0xFF1A3D37)
+        : const Color(0xFFE8E6E1);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: bubbleColor,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+                bottomLeft: Radius.circular(4),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(3, (i) {
+                return AnimatedBuilder(
+                  animation: _ctrl,
+                  builder: (_, __) {
+                    final t = ((_ctrl.value + i / 3) % 1.0);
+                    final opacity = (0.3 + 0.7 * (t < 0.5 ? t * 2 : (1 - t) * 2)).clamp(0.3, 1.0);
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: (widget.isDark ? Colors.white : AppColors.lightTextSecondary)
+                            .withValues(alpha: opacity),
+                      ),
+                    );
+                  },
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ─── Quick replies ────────────────────────────────────────────────────────────
 
 class _QuickRepliesRow extends StatelessWidget {
@@ -655,18 +831,6 @@ class _QuickRepliesRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Réponses rapides',
-            style: GoogleFonts.manrope(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.45)
-                  : AppColors.lightTextSecondary,
-              letterSpacing: 0.3,
-            ),
-          ),
-          const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,

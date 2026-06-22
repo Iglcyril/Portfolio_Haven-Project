@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
+import '../../core/services/report_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
@@ -25,6 +26,8 @@ class ReferentDashboardPage extends StatefulWidget {
 }
 
 class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
+  bool _isLoading = true;
+
   List<HavenReport> get _myReports => widget.currentUserName == null
       ? []
       : ReportStore.instance.reports
@@ -46,7 +49,45 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
   void initState() {
     super.initState();
     ReportStore.instance.addListener(_rebuild);
+    _fetchReports();
   }
+
+  Future<void> _fetchReports() async {
+    try {
+      final apiReports = await ReportService.getAdminReports();
+      if (!mounted) return;
+      ReportStore.instance.reports
+        ..clear()
+        ..addAll(apiReports.map(_toHavenReport));
+      ReportStore.instance.notify();
+    } catch (_) {}
+    if (mounted) setState(() => _isLoading = false);
+  }
+
+  HavenReport _toHavenReport(ApiReport r) => HavenReport(
+        caseNumber: r.trackingId,
+        anonLevel: switch (r.anonymatLevel) {
+          'total' => 'Anonyme',
+          'partiel' => 'Semi-anonyme',
+          _ => 'Identité visible',
+        },
+        initialText: '',
+        submittedAt: r.createdAt,
+        riskLevel: switch (r.severity) {
+          'ELEVE' => 'Élevé',
+          'MOYEN' => 'Moyen',
+          _ => null,
+        },
+        isAssigned: r.assignedTo != null,
+        assignedTo: r.assignedTo?.fullName,
+        isResolved: r.status == 'RESOLU' || r.status == 'ARCHIVE',
+        isArchivedByDirector: r.status == 'ARCHIVE',
+        progressStage: switch (r.status) {
+          'EN_COURS' => 2,
+          'RESOLU' || 'ARCHIVE' => 3,
+          _ => 0,
+        },
+      );
 
   @override
   void dispose() {
@@ -204,6 +245,13 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (_isLoading) {
+      return Container(
+        color: isDark ? AppColors.darkGradientTop : AppColors.warmWhite,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,

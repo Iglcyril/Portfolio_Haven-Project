@@ -393,6 +393,20 @@ export const reportService = {
       trackingCode: trackingId,
       deletedAt:    new Date().toISOString()
     }
+  },
+
+  /**
+   * Rattache un signalement anonyme (créé par Typebot sans token) au compte
+   * de l'étudiant connecté. Silencieux si le rapport est déjà lié.
+   * Lance REPORT_NOT_FOUND si le trackingId n'existe pas.
+   */
+  async link(trackingId: string, userId: string) {
+    const report = await prisma.report.findUnique({ where: { trackingId } })
+    if (!report) throw new Error('REPORT_NOT_FOUND')
+    if (!report.userId) {
+      await prisma.report.update({ where: { trackingId }, data: { userId } })
+    }
+    return { trackingCode: trackingId, linked: true }
   }
 
 }

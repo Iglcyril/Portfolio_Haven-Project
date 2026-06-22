@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
+import '../../core/services/report_service.dart';
+import '../../core/services/api_client.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -80,13 +82,8 @@ class ProfessionalDashboardPage extends StatefulWidget {
 class _ProfessionalDashboardPageState
     extends State<ProfessionalDashboardPage> {
 
-  static const _teamMembers = [
-    _TeamMember('Sophie', 'Martin', 'CPE'),
-    _TeamMember('Jean', 'Dupont', 'Infirmier·ère'),
-    _TeamMember('Marie', 'Leblanc', 'AED'),
-    _TeamMember('Pierre', 'Bernard', 'Professeur·e'),
-    _TeamMember('Claire', 'Rousseau', 'Assistant·e Social·e'),
-  ];
+  List<_TeamMember> _teamMembers = const [];
+  bool _isLoading = true;
 
   static const _riskColors = AppConstants.riskColors;
 
@@ -103,7 +100,69 @@ class _ProfessionalDashboardPageState
   void initState() {
     super.initState();
     ReportStore.instance.addListener(_rebuild);
+    _fetchData();
   }
+
+  Future<void> _fetchData() async {
+    try {
+      final results = await Future.wait([
+        ReportService.getAdminReports(),
+        ApiClient.get('/admin/team'),
+      ]);
+
+      final apiReports = results[0] as List<ApiReport>;
+      final teamRaw = results[1] as List;
+
+      if (!mounted) return;
+
+      ReportStore.instance.reports
+        ..clear()
+        ..addAll(apiReports.map(_toHavenReport));
+      ReportStore.instance.notify();
+
+      setState(() {
+        _teamMembers = teamRaw.map((m) {
+          final map = m as Map<String, dynamic>;
+          final first = map['firstName'] as String? ?? '';
+          final last  = map['lastName']  as String? ?? '';
+          final role  = map['role'] as String? ?? 'SUPERVISOR';
+          return _TeamMember(
+            first,
+            last,
+            role == 'ADMIN' ? 'Directeur·trice' : 'Référent·e',
+          );
+        }).toList();
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  HavenReport _toHavenReport(ApiReport r) => HavenReport(
+        caseNumber: r.trackingId,
+        anonLevel: switch (r.anonymatLevel) {
+          'total' => 'Anonyme',
+          'partiel' => 'Semi-anonyme',
+          _ => 'Identité visible',
+        },
+        initialText: '',
+        submittedAt: r.createdAt,
+        riskLevel: switch (r.severity) {
+          'ELEVE' => 'Élevé',
+          'MOYEN' => 'Moyen',
+          _ => null,
+        },
+        isAssigned: r.assignedTo != null,
+        assignedTo: r.assignedTo?.fullName,
+        isResolved: r.status == 'RESOLU' || r.status == 'ARCHIVE',
+        isArchivedByDirector: r.status == 'ARCHIVE',
+        progressStage: switch (r.status) {
+          'EN_COURS' => 2,
+          'RESOLU' || 'ARCHIVE' => 3,
+          _ => 0,
+        },
+      );
 
   @override
   void dispose() {
@@ -694,6 +753,14 @@ class _ProfessionalDashboardPageState
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    if (_isLoading) {
+      return Container(
+        color: isDark ? AppColors.darkGradientTop : AppColors.warmWhite,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
     final unassigned = _unassigned;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(

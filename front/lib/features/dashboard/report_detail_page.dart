@@ -12,6 +12,7 @@ import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import 'dashboard_page.dart';
+import '../../core/services/auth_service.dart';
 
 class ReportDetailPage extends StatefulWidget {
   final ReportItem report;
@@ -748,7 +749,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                   final label = '${d.day} ${months[d.month - 1]} à ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
                                   return ReportAction(
                                     date: d,
-                                    actor: 'Alex',
+                                    actor: AuthService.currentUser?.fullName ?? 'Vous',
                                     description: 'Précision ajoutée le $label.',
                                     icon: Icons.edit_note_rounded,
                                   );

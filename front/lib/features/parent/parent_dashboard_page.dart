@@ -7,6 +7,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/theme/app_shadows.dart';
 import '../../core/widgets/haven_app_bar.dart';
+import '../../core/services/report_service.dart';
 import '../dashboard/dashboard_page.dart';
 import '../dashboard/report_detail_page.dart';
 
@@ -16,15 +17,6 @@ class _ParentReport {
   final ReportItem report;
   final String childName;
   _ParentReport({required this.report, required this.childName});
-}
-
-List<_ParentReport> _buildParentReports() {
-  final reports = buildMockReports();
-  return [
-    _ParentReport(report: reports[0], childName: 'Lucas Martin'),
-    _ParentReport(report: reports[1], childName: 'Lucas Martin'),
-    _ParentReport(report: reports[2], childName: 'Emma Martin'),
-  ];
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -38,14 +30,75 @@ class ParentDashboardPage extends StatefulWidget {
 }
 
 class _ParentDashboardPageState extends State<ParentDashboardPage> {
-  static List<_ParentReport>? _persistentReports;
-  late List<_ParentReport> _reports;
+  List<_ParentReport> _reports = [];
+  bool _isLoading = true;
+  String? _error;
+
+  static const _months = [
+    'jan.', 'fév.', 'mars', 'avr.', 'mai', 'juin',
+    'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'
+  ];
 
   @override
   void initState() {
     super.initState();
-    _persistentReports ??= _buildParentReports();
-    _reports = _persistentReports!;
+    _fetchReports();
+  }
+
+  Future<void> _fetchReports() async {
+    try {
+      final children = await ReportService.getChildrenReports();
+      if (!mounted) return;
+      final items = <_ParentReport>[];
+      for (final child in children) {
+        for (final r in child.reports) {
+          items.add(_ParentReport(
+            childName: child.displayName,
+            report: _toItem(r),
+          ));
+        }
+      }
+      setState(() {
+        _reports = items;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  ReportItem _toItem(ApiReport r) {
+    final date = '${r.createdAt.day} ${_months[r.createdAt.month - 1]}';
+    return ReportItem(
+      caseNumber: r.trackingId,
+      priority: r.severity == 'ELEVE'
+          ? ReportPriority.high
+          : r.severity == 'MOYEN'
+              ? ReportPriority.medium
+              : ReportPriority.low,
+      title: r.type == 'victime'
+          ? 'Victime de harcèlement'
+          : 'Témoin de harcèlement',
+      date: date,
+      counselor: r.assignedTo?.fullName ?? 'Non assigné',
+      status: switch (r.status) {
+        'EN_COURS' => ReportStatus.inProgress,
+        'RESOLU' || 'ARCHIVE' => ReportStatus.resolved,
+        _ => ReportStatus.filed,
+      },
+      anonLabel: switch (r.anonymatLevel) {
+        'total' => 'Anonyme à 100%',
+        'partiel' => 'Semi-anonyme',
+        _ => 'Identité visible',
+      },
+      initialText: '',
+      submittedAt: r.createdAt,
+      actions: const [],
+    );
   }
 
   int get _activeCount =>
@@ -73,37 +126,70 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
                   children: [
                     _ParentAppBar(isDark: isDark, onToggleTheme: widget.onToggleTheme),
                     Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const SizedBox(height: 20),
-                            _Greeting(isDark: isDark),
-                            const SizedBox(height: 20),
-                            _StatsRow(
-                              isDark: isDark,
-                              activeCount: _activeCount,
-                              resolvedCount: _resolvedCount,
-                            ),
-                            const SizedBox(height: 28),
-                            _SectionHeader(isDark: isDark),
-                            const SizedBox(height: 12),
-                            ..._reports.map(
-                              (r) => Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: _ParentReportCard(
-                                  isDark: isDark,
-                                  parentReport: r,
-                                  onToggleTheme: widget.onToggleTheme,
-                                  onArchive: () => setState(() => _reports.remove(r)),
+                      child: _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : _error != null
+                              ? Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(24),
+                                    child: Text(
+                                      _error!,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.manrope(
+                                        fontSize: 14,
+                                        color: isDark
+                                            ? Colors.white54
+                                            : AppColors.lightTextSecondary,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SingleChildScrollView(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      const SizedBox(height: 20),
+                                      _Greeting(isDark: isDark),
+                                      const SizedBox(height: 20),
+                                      _StatsRow(
+                                        isDark: isDark,
+                                        activeCount: _activeCount,
+                                        resolvedCount: _resolvedCount,
+                                      ),
+                                      const SizedBox(height: 28),
+                                      _SectionHeader(isDark: isDark),
+                                      const SizedBox(height: 12),
+                                      if (_reports.isEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 16),
+                                          child: Text(
+                                            'Aucun signalement trouvé pour vos enfants.',
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.manrope(
+                                              fontSize: 14,
+                                              color: isDark
+                                                  ? Colors.white38
+                                                  : AppColors.lightTextSecondary,
+                                            ),
+                                          ),
+                                        )
+                                      else
+                                        ..._reports.map(
+                                          (r) => Padding(
+                                            padding: const EdgeInsets.only(bottom: 12),
+                                            child: _ParentReportCard(
+                                              isDark: isDark,
+                                              parentReport: r,
+                                              onToggleTheme: widget.onToggleTheme,
+                                              onArchive: () => setState(() => _reports.remove(r)),
+                                            ),
+                                          ),
+                                        ),
+                                      const SizedBox(height: 24),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
-                      ),
                     ),
                   ],
                 ),

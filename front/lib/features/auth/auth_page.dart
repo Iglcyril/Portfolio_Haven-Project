@@ -9,10 +9,11 @@ import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
 import '../parent/parent_dashboard_page.dart';
-import '../professional/role_selection_page.dart';
 import '../professional/referent_dashboard_page.dart';
+import '../professional/professional_dashboard_page.dart';
 import '../legal/cgu_page.dart';
 import '../legal/privacy_page.dart';
+import '../../core/services/auth_service.dart';
 
 enum PortalType { student, parent, professional }
 
@@ -31,6 +32,8 @@ class _AuthPageState extends State<AuthPage> {
   _AuthTab _tab = _AuthTab.signIn;
   bool _obscurePassword = true;
   bool _rememberMe = false;
+  bool _isLoading = false;
+  String? _error;
 
   final _nameCtrl     = TextEditingController();
   final _emailCtrl    = TextEditingController();
@@ -42,6 +45,93 @@ class _AuthPageState extends State<AuthPage> {
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleSignIn() async {
+    final email = _emailCtrl.text.trim();
+    final password = _passwordCtrl.text;
+    if (email.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Veuillez remplir tous les champs');
+      return;
+    }
+    setState(() { _isLoading = true; _error = null; });
+    try {
+      final user = await AuthService.login(email, password);
+      if (!mounted) return;
+      _navigateByRole(user.role, user.fullName);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _error = e.toString(); _isLoading = false; });
+    }
+  }
+
+  Future<void> _handleRegister() async {
+    if (widget.portal == PortalType.professional) {
+      setState(() => _error = 'Contactez votre administrateur pour créer un compte professionnel');
+      return;
+    }
+    if (widget.portal == PortalType.student) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => TutorialPage(onToggleTheme: widget.onToggleTheme),
+      ));
+      return;
+    }
+    // Parent registration
+    final name = _nameCtrl.text.trim();
+    final email = _emailCtrl.text.trim();
+    final password = _passwordCtrl.text;
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Veuillez remplir tous les champs');
+      return;
+    }
+    final parts = name.split(' ');
+    final firstName = parts.first;
+    final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : parts.first;
+    setState(() { _isLoading = true; _error = null; });
+    try {
+      await AuthService.register(
+        email: email,
+        password: password,
+        role: 'PARENT',
+        firstName: firstName,
+        lastName: lastName,
+      );
+      if (!mounted) return;
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ChildRegistrationPage(onToggleTheme: widget.onToggleTheme),
+      ));
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _error = e.toString(); _isLoading = false; });
+    }
+  }
+
+  void _navigateByRole(String role, String name) {
+    switch (role) {
+      case 'SUPERVISOR':
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ReferentDashboardPage(
+            onToggleTheme: widget.onToggleTheme,
+            currentUserName: name,
+          ),
+        ));
+      case 'ADMIN':
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ProfessionalDashboardPage(
+            onToggleTheme: widget.onToggleTheme,
+            isManager: true,
+            currentUserName: name,
+          ),
+        ));
+      case 'PARENT':
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => ParentDashboardPage(onToggleTheme: widget.onToggleTheme),
+        ));
+      default:
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (_) => UserHomePage(onToggleTheme: widget.onToggleTheme),
+        ));
+    }
   }
 
   String get _badgeLabel {
@@ -151,68 +241,37 @@ class _AuthPageState extends State<AuthPage> {
                       ),
                     ),
                     const SizedBox(height: 28),
+                    if (_error != null) ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(Icons.error_outline_rounded, size: 16, color: Colors.red.shade400),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                _error!,
+                                style: GoogleFonts.manrope(
+                                  fontSize: 13,
+                                  color: Colors.red.shade400,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
                     _CtaButton(
                       tab: _tab,
-                      onTap: _tab == _AuthTab.register
-                          ? () {
-                              if (widget.portal == PortalType.parent) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => ChildRegistrationPage(
-                                    onToggleTheme: widget.onToggleTheme,
-                                  ),
-                                ));
-                              } else if (widget.portal ==
-                                  PortalType.professional) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) =>
-                                      ProfessionalRoleSelectionPage(
-                                    onToggleTheme: widget.onToggleTheme,
-                                  ),
-                                ));
-                              } else {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => TutorialPage(
-                                    onToggleTheme: widget.onToggleTheme,
-                                  ),
-                                ));
-                              }
-                            }
-                          : () {
-                              if (widget.portal == PortalType.parent) {
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                  builder: (_) => ParentDashboardPage(
-                                    onToggleTheme: widget.onToggleTheme,
-                                  ),
-                                ));
-                              } else if (widget.portal == PortalType.professional) {
-                                // Mock users — remplacé par auth backend
-                                const mockReferents = {
-                                  'sophie.martin@haven.fr': 'Sophie Martin',
-                                };
-                                final email = _emailCtrl.text.trim().toLowerCase();
-                                final referentName = mockReferents[email];
-                                if (referentName != null) {
-                                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                    builder: (_) => ReferentDashboardPage(
-                                      onToggleTheme: widget.onToggleTheme,
-                                      currentUserName: referentName,
-                                    ),
-                                  ));
-                                } else {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => ProfessionalRoleSelectionPage(
-                                      onToggleTheme: widget.onToggleTheme,
-                                    ),
-                                  ));
-                                }
-                              } else {
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                                  builder: (_) => UserHomePage(
-                                    onToggleTheme: widget.onToggleTheme,
-                                  ),
-                                ));
-                              }
-                            },
+                      loading: _isLoading,
+                      onTap: _tab == _AuthTab.register ? _handleRegister : _handleSignIn,
                     ),
                     const SizedBox(height: 20),
                     _Footer(isDark: isDark),
@@ -681,7 +740,8 @@ class _RememberMe extends StatelessWidget {
 class _CtaButton extends StatelessWidget {
   final _AuthTab tab;
   final VoidCallback onTap;
-  const _CtaButton({required this.tab, required this.onTap});
+  final bool loading;
+  const _CtaButton({required this.tab, required this.onTap, this.loading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -689,32 +749,47 @@ class _CtaButton extends StatelessWidget {
         tab == _AuthTab.register ? 'Créer mon compte' : 'Se connecter';
 
     return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 18),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: GoogleFonts.manrope(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                letterSpacing: 0.1,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Icon(
-              Icons.arrow_forward_rounded,
-              color: Colors.white,
-              size: 18,
-            ),
-          ],
+      onTap: loading ? null : onTap,
+      child: AnimatedOpacity(
+        opacity: loading ? 0.7 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: loading
+              ? const Center(
+                  child: SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  ),
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      label,
+                      style: GoogleFonts.manrope(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                        letterSpacing: 0.1,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ],
+                ),
         ),
       ),
     );
