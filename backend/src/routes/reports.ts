@@ -69,6 +69,23 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
   .use(bearer())
 
   /**
+   * GET /reports
+   * Réservé : utilisateurs connectés
+   * - STUDENT → ses propres rapports
+   * - SUPERVISOR / ADMIN → tous les rapports
+   */
+  .get('/', async ({ bearer, set }) => {
+    try {
+      const { userId, role } = requireAuth(bearer ?? '')
+      return await reportService.findAll(userId, role)
+    } catch (e) {
+      const { status, body } = handleError(e)
+      set.status = status
+      return body
+    }
+  })
+
+  /**
    * POST /reports
    * Pas d'authentification obligatoire — le chatbot crée des signalements anonymes.
    * Si un bearer valide est fourni, le rapport est rattaché au compte connecté.

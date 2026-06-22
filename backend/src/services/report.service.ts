@@ -134,8 +134,10 @@ export const reportService = {
         severity:       true,
         createdAt:      true,
         updatedAt:      true,
-        // On cache userId si le rapport est anonyme
-        userId: ['SUPERVISOR', 'ADMIN'].includes(role) ? true : false
+        userId: ['SUPERVISOR', 'ADMIN'].includes(role) ? true : false,
+        assignedTo: {
+          select: { id: true, firstName: true, lastName: true, email: true }
+        }
       }
     })
   },

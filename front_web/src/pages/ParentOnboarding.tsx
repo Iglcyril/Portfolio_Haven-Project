@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, X, ArrowRight, User, BookOpen, Calendar } from 'lucide-react'
 import { useTheme } from '../contexts/ThemeContext'
+import { linkChild } from '../services/parentData'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -166,7 +167,7 @@ function DatePicker({ value, onChange }: { value: string; onChange: (v: string) 
         textTransform: 'uppercase' as const,
         color: 'var(--c-text-muted)',
       }}>
-        Date de naissance <span style={{ fontWeight: 400, opacity: 0.6 }}>(optionnel)</span>
+        Date de naissance
       </span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
         <span style={{ color: 'var(--c-icon)', display: 'flex', flexShrink: 0 }}>
@@ -356,9 +357,12 @@ export default function ParentOnboarding() {
   const [form, setForm]       = useState<ChildEntry>(EMPTY)
   const [children, setChildren] = useState<ChildEntry[]>([])
 
-  // Date is optional — only firstName + lastName + className are required
-  const canAdd  = !!(form.firstName.trim() && form.lastName.trim() && form.className.trim())
-  const canStart = children.length > 0
+  const [loading, setLoading] = useState(false)
+  const [error, setError]     = useState<string | null>(null)
+
+  // dateOfBirth est obligatoire pour que le back retrouve l'enfant
+  const canAdd   = !!(form.firstName.trim() && form.lastName.trim() && form.className.trim() && form.dateOfBirth)
+  const canStart = children.length > 0 && !loading
 
   const addChild = () => {
     if (!canAdd) return
@@ -368,6 +372,26 @@ export default function ParentOnboarding() {
 
   const removeChild = (i: number) =>
     setChildren(prev => prev.filter((_, idx) => idx !== i))
+
+  const handleStart = async () => {
+    if (!canStart) return
+    setLoading(true)
+    setError(null)
+    try {
+      await Promise.all(
+        children.map(c => linkChild(c.firstName, c.lastName, c.dateOfBirth))
+      )
+      navigate('/dashboard/parent')
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : 'Impossible de lier un enfant. Vérifiez que les informations correspondent au compte élève.'
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const vars = (isDark ? {
     '--c-bg':           '#0F1E1B',
@@ -526,10 +550,24 @@ export default function ParentOnboarding() {
           )}
         </AnimatePresence>
 
+        {/* Erreur */}
+        {error && (
+          <p style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: '0.83rem',
+            color: '#E53935',
+            fontWeight: 600,
+            marginBottom: 16,
+            textAlign: 'center',
+          }}>
+            {error}
+          </p>
+        )}
+
         {/* CTA */}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <motion.button
-            onClick={() => canStart && navigate('/dashboard/parent')}
+            onClick={handleStart}
             whileHover={canStart ? { scale: 1.02 } : {}}
             whileTap={canStart ? { scale: 0.98 } : {}}
             style={{
@@ -549,8 +587,8 @@ export default function ParentOnboarding() {
               transition: 'background 0.2s, box-shadow 0.2s, color 0.2s',
             }}
           >
-            Commencer
-            <ArrowRight size={16} strokeWidth={2.5} />
+            {loading ? 'Liaison en cours…' : 'Commencer'}
+            {!loading && <ArrowRight size={16} strokeWidth={2.5} />}
           </motion.button>
         </div>
       </div>

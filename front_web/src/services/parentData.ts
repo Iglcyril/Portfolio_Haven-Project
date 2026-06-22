@@ -1,127 +1,204 @@
-import type { User, Child, ParentReport, EstablishmentContact } from '../types'
+import { api } from './api'
+import { getProfile } from './authService'
+import type { User, Child, ParentReport, EstablishmentContact, TimelineEntry } from '../types'
 
-// ─── Mock parent user ─────────────────────────────────────────────────────────
-
-export const MOCK_PARENT: User = {
-  id: 'usr_p01',
-  fullName: 'Marie Martin',
-  email: 'marie.martin@email.fr',
-  portal: 'parent',
-  establishmentName: 'Lycée Victor Hugo',
-  avatarInitials: 'MM',
-}
-
-// ─── Mock children ────────────────────────────────────────────────────────────
-
-export const MOCK_CHILDREN: Child[] = [
-  {
-    id: 'child_001',
-    firstName: 'Lucas',
-    lastName: 'Martin',
-    fullName: 'Lucas Martin',
-    className: 'Terminale B',
-    dateOfBirth: '2007-03-15',
-    avatarInitials: 'LM',
-  },
-  {
-    id: 'child_002',
-    firstName: 'Emma',
-    lastName: 'Martin',
-    fullName: 'Emma Martin',
-    className: '4ème A',
-    dateOfBirth: '2010-09-22',
-    avatarInitials: 'EM',
-  },
-]
-
-// ─── Mock parent reports ──────────────────────────────────────────────────────
-
-export const MOCK_PARENT_REPORTS: ParentReport[] = [
-  {
-    id: 'pr_001',
-    childId: 'child_001',
-    caseNumber: 'HVN-042',
-    title: 'Harcèlement verbal répété',
-    description:
-      'Des élèves de la classe de votre enfant lui font des remarques blessantes quotidiennement depuis plusieurs semaines, notamment sur son apparence et ses résultats scolaires.',
-    category: 'Harcèlement verbal',
-    severity: 'high',
-    status: 'active',
-    anonymityLevel: 'semi',
-    progressPercent: 65,
-    createdAt: '2026-06-01T09:14:00Z',
-    updatedAt: '2026-06-15T14:30:00Z',
-    referentName: 'Mme Sophie Martin',
-    timeline: [
-      { id: 't1', date: '2026-06-01T09:14:00Z', label: 'Signalement reçu',   description: 'Le signalement HVN-042 a été enregistré.', actor: 'system' },
-      { id: 't2', date: '2026-06-02T10:00:00Z', label: 'Prise en charge',    description: 'Dossier assigné à Mme Sophie Martin, référente harcèlement.', actor: 'referent' },
-      { id: 't3', date: '2026-06-08T14:22:00Z', label: 'Enquête en cours',   description: 'Entretiens menés avec les témoins. Une médiation est planifiée.', actor: 'referent' },
-      { id: 't4', date: '2026-06-15T14:30:00Z', label: 'Mise à jour',        description: 'La médiation a eu lieu. Suivi hebdomadaire mis en place.', actor: 'referent' },
-    ],
-  },
-  {
-    id: 'pr_002',
-    childId: 'child_001',
-    caseNumber: 'HVN-038',
-    title: 'Exclusion du groupe de classe',
-    description:
-      'Votre enfant est systématiquement exclu des activités de groupe et des projets collectifs depuis la rentrée.',
-    category: 'Exclusion sociale',
-    severity: 'medium',
-    status: 'active',
-    anonymityLevel: 'anonymous',
-    progressPercent: 30,
-    createdAt: '2026-05-20T11:05:00Z',
-    updatedAt: '2026-06-10T09:00:00Z',
-    referentName: 'M. Thomas Berger',
-    timeline: [
-      { id: 't1', date: '2026-05-20T11:05:00Z', label: 'Signalement reçu', description: 'Le signalement HVN-038 a été enregistré.', actor: 'system' },
-      { id: 't2', date: '2026-05-22T09:30:00Z', label: 'Prise en charge',  description: 'Dossier assigné à M. Thomas Berger.', actor: 'referent' },
-      { id: 't3', date: '2026-06-10T09:00:00Z', label: 'Analyse en cours', description: "Observation de la dynamique de classe en cours.", actor: 'referent' },
-    ],
-  },
-  {
-    id: 'pr_003',
-    childId: 'child_002',
-    caseNumber: 'HVN-029',
-    title: 'Messages offensants sur les réseaux',
-    description:
-      'Des captures d\'écran de messages concernant votre enfant, diffusés sur un groupe privé, ont été transmises par un camarade.',
-    category: 'Cyberharcèlement',
-    severity: 'medium',
-    status: 'resolved',
-    anonymityLevel: 'visible',
-    progressPercent: 100,
-    createdAt: '2026-04-10T16:45:00Z',
-    updatedAt: '2026-05-15T11:20:00Z',
-    referentName: 'Mme Sophie Martin',
-    timeline: [
-      { id: 't1', date: '2026-04-10T16:45:00Z', label: 'Signalement reçu',    description: 'Le signalement HVN-029 a été enregistré.', actor: 'system' },
-      { id: 't2', date: '2026-04-11T08:00:00Z', label: 'Prise en charge',     description: 'Dossier assigné à Mme Sophie Martin.', actor: 'referent' },
-      { id: 't3', date: '2026-04-18T14:00:00Z', label: 'Convocation',         description: "Les élèves concernés ont été convoqués.", actor: 'referent' },
-      { id: 't4', date: '2026-05-02T10:30:00Z', label: 'Sanction',            description: 'Sanction disciplinaire prononcée. Groupe supprimé.', actor: 'referent' },
-      { id: 't5', date: '2026-05-15T11:20:00Z', label: 'Dossier résolu',      description: 'Aucun nouvel incident. Dossier clôturé.', actor: 'system' },
-    ],
-  },
-]
-
-// ─── Establishment contacts ───────────────────────────────────────────────────
+// ─── Establishment contacts (données statiques) ───────────────────────────────
 
 export const ESTABLISHMENT_CONTACTS: EstablishmentContact[] = [
-  { name: 'M. Patrick Duval',   role: 'director', phone: '01 23 45 67 89', initials: 'PD' },
-  { name: 'Mme Sophie Martin',  role: 'referent', phone: '01 23 45 67 90', initials: 'SM' },
-  { name: 'M. Thomas Berger',   role: 'referent', phone: '01 23 45 67 91', initials: 'TB' },
+  { name: 'Directeur de l\'établissement', role: 'director', phone: '—', initials: 'DI' },
+  { name: 'Référent harcèlement',          role: 'referent', phone: '—', initials: 'RH' },
 ]
+
+// ─── Mapping backend → frontend ───────────────────────────────────────────────
+
+const CATEGORIE_LABELS: Record<string, string> = {
+  harcelement_scolaire: 'Harcèlement scolaire',
+  violence_physique:    'Violence physique',
+  violence_verbale:     'Violence verbale',
+  cyberharcelement:     'Cyberharcèlement',
+  discrimination:       'Discrimination',
+  mal_etre:             'Mal-être',
+  autre:                'Signalement',
+}
+
+const STATUS_MAP: Record<string, ParentReport['status']> = {
+  EN_ATTENTE: 'active',
+  EN_COURS:   'active',
+  RESOLU:     'resolved',
+  ARCHIVE:    'archived',
+}
+
+const SEVERITY_MAP: Record<string, ParentReport['severity']> = {
+  ELEVE: 'high',
+  MOYEN: 'medium',
+  BAS:   'low',
+}
+
+const ANONYMITY_MAP: Record<string, ParentReport['anonymityLevel']> = {
+  total:       'anonymous',
+  partiel:     'semi',
+  pas_anonyme: 'visible',
+}
+
+const PROGRESS_MAP: Record<string, number> = {
+  EN_ATTENTE: 10,
+  EN_COURS:   50,
+  RESOLU:     100,
+  ARCHIVE:    100,
+}
+
+// Types bruts retournés par le backend
+interface BackendChildReport {
+  id:             string
+  trackingId:     string
+  type:           string
+  categorie:      string
+  status:         string
+  severity:       string
+  crisisDetected: boolean
+  createdAt:      string
+  updatedAt:      string
+  anonymatLevel?: string
+  messages?: Array<{ id: string; sender: 'USER' | 'BOT'; content: string; createdAt: string }>
+  assignedTo?: { id: string; firstName?: string; lastName?: string; email: string } | null
+}
+
+interface BackendChild {
+  id:            string
+  firstName?:    string
+  lastName?:     string
+  email:         string
+  total_reports: number
+  reports:       BackendChildReport[]
+}
+
+interface ChildrenResponse {
+  total_children: number
+  children:       BackendChild[]
+}
+
+function buildTimeline(report: BackendChildReport): TimelineEntry[] {
+  const entries: TimelineEntry[] = [
+    {
+      id:          `${report.id}-created`,
+      date:        report.createdAt,
+      label:       'Signalement enregistré',
+      description: `Le signalement ${report.trackingId} a été enregistré.`,
+      actor:       'system',
+    },
+  ]
+
+  if (report.assignedTo) {
+    const name = [report.assignedTo.firstName, report.assignedTo.lastName].filter(Boolean).join(' ')
+      || report.assignedTo.email
+    entries.push({
+      id:          `${report.id}-assigned`,
+      date:        report.updatedAt,
+      label:       'Prise en charge',
+      description: `Dossier assigné à ${name}.`,
+      actor:       'referent',
+    })
+  }
+
+  if (report.messages) {
+    for (const msg of report.messages) {
+      entries.push({
+        id:          msg.id,
+        date:        msg.createdAt,
+        label:       msg.sender === 'USER' ? 'Déclaration de l\'élève' : 'Message de suivi',
+        description: msg.content,
+        actor:       msg.sender === 'USER' ? 'student' : 'referent',
+      })
+    }
+  }
+
+  if (report.status === 'RESOLU') {
+    entries.push({
+      id:          `${report.id}-resolved`,
+      date:        report.updatedAt,
+      label:       'Dossier résolu',
+      description: 'Le signalement a été traité et clôturé.',
+      actor:       'system',
+    })
+  }
+
+  return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+}
+
+function mapChildReport(r: BackendChildReport, childId: string): ParentReport {
+  const assignedName = r.assignedTo
+    ? ([r.assignedTo.firstName, r.assignedTo.lastName].filter(Boolean).join(' ') || r.assignedTo.email)
+    : undefined
+
+  return {
+    id:             r.id,
+    childId,
+    caseNumber:     r.trackingId,
+    title:          CATEGORIE_LABELS[r.categorie] ?? r.categorie,
+    description:    r.messages?.[0]?.content ?? '',
+    category:       CATEGORIE_LABELS[r.categorie] ?? r.categorie,
+    severity:       SEVERITY_MAP[r.severity]      ?? 'low',
+    status:         STATUS_MAP[r.status]          ?? 'active',
+    anonymityLevel: ANONYMITY_MAP[r.anonymatLevel ?? ''] ?? 'anonymous',
+    progressPercent: PROGRESS_MAP[r.status]       ?? 10,
+    createdAt:      r.createdAt,
+    updatedAt:      r.updatedAt,
+    referentName:   assignedName,
+    timeline:       buildTimeline(r),
+  }
+}
+
+function mapChild(c: BackendChild): Child {
+  const firstName = c.firstName ?? ''
+  const lastName  = c.lastName  ?? ''
+  const fullName  = [firstName, lastName].filter(Boolean).join(' ') || c.email
+  return {
+    id:             c.id,
+    firstName,
+    lastName,
+    fullName,
+    className:      '',
+    dateOfBirth:    '',
+    avatarInitials: fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+  }
+}
 
 // ─── Service functions ────────────────────────────────────────────────────────
 
-export const getParentChildren = (): Promise<Child[]> =>
-  Promise.resolve(MOCK_CHILDREN)
+async function fetchChildrenData(): Promise<ChildrenResponse> {
+  return api.get<ChildrenResponse>('/parents/children/reports')
+}
 
-export const getParentReports = (childId?: string): Promise<ParentReport[]> =>
-  Promise.resolve(
-    childId ? MOCK_PARENT_REPORTS.filter(r => r.childId === childId) : MOCK_PARENT_REPORTS
+export async function getParentChildren(): Promise<Child[]> {
+  const data = await fetchChildrenData()
+  return (data.children ?? []).map(mapChild)
+}
+
+export async function getParentReports(childId?: string): Promise<ParentReport[]> {
+  const data = await fetchChildrenData()
+  const all = (data.children ?? []).flatMap(child =>
+    child.reports.map(r => mapChildReport(r, child.id))
   )
+  return childId ? all.filter(r => r.childId === childId) : all
+}
 
-export const getCurrentParent = (): Promise<User> =>
-  Promise.resolve(MOCK_PARENT)
+export async function getCurrentParent(): Promise<User> {
+  const profile = await getProfile()
+  const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || profile.email
+  return {
+    id:                profile.id,
+    fullName,
+    email:             profile.email,
+    portal:            'parent',
+    establishmentName: '',
+    avatarInitials:    fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2),
+  }
+}
+
+export async function linkChild(
+  firstName: string,
+  lastName: string,
+  birthDate: string,
+): Promise<void> {
+  await api.post('/parents/link-child', { firstName, lastName, birthDate })
+}
