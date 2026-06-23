@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, UserCheck, ChevronDown, ChevronRight, Send, Calendar, Archive } from 'lucide-react'
+import { X, UserCheck, ChevronDown, ChevronRight, Send, Calendar, Archive, Download } from 'lucide-react'
 import type { ProReport, TeamMember, ReportEvent, Severity } from '../../../types'
 import { SEVERITY_COLOR } from '../../../constants/severity'
 import { formatDate } from '../../../utils/dateFormatting'
@@ -8,6 +8,7 @@ import { useIsMobile } from '../../../hooks/useMediaQuery'
 import { EVENT_TYPES, EVENT_COLORS } from '../../../services/professionalData'
 import { useAuth } from '../../../contexts/AuthContext'
 import { PRIMARY, STAGES, severityKey } from './constants'
+import { exportReportPDF } from '../../../services/reportExport'
 import { ProgressTracker } from './ProgressTracker'
 import { SeverityBadge } from './SeverityBadge'
 import { SeverityPicker } from './SeverityPicker'
@@ -41,6 +42,7 @@ export function DetailPanel({
   const [eventType, setEventType]       = useState(EVENT_TYPES[0])
   const [eventComment, setEventComment] = useState('')
   const [showDropdown, setShowDropdown] = useState(false)
+  const [isExporting, setIsExporting]   = useState(false)
 
   const canAdvance = report.progressStage < 3
   const color = SEVERITY_COLOR[severityKey(report)]
@@ -279,6 +281,44 @@ export function DetailPanel({
           >
             <Archive size={14} />
             Archiver ce dossier
+          </button>
+        </div>
+      )}
+
+      {/* Export PDF — dossiers archivés, directeur ou référent assigné */}
+      {report.status === 'archived' && (isDirector || canEdit) && (
+        <div style={{ marginBottom: 20 }}>
+          <button
+            disabled={isExporting}
+            onClick={async () => {
+              setIsExporting(true)
+              try { await exportReportPDF(report) }
+              catch (e) { console.error('Export PDF échoué', e) }
+              finally { setIsExporting(false) }
+            }}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '10px 14px',
+              borderRadius: 10,
+              border: `1.5px solid ${PRIMARY}`,
+              background: 'transparent',
+              color: PRIMARY,
+              fontFamily: 'inherit',
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: isExporting ? 'wait' : 'pointer',
+              opacity: isExporting ? 0.6 : 1,
+              transition: 'background 0.15s, opacity 0.15s',
+            }}
+            onMouseEnter={e => { if (!isExporting) e.currentTarget.style.background = `${PRIMARY}12` }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+          >
+            <Download size={14} />
+            {isExporting ? 'Génération du PDF…' : 'Télécharger le rapport (PDF)'}
           </button>
         </div>
       )}
