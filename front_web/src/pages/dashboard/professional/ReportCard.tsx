@@ -33,8 +33,11 @@ export function ReportCard({ report, selected, onClick, isArchived }: {
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3, flexWrap: 'wrap' }}>
             <span style={{ fontSize: 11, color: 'var(--c-text-muted)', fontWeight: 600 }}>{report.caseNumber}</span>
+            {report.studentName && report.anonymityLevel !== 'anonymous' && (
+              <span style={{ fontSize: 11, color: 'var(--c-text-sub)', fontWeight: 600 }}>· {report.studentName}</span>
+            )}
             {report.studentClass && (
               <span style={{ fontSize: 11, color: 'var(--c-text-muted)' }}>· {report.studentClass}</span>
             )}

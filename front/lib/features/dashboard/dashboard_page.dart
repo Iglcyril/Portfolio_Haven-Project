@@ -154,6 +154,7 @@ class _DashboardPageState extends State<DashboardPage> {
   List<ReportItem> _reports = [];
   bool _isLoading = true;
   String? _error;
+  Timer? _pollingTimer;
 
   static const _months = [
     'jan.', 'fév.', 'mars', 'avr.', 'mai', 'juin',
@@ -164,6 +165,13 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     _fetchReports();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (_) => _fetchReports());
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _fetchReports() async {
@@ -196,6 +204,7 @@ class _DashboardPageState extends State<DashboardPage> {
   ReportItem _toItem(ApiReport r) {
     final date = '${r.createdAt.day} ${_months[r.createdAt.month - 1]}';
     final typeLabel = r.type == 'temoin' ? 'Témoin' : 'Victime';
+    final referentName = r.assignedTo?.fullName ?? 'Référent';
     return ReportItem(
       caseNumber: r.trackingId,
       priority: r.severity == 'ELEVE'
@@ -205,7 +214,7 @@ class _DashboardPageState extends State<DashboardPage> {
               : ReportPriority.low,
       title: '${_categorieLabel(r.categorie)} · $typeLabel',
       date: date,
-      counselor: r.assignedTo?.fullName ?? 'Non assigné',
+      counselor: referentName,
       status: switch (r.status) {
         'EN_COURS' => ReportStatus.inProgress,
         'RESOLU' || 'ARCHIVE' => ReportStatus.resolved,
@@ -218,7 +227,21 @@ class _DashboardPageState extends State<DashboardPage> {
       },
       initialText: r.deposition ?? '',
       submittedAt: r.createdAt,
-      actions: const [],
+      actions: [
+        ReportAction(
+          date: r.createdAt,
+          actor: 'Système',
+          description: 'Signalement ${r.trackingId} enregistré dans Haven.',
+          icon: Icons.folder_open_rounded,
+        ),
+        if (r.assignedTo != null)
+          ReportAction(
+            date: r.createdAt,
+            actor: 'Système',
+            description: 'Pris en charge par $referentName.',
+            icon: Icons.person_rounded,
+          ),
+      ],
     );
   }
 
@@ -337,6 +360,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                               onToggleTheme: widget.onToggleTheme,
                                               onArchive: () => _archiveReport(r),
                                               onDelete: () => _deleteReport(r),
+                                              onRefresh: _fetchReports,
                                             ),
                                           ),
                                         ),
@@ -519,6 +543,7 @@ class _ReportCard extends StatefulWidget {
   final VoidCallback onToggleTheme;
   final VoidCallback onArchive;
   final VoidCallback onDelete;
+  final VoidCallback? onRefresh;
 
   const _ReportCard({
     super.key,
@@ -527,6 +552,7 @@ class _ReportCard extends StatefulWidget {
     required this.onToggleTheme,
     required this.onArchive,
     required this.onDelete,
+    this.onRefresh,
   });
 
   @override
@@ -600,15 +626,34 @@ class _ReportCardState extends State<_ReportCard> {
                 isDark: isDark,
                 icon: Icons.open_in_new_rounded,
                 label: 'Voir le détail',
-                onTap: () {
+                onTap: () async {
                   Navigator.of(context).pop();
-                  Navigator.of(context).push(MaterialPageRoute(
+                  final isManager = ['SUPERVISOR', 'ADMIN'].contains(
+                    AuthService.currentUser?.role,
+                  );
+                  await Navigator.of(context).push(MaterialPageRoute(
                     builder: (_) => ReportDetailPage(
                       report: widget.report,
                       onToggleTheme: widget.onToggleTheme,
                       onDelete: widget.onDelete,
+                      isManager: isManager,
+                      onRiskLevelChanged: isManager
+                          ? (level) {
+                              final severity = switch (level) {
+                                'Élevé' => 'ELEVE',
+                                'Moyen' => 'MOYEN',
+                                _ => 'BAS',
+                              };
+                              ReportService.updateSeverity(
+                                widget.report.caseNumber,
+                                severity,
+                              ).catchError((_) {});
+                            }
+                          : null,
+                      onRefresh: widget.onRefresh,
                     ),
                   ));
+                  widget.onRefresh?.call();
                 },
               ),
               Divider(

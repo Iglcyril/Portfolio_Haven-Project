@@ -27,6 +27,7 @@ class ReportDetailPage extends StatefulWidget {
   final String? initialAssignedTo;
   final void Function(String level)? onRiskLevelChanged;
   final void Function(String name)? onAssigned;
+  final VoidCallback? onRefresh;
   final HavenReport? havenReport;
 
   const ReportDetailPage({
@@ -42,6 +43,7 @@ class ReportDetailPage extends StatefulWidget {
     this.initialAssignedTo,
     this.onRiskLevelChanged,
     this.onAssigned,
+    this.onRefresh,
     this.havenReport,
   });
 
@@ -64,16 +66,21 @@ class _AddedInfo {
 
 class _ReportDetailPageState extends State<ReportDetailPage> {
   Timer? _timer;
+  Timer? _pollingTimer;
   Duration _remaining = Duration.zero;
 
   bool _showAddInfo = false;
   final _addInfoController = TextEditingController();
   final List<_AddedInfo> _addedInfos = [];
 
+  // Actions staff chargées depuis l'API (se rafraîchissent toutes les 30s)
+  List<ReportAction> _staffActions = [];
+
   static const _riskColors = AppConstants.riskColors;
 
   String? _riskLevel;
   String? _assignedTo;
+  late ReportStatus _currentStatus;
 
   static const Map<ReportStatus, String> _statusLabels = {
     ReportStatus.filed: 'DÉPOSÉ',
@@ -87,6 +94,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     super.initState();
     _riskLevel = widget.initialRiskLevel;
     _assignedTo = widget.initialAssignedTo;
+    _currentStatus = widget.report.status;
     if (widget.havenReport != null) ReportStore.instance.addListener(_rebuild);
     _updateRemaining();
     if (_remaining.inSeconds > 0) {
@@ -95,6 +103,38 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         if (_remaining.inSeconds <= 0) _timer?.cancel();
       });
     }
+    _loadStaffActions();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (_) => _loadStaffActions());
+  }
+
+  Future<void> _loadStaffActions() async {
+    try {
+      final role = AuthService.currentUser?.role ?? '';
+      List<ApiReport> allReports;
+      if (role == 'PARENT') {
+        final children = await ReportService.getChildrenReports();
+        allReports = children.expand((c) => c.reports).toList();
+      } else {
+        allReports = await ReportService.getStudentReports();
+      }
+      final match = allReports.where((r) => r.trackingId == widget.report.caseNumber).toList();
+      if (match.isEmpty || !mounted) return;
+      final r = match.first;
+      final referentName = r.assignedTo?.fullName ?? 'Référent';
+      setState(() {
+        _staffActions = r.staffEvents.map((e) => ReportAction(
+          date: e.createdAt,
+          actor: referentName,
+          description: e.comment != null ? '${e.type} — ${e.comment}' : e.type,
+          icon: kEventIcons[e.type] ?? Icons.track_changes_rounded,
+        )).toList();
+        _currentStatus = switch (r.status) {
+          'EN_COURS' => ReportStatus.inProgress,
+          'RESOLU' || 'ARCHIVE' => ReportStatus.resolved,
+          _ => ReportStatus.filed,
+        };
+      });
+    } catch (_) {}
   }
 
   void _rebuild() => setState(() {});
@@ -109,6 +149,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   void dispose() {
     if (widget.havenReport != null) ReportStore.instance.removeListener(_rebuild);
     _timer?.cancel();
+    _pollingTimer?.cancel();
     _addInfoController.dispose();
     super.dispose();
   }
@@ -418,7 +459,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     final String priorityLabel = widget.isManager
         ? (_riskLevel?.toUpperCase() ?? 'NON ÉVALUÉ')
         : ReportPriority.labels[widget.report.priority]!;
-    final statusLabel = _statusLabels[widget.report.status]!;
+    final statusLabel = _statusLabels[_currentStatus]!;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -526,7 +567,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                             // Barre de progression
                             _DetailProgressTracker(
                               isDark: isDark,
-                              status: widget.report.status,
+                              status: _currentStatus,
                               activeColor: color,
                               overrideStep: widget.havenReport?.progressStage,
                             ),
@@ -735,6 +776,52 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              // Bouton avancement statut
+                              if (_currentStatus != ReportStatus.resolved)
+                                GestureDetector(
+                                  onTap: () async {
+                                    final nextStatus = _currentStatus == ReportStatus.filed || _currentStatus == ReportStatus.reviewed
+                                        ? ReportStatus.inProgress
+                                        : ReportStatus.resolved;
+                                    final backendStatus = nextStatus == ReportStatus.resolved ? 'RESOLU' : 'EN_COURS';
+                                    setState(() => _currentStatus = nextStatus);
+                                    ReportService.updateStatus(widget.report.caseNumber, backendStatus)
+                                        .catchError((_) {});
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary.withValues(alpha: isDark ? 0.15 : 0.08),
+                                      borderRadius: BorderRadius.circular(18),
+                                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.30)),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 36,
+                                          height: 36,
+                                          decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.10), borderRadius: BorderRadius.circular(10)),
+                                          child: const Icon(Icons.arrow_forward_rounded, color: AppColors.primary, size: 18),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text('Avancer le dossier', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)),
+                                              Text(
+                                                'Passer à : ${_currentStatus == ReportStatus.filed || _currentStatus == ReportStatus.reviewed ? 'EN COURS' : 'RÉSOLU'}',
+                                                style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.primary.withValues(alpha: 0.60)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               const SizedBox(height: 28),
                             ],
 
@@ -758,15 +845,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     icon: Icons.edit_note_rounded,
                                   );
                                 }),
-                                if (widget.havenReport != null)
-                                  ...widget.havenReport!.events.map((e) => ReportAction(
-                                    date: e.createdAt,
-                                    actor: widget.havenReport!.assignedTo ?? 'Référent',
-                                    description: e.comment != null
-                                        ? '${e.type} — ${e.comment}'
-                                        : e.type,
-                                    icon: kEventIcons[e.type] ?? Icons.circle_outlined,
-                                  )),
+                                ..._staffActions,
                               ]..sort((a, b) => a.date.compareTo(b.date)),
                             ),
 

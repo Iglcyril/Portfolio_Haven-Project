@@ -144,8 +144,10 @@ interface BackendReport {
   createdAt:      string
   updatedAt:      string
   userId?:        string | null
+  user?:          { firstName?: string | null; lastName?: string | null } | null
   assignedTo?:    { id: string; firstName?: string; lastName?: string; email: string } | null
-  messages?:      Array<{ id: string; sender: 'USER' | 'BOT'; content: string; createdAt: string }>
+  messages?:      Array<{ id: string; sender: string; content: string; createdAt: string }>
+  summary?:       { classLevel?: string | null } | null
 }
 
 interface AdminReportsResponse {
@@ -191,6 +193,7 @@ function buildTimeline(r: BackendReport): TimelineEntry[] {
 
   if (r.messages) {
     for (const msg of r.messages) {
+      if (msg.sender === 'STAFF') continue
       entries.push({
         id:          msg.id,
         date:        msg.createdAt,
@@ -229,11 +232,34 @@ function mapProReport(r: BackendReport): ProReport {
     ? ([r.assignedTo.firstName, r.assignedTo.lastName].filter(Boolean).join(' ') || r.assignedTo.email)
     : undefined
 
+  const firstUserMsg = r.messages?.find(m => m.sender === 'USER')?.content ?? ''
+
+  const studentName = r.user
+    ? [r.user.firstName, r.user.lastName].filter(Boolean).join(' ') || undefined
+    : undefined
+
+  const events: import('../types').ReportEvent[] = []
+  if (r.messages) {
+    for (const msg of r.messages) {
+      if (msg.sender !== 'STAFF') continue
+      try {
+        const parsed = JSON.parse(msg.content) as { type: string; comment?: string | null }
+        events.push({
+          id:        msg.id,
+          type:      parsed.type,
+          comment:   parsed.comment ?? undefined,
+          createdAt: msg.createdAt,
+          actor:     'Référent',
+        })
+      } catch { /* skip malformed */ }
+    }
+  }
+
   return {
     id:              r.id,
     caseNumber:      r.trackingId,
     title:           CATEGORIE_LABELS[r.categorie] ?? r.categorie,
-    description:     r.messages?.[0]?.content ?? '',
+    description:     firstUserMsg,
     category:        CATEGORIE_LABELS[r.categorie] ?? r.categorie,
     severity:        r.severity && r.severity !== 'BAS' ? SEVERITY_MAP[r.severity] : undefined,
     status:          STATUS_MAP[r.status]           ?? 'active',
@@ -245,9 +271,10 @@ function mapProReport(r: BackendReport): ProReport {
     updatedAt:       r.updatedAt,
     assignedTo:      assignedName,
     referentName:    assignedName,
-    studentClass:    '',
+    studentClass:    r.summary?.classLevel ?? undefined,
+    studentName,
     timeline:        buildTimeline(r),
-    events:          [],
+    events,
   }
 }
 
@@ -321,4 +348,8 @@ export async function updateSeverity(trackingCode: string, level: BackendSeverit
 
 export async function assignReferent(trackingCode: string, referentId: string): Promise<void> {
   await api.post(`/admin/reports/${trackingCode}/assign`, { referent_id: referentId })
+}
+
+export async function saveEvent(trackingCode: string, type: string, comment?: string): Promise<void> {
+  await api.post(`/admin/reports/${trackingCode}/events`, { type, comment })
 }

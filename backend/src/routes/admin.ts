@@ -183,6 +183,37 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   })
 
   /**
+   * POST /admin/reports/:id/events
+   * Réservé : ADMIN et SUPERVISOR
+   * Ajoute une action de suivi (événement) persistée comme ChatMessage STAFF.
+   */
+  .post('/reports/:id/events', async ({ params, body, bearer, set }) => {
+    try {
+      requireStaff(bearer ?? '')
+      const report = await prisma.report.findUnique({ where: { trackingId: params.id } })
+      if (!report) {
+        set.status = 404
+        return { error: 'REPORT_NOT_FOUND' }
+      }
+      const content = JSON.stringify({ type: body.type, comment: body.comment ?? null })
+      const msg = await prisma.chatMessage.create({
+        data: { reportId: report.id, sender: 'STAFF', content },
+        select: { id: true, sender: true, content: true, createdAt: true }
+      })
+      return { success: true, message: msg }
+    } catch (e) {
+      const { status, body } = handleError(e)
+      set.status = status
+      return body
+    }
+  }, {
+    body: t.Object({
+      type:    t.String({ minLength: 1 }),
+      comment: t.Optional(t.String()),
+    })
+  })
+
+  /**
    * GET /admin/stats
    * Réservé : ADMIN et SUPERVISOR
    * Retourne les statistiques par établissement depuis la base.

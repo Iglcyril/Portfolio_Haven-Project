@@ -119,11 +119,19 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
               trackingId:     true,
               type:           true,
               categorie:      true,
+              anonymatLevel:  true,
               status:         true,
               severity:       true,
               crisisDetected: true,
               createdAt:      true,
-              updatedAt:      true
+              updatedAt:      true,
+              assignedTo: {
+                select: { id: true, firstName: true, lastName: true, email: true }
+              },
+              messages: {
+                orderBy: { createdAt: 'asc' },
+                select: { id: true, sender: true, content: true, createdAt: true }
+              }
             }
           }
         }

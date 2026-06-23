@@ -41,6 +41,7 @@ export interface Report {
   updatedAt: string         // ISO
   timeline: TimelineEntry[]
   referentName?: string     // assigned referent
+  events: ReportEvent[]
 }
 
 // ─── Emergency ────────────────────────────────────────────────────────────────
@@ -110,5 +111,6 @@ export interface ProReport extends Omit<Report, 'severity'> {
   progressStage: number        // 0-3
   anonLevel: string            // 'Anonyme' | 'Semi-anonyme' | 'Visible'
   studentClass?: string
+  studentName?: string
   events: ReportEvent[]
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'api_client.dart';
 
 // ─── Modèles API ──────────────────────────────────────────────────────────────
@@ -28,6 +29,20 @@ class ApiAssignee {
       );
 }
 
+class ApiStaffEvent {
+  final String id;
+  final String type;
+  final String? comment;
+  final DateTime createdAt;
+
+  const ApiStaffEvent({
+    required this.id,
+    required this.type,
+    this.comment,
+    required this.createdAt,
+  });
+}
+
 class ApiReport {
   final String id;
   final String trackingId;
@@ -40,6 +55,9 @@ class ApiReport {
   final DateTime createdAt;
   final ApiAssignee? assignedTo;
   final String? deposition;
+  final String? studentName;
+  final String? studentClass;
+  final List<ApiStaffEvent> staffEvents;
 
   const ApiReport({
     required this.id,
@@ -53,27 +71,63 @@ class ApiReport {
     required this.createdAt,
     this.assignedTo,
     this.deposition,
+    this.studentName,
+    this.studentClass,
+    this.staffEvents = const [],
   });
 
   factory ApiReport.fromJson(Map<String, dynamic> j) {
     final msgs = j['messages'] as List?;
-    final deposition = msgs != null && msgs.isNotEmpty
-        ? (msgs[0] as Map<String, dynamic>)['content'] as String?
-        : null;
+    String? deposition;
+    final staffEvents = <ApiStaffEvent>[];
+
+    if (msgs != null) {
+      for (final raw in msgs) {
+        final msg = raw as Map<String, dynamic>;
+        final sender = msg['sender'] as String? ?? '';
+        if (sender == 'USER' && deposition == null) {
+          deposition = msg['content'] as String?;
+        } else if (sender == 'STAFF') {
+          try {
+            final content = msg['content'] as String? ?? '';
+            final parsed = jsonDecode(content) as Map<String, dynamic>;
+            staffEvents.add(ApiStaffEvent(
+              id:        msg['id'] as String,
+              type:      parsed['type'] as String? ?? 'Autre',
+              comment:   parsed['comment'] as String?,
+              createdAt: DateTime.parse(msg['createdAt'] as String),
+            ));
+          } catch (_) { /* skip malformed */ }
+        }
+      }
+    }
+
+    final userMap = j['user'] as Map<String, dynamic>?;
+    final firstName = userMap?['firstName'] as String?;
+    final lastName  = userMap?['lastName']  as String?;
+    final nameParts = [firstName, lastName].whereType<String>().where((s) => s.isNotEmpty).toList();
+    final studentName = nameParts.isNotEmpty ? nameParts.join(' ') : null;
+
+    final summaryMap = j['summary'] as Map<String, dynamic>?;
+    final studentClass = summaryMap?['classLevel'] as String?;
+
     return ApiReport(
-        id: j['id'] as String,
-        trackingId: j['trackingId'] as String,
-        type: j['type'] as String,
-        categorie: j['categorie'] as String,
-        anonymatLevel: j['anonymatLevel'] as String? ?? 'total',
-        crisisDetected: j['crisisDetected'] as bool? ?? false,
-        status: j['status'] as String,
-        severity: j['severity'] as String? ?? 'BAS',
-        createdAt: DateTime.parse(j['createdAt'] as String),
-        assignedTo: j['assignedTo'] != null
-            ? ApiAssignee.fromJson(j['assignedTo'] as Map<String, dynamic>)
-            : null,
-        deposition: deposition,
+      id:            j['id'] as String,
+      trackingId:    j['trackingId'] as String,
+      type:          j['type'] as String,
+      categorie:     j['categorie'] as String,
+      anonymatLevel: j['anonymatLevel'] as String? ?? 'total',
+      crisisDetected: j['crisisDetected'] as bool? ?? false,
+      status:        j['status'] as String,
+      severity:      j['severity'] as String? ?? 'BAS',
+      createdAt:     DateTime.parse(j['createdAt'] as String),
+      assignedTo:    j['assignedTo'] != null
+          ? ApiAssignee.fromJson(j['assignedTo'] as Map<String, dynamic>)
+          : null,
+      deposition:    deposition,
+      studentName:   studentName,
+      studentClass:  studentClass,
+      staffEvents:   staffEvents,
     );
   }
 }
@@ -143,5 +197,25 @@ class ReportService {
   /// DELETE /reports/:code — annule un signalement dans les 5 minutes
   static Future<void> deleteReport(String trackingId) async {
     await ApiClient.delete('/reports/$trackingId');
+  }
+
+  /// PATCH /admin/reports/:code — met à jour la sévérité (SUPERVISOR / ADMIN)
+  /// [severity] : 'BAS' | 'MOYEN' | 'ELEVE'
+  static Future<void> updateSeverity(String trackingId, String severity) async {
+    await ApiClient.patch('/admin/reports/$trackingId', {'level': severity});
+  }
+
+  /// PATCH /admin/reports/:code — met à jour le statut (SUPERVISOR / ADMIN)
+  /// [status] : 'EN_ATTENTE' | 'EN_COURS' | 'RESOLU' | 'ARCHIVE'
+  static Future<void> updateStatus(String trackingId, String status) async {
+    await ApiClient.patch('/admin/reports/$trackingId', {'status': status});
+  }
+
+  /// POST /admin/reports/:code/events — persiste une action de suivi
+  static Future<void> saveEvent(String trackingId, String type, {String? comment}) async {
+    await ApiClient.post('/admin/reports/$trackingId/events', {
+      'type': type,
+      if (comment != null && comment.isNotEmpty) 'comment': comment,
+    });
   }
 }

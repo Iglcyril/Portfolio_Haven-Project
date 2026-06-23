@@ -1,6 +1,6 @@
 import { api } from './api'
 import { getProfile } from './authService'
-import type { Report, User, EmergencyContact, TimelineEntry } from '../types'
+import type { Report, User, EmergencyContact, TimelineEntry, ReportEvent } from '../types'
 
 // ─── Emergency contacts (données statiques) ───────────────────────────────────
 
@@ -46,7 +46,7 @@ const ANONYMITY_MAP: Record<string, Report['anonymityLevel']> = {
 
 const PROGRESS_MAP: Record<string, number> = {
   EN_ATTENTE: 10,
-  EN_COURS:   50,
+  EN_COURS:   65,
   RESOLU:     100,
   ARCHIVE:    100,
 }
@@ -65,7 +65,7 @@ interface BackendReport {
   createdAt:      string
   updatedAt:      string
   assignedTo?: { id: string; firstName?: string; lastName?: string; email: string } | null
-  messages?: Array<{ id: string; sender: 'USER' | 'BOT'; content: string; createdAt: string }>
+  messages?: Array<{ id: string; sender: string; content: string; createdAt: string }>
 }
 
 function referentName(assignedTo?: BackendReport['assignedTo']): string | undefined {
@@ -97,6 +97,7 @@ function buildTimeline(report: BackendReport): TimelineEntry[] {
 
   if (report.messages) {
     for (const msg of report.messages) {
+      if (msg.sender === 'STAFF') continue
       entries.push({
         id:          msg.id,
         date:        msg.createdAt,
@@ -130,12 +131,28 @@ function buildTimeline(report: BackendReport): TimelineEntry[] {
   return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 }
 
+function buildEvents(report: BackendReport): ReportEvent[] {
+  if (!report.messages) return []
+  const actor = referentName(report.assignedTo) ?? 'Référent'
+  return report.messages
+    .filter(m => m.sender === 'STAFF')
+    .map(m => {
+      try {
+        const parsed = JSON.parse(m.content) as { type: string; comment?: string | null }
+        return { id: m.id, type: parsed.type, comment: parsed.comment ?? undefined, createdAt: m.createdAt, actor }
+      } catch {
+        return null
+      }
+    })
+    .filter((e): e is ReportEvent => e !== null)
+}
+
 function mapReport(r: BackendReport): Report {
   return {
     id:             r.id,
     caseNumber:     r.trackingId,
     title:          CATEGORIE_LABELS[r.categorie] ?? r.categorie,
-    description:    r.messages?.[0]?.content ?? '',
+    description:    r.messages?.find(m => m.sender === 'USER')?.content ?? '',
     category:       CATEGORIE_LABELS[r.categorie] ?? r.categorie,
     severity:       SEVERITY_MAP[r.severity]     ?? 'low',
     status:         STATUS_MAP[r.status]         ?? 'active',
@@ -145,6 +162,7 @@ function mapReport(r: BackendReport): Report {
     updatedAt:      r.updatedAt,
     referentName:   referentName(r.assignedTo),
     timeline:       buildTimeline(r),
+    events:         buildEvents(r),
   }
 }
 

@@ -140,15 +140,19 @@ export const reportService = {
         severity:       true,
         createdAt:      true,
         updatedAt:      true,
-        userId: ['SUPERVISOR', 'ADMIN'].includes(role) ? true : false,
+        userId:         ['SUPERVISOR', 'ADMIN'].includes(role) ? true : false,
+        user:           ['SUPERVISOR', 'ADMIN'].includes(role)
+          ? { select: { firstName: true, lastName: true } }
+          : false,
         assignedTo: {
           select: { id: true, firstName: true, lastName: true, email: true }
         },
         messages: {
-          take: 1,
-          where: { sender: 'USER' },
           orderBy: { createdAt: 'asc' },
-          select: { id: true, content: true, createdAt: true }
+          select: { id: true, sender: true, content: true, createdAt: true }
+        },
+        summary: {
+          select: { classLevel: true }
         }
       }
     })

@@ -1,6 +1,6 @@
 import { api } from './api'
 import { getProfile } from './authService'
-import type { User, Child, ParentReport, EstablishmentContact, TimelineEntry } from '../types'
+import type { User, Child, ParentReport, EstablishmentContact, TimelineEntry, ReportEvent } from '../types'
 
 // ─── Establishment contacts (données statiques) ───────────────────────────────
 
@@ -42,7 +42,7 @@ const ANONYMITY_MAP: Record<string, ParentReport['anonymityLevel']> = {
 
 const PROGRESS_MAP: Record<string, number> = {
   EN_ATTENTE: 10,
-  EN_COURS:   50,
+  EN_COURS:   65,
   RESOLU:     100,
   ARCHIVE:    100,
 }
@@ -59,7 +59,7 @@ interface BackendChildReport {
   createdAt:      string
   updatedAt:      string
   anonymatLevel?: string
-  messages?: Array<{ id: string; sender: 'USER' | 'BOT'; content: string; createdAt: string }>
+  messages?: Array<{ id: string; sender: string; content: string; createdAt: string }>
   assignedTo?: { id: string; firstName?: string; lastName?: string; email: string } | null
 }
 
@@ -102,6 +102,7 @@ function buildTimeline(report: BackendChildReport): TimelineEntry[] {
 
   if (report.messages) {
     for (const msg of report.messages) {
+      if (msg.sender === 'STAFF') continue
       entries.push({
         id:          msg.id,
         date:        msg.createdAt,
@@ -125,6 +126,24 @@ function buildTimeline(report: BackendChildReport): TimelineEntry[] {
   return entries.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 }
 
+function buildEvents(report: BackendChildReport): ReportEvent[] {
+  if (!report.messages) return []
+  const actor = report.assignedTo
+    ? ([report.assignedTo.firstName, report.assignedTo.lastName].filter(Boolean).join(' ') || report.assignedTo.email)
+    : 'Référent'
+  return report.messages
+    .filter(m => m.sender === 'STAFF')
+    .map(m => {
+      try {
+        const parsed = JSON.parse(m.content) as { type: string; comment?: string | null }
+        return { id: m.id, type: parsed.type, comment: parsed.comment ?? undefined, createdAt: m.createdAt, actor }
+      } catch {
+        return null
+      }
+    })
+    .filter((e): e is ReportEvent => e !== null)
+}
+
 function mapChildReport(r: BackendChildReport, childId: string): ParentReport {
   const assignedName = r.assignedTo
     ? ([r.assignedTo.firstName, r.assignedTo.lastName].filter(Boolean).join(' ') || r.assignedTo.email)
@@ -135,7 +154,7 @@ function mapChildReport(r: BackendChildReport, childId: string): ParentReport {
     childId,
     caseNumber:     r.trackingId,
     title:          CATEGORIE_LABELS[r.categorie] ?? r.categorie,
-    description:    r.messages?.[0]?.content ?? '',
+    description:    r.messages?.find(m => m.sender === 'USER')?.content ?? '',
     category:       CATEGORIE_LABELS[r.categorie] ?? r.categorie,
     severity:       SEVERITY_MAP[r.severity]      ?? 'low',
     status:         STATUS_MAP[r.status]          ?? 'active',
@@ -145,6 +164,7 @@ function mapChildReport(r: BackendChildReport, childId: string): ParentReport {
     updatedAt:      r.updatedAt,
     referentName:   assignedName,
     timeline:       buildTimeline(r),
+    events:         buildEvents(r),
   }
 }
 

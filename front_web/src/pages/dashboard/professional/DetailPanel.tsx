@@ -44,6 +44,8 @@ export function DetailPanel({
 
   const canAdvance = report.progressStage < 3
   const color = SEVERITY_COLOR[severityKey(report)]
+  // Peut ajouter événements/avancer = être la personne assignée sur ce dossier (indépendant du rôle)
+  const canEdit = !!report.assignedTo && report.assignedTo === actorName
 
   const panelStyle: React.CSSProperties = isMobile ? {
     position: 'fixed', top: 56, bottom: 0, left: 0, right: 0,
@@ -102,6 +104,11 @@ export function DetailPanel({
             {report.studentClass}
           </span>
         )}
+        {report.studentName && report.anonymityLevel !== 'anonymous' && (
+          <span style={{ fontSize: 10, fontWeight: 600, color: 'var(--c-text-sub)', background: `${color}18`, borderRadius: 6, padding: '2px 7px' }}>
+            {report.studentName}
+          </span>
+        )}
       </div>
 
       {/* Description */}
@@ -133,7 +140,7 @@ export function DetailPanel({
       </div>
 
       {/* Director: set severity */}
-      {isDirector && !report.severity && (
+      {isDirector && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--c-text-muted)', marginBottom: 8, letterSpacing: '0.06em' }}>
             NIVEAU DE GRAVITÉ
@@ -209,8 +216,8 @@ export function DetailPanel({
         </div>
       )}
 
-      {/* Referent: advance stage */}
-      {!isDirector && report.status === 'active' && (
+      {/* Advance stage — assigned referent only */}
+      {canEdit && report.status === 'active' && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--c-text-muted)', marginBottom: 8, letterSpacing: '0.06em' }}>
             AVANCER LE DOSSIER
@@ -285,7 +292,7 @@ export function DetailPanel({
           <AnimatePresence initial={false}>
             {items.map((item, i) => {
               const isLast    = i === items.length - 1
-              const dotColor  = item.kind === 'event' ? (EVENT_COLORS[item.type] ?? PRIMARY) : color
+              const dotColor  = color
               return (
                 <motion.div
                   key={item.id}
@@ -340,8 +347,8 @@ export function DetailPanel({
         </div>
       </div>
 
-      {/* Referent: add event */}
-      {!isDirector && report.status === 'active' && (
+      {/* Add event — assigned referent only */}
+      {canEdit && report.status === 'active' && (
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--c-text-muted)', marginBottom: 10, letterSpacing: '0.06em' }}>
             AJOUTER UNE ACTION

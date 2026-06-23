@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
+import '../../core/services/auth_service.dart';
 import '../../core/services/report_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -27,6 +29,7 @@ class ReferentDashboardPage extends StatefulWidget {
 
 class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
   bool _isLoading = true;
+  Timer? _pollingTimer;
 
   List<HavenReport> get _myReports => widget.currentUserName == null
       ? []
@@ -50,6 +53,14 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
     super.initState();
     ReportStore.instance.addListener(_rebuild);
     _fetchReports();
+    _pollingTimer = Timer.periodic(const Duration(seconds: 30), (_) => _fetchReports());
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel();
+    ReportStore.instance.removeListener(_rebuild);
+    super.dispose();
   }
 
   Future<void> _fetchReports() async {
@@ -71,7 +82,9 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
           'partiel' => 'Semi-anonyme',
           _ => 'Identité visible',
         },
-        initialText: '',
+        initialText: r.deposition ?? '',
+        studentName: r.studentName,
+        studentClass: r.studentClass,
         submittedAt: r.createdAt,
         riskLevel: switch (r.severity) {
           'ELEVE' => 'Élevé',
@@ -87,13 +100,14 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
           'RESOLU' || 'ARCHIVE' => 3,
           _ => 0,
         },
+        events: r.staffEvents
+            .map((e) => ReportEvent(
+                  type: e.type,
+                  comment: e.comment,
+                  createdAt: e.createdAt,
+                ))
+            .toList(),
       );
-
-  @override
-  void dispose() {
-    ReportStore.instance.removeListener(_rebuild);
-    super.dispose();
-  }
 
   // ── Navigation vers le détail ─────────────────────────────────────────────
 
@@ -565,23 +579,71 @@ class _ReferentReportCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // ── Badge anonymat ────────────────────────────────────────
-            Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-              decoration: BoxDecoration(
-                color: AppColors.primary
-                    .withValues(alpha: isDark ? 0.18 : 0.08),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                report.anonLevel,
-                style: GoogleFonts.manrope(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+            // ── Badge anonymat + identité ─────────────────────────────
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary
+                        .withValues(alpha: isDark ? 0.18 : 0.08),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    report.anonLevel,
+                    style: GoogleFonts.manrope(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ),
-              ),
+                if (report.studentName != null && report.anonLevel != 'Anonyme')
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.10)
+                          : Colors.black.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      report.studentName!,
+                      style: GoogleFonts.manrope(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.70)
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                  ),
+                if (report.studentClass != null)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.10)
+                          : Colors.black.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      report.studentClass!,
+                      style: GoogleFonts.manrope(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.70)
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
+                  ),
+              ],
             ),
 
             const SizedBox(height: 10),
@@ -908,6 +970,12 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
     'Élevé': Color(0xFFC0392B),
   };
 
+  // Toujours chercher le rapport courant dans le store pour éviter les références périmées
+  HavenReport get _currentReport => ReportStore.instance.reports.firstWhere(
+        (r) => r.caseNumber == widget.report.caseNumber,
+        orElse: () => widget.report,
+      );
+
   void _rebuild() => setState(() {});
 
   @override
@@ -1029,18 +1097,24 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                 GestureDetector(
                   onTap: selectedType == null
                       ? null
-                      : () {
+                      : () async {
+                          final comment = commentCtrl.text.trim().isEmpty
+                              ? null
+                              : commentCtrl.text.trim();
                           ReportStore.instance.addEvent(
                             widget.report,
                             ReportEvent(
                               type: selectedType!,
-                              comment: commentCtrl.text.trim().isEmpty
-                                  ? null
-                                  : commentCtrl.text.trim(),
+                              comment: comment,
                               createdAt: DateTime.now(),
                             ),
                           );
                           Navigator.pop(sheetCtx);
+                          ReportService.saveEvent(
+                            widget.report.caseNumber,
+                            selectedType!,
+                            comment: comment,
+                          ).catchError((_) {});
                         },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
@@ -1082,7 +1156,10 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final report = widget.report;
+    final report = _currentReport;
+    // Peut modifier = être la personne assignée sur ce dossier (indépendant du rôle)
+    final canEdit = report.assignedTo != null &&
+        report.assignedTo == AuthService.currentUser?.fullName;
     final riskColor = _riskColors[report.riskLevel];
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -1227,7 +1304,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                 progressStage: report.progressStage,
                                 riskLevel: report.riskLevel,
                               ),
-                              if (report.progressStage < 3) ...[
+                              if (canEdit && report.progressStage < 3) ...[
                                 const SizedBox(height: 16),
                                 GestureDetector(
                                   onTap: () =>
@@ -1257,7 +1334,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                     ),
                                   ),
                                 ),
-                              ] else ...[
+                              ] else if (report.progressStage >= 3) ...[
                                 const SizedBox(height: 12),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1286,7 +1363,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                               children: [
                                 Expanded(
                                     child: _sectionTitle('ÉVÉNEMENTS', isDark)),
-                                GestureDetector(
+                                if (canEdit) GestureDetector(
                                   onTap: () =>
                                       _showAddEventSheet(context, isDark),
                                   child: Container(

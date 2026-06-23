@@ -7,7 +7,7 @@ import {
 import DashboardLayout from '../../layouts/DashboardLayout'
 import {
   getProReports, getTeamMembers, getDirector, getReferentUser,
-  updateStatus, updateSeverity, assignReferent,
+  updateStatus, updateSeverity, assignReferent, saveEvent,
   type BackendSeverity, type BackendStatus,
 } from '../../services/professionalData'
 import type { User, ProReport, TeamMember, ReportEvent, Severity } from '../../types'
@@ -122,14 +122,23 @@ export default function ProfessionalDashboard() {
     }
   }
 
-  const handleAddEvent = (id: string, event: Omit<ReportEvent, 'id'>) =>
+  const handleAddEvent = async (id: string, event: Omit<ReportEvent, 'id'>) => {
+    const report = reports.find(r => r.id === id)
+    if (!report) return
+    const localId = `ev_${Date.now()}`
     setReports(prev => prev.map(r =>
       r.id !== id ? r : {
         ...r,
-        events: [...r.events, { ...event, id: `ev_${Date.now()}` }],
+        events: [...r.events, { ...event, id: localId }],
         updatedAt: new Date().toISOString(),
       }
     ))
+    try {
+      await saveEvent(report.caseNumber, event.type, event.comment)
+    } catch (e) {
+      console.error('Save event failed:', e)
+    }
+  }
 
   const handleAddMember = (m: TeamMember) => {
     setTeam(prev => [...prev, m])

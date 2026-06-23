@@ -4,6 +4,7 @@ import type { ParentReport, Child } from '../../../types'
 import { SEVERITY_META } from '../../../constants/severity'
 import { formatDate } from '../../../utils/dateFormatting'
 import { useIsMobile } from '../../../hooks/useMediaQuery'
+import { EVENT_COLORS } from '../../../services/professionalData'
 import { ACCENT, STATUS_META } from './constants'
 import { ProgressTracker } from './ProgressTracker'
 import { getStage } from './progressUtils'
@@ -175,6 +176,37 @@ export function DetailPanel({ report, child, onClose, onArchive }: {
           ))}
         </div>
       </div>
+
+      {/* Staff events */}
+      {report.events.length > 0 && (
+        <div style={{ marginTop: 24 }}>
+          <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.70rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: 'var(--c-text-muted)', marginBottom: 16 }}>
+            Actions de suivi
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {[...report.events]
+              .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+              .map((ev, i, arr) => (
+                <div key={ev.id} style={{ display: 'flex', gap: 14 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 20, flexShrink: 0 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: i === 0 ? ACCENT : 'transparent', border: `2px solid ${i === 0 ? ACCENT : 'var(--c-border)'}`, flexShrink: 0, marginTop: 2 }} />
+                    {i < arr.length - 1 && <div style={{ width: 1, flex: 1, background: 'var(--c-divider)', marginTop: 4 }} />}
+                  </div>
+                  <div style={{ paddingBottom: i < arr.length - 1 ? 20 : 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7, flexWrap: 'wrap' as const, marginBottom: 2 }}>
+                      <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.67rem', fontWeight: 700, borderRadius: 5, padding: '1px 7px', color: EVENT_COLORS[ev.type] ?? ACCENT, background: `${EVENT_COLORS[ev.type] ?? ACCENT}20` }}>
+                        {ev.type}
+                      </span>
+                      <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.68rem', color: 'var(--c-text-muted)' }}>{formatDate(ev.createdAt)}</span>
+                    </div>
+                    {ev.comment && <p style={{ fontFamily: "'Manrope', sans-serif", margin: '2px 0', fontSize: '0.80rem', color: 'var(--c-text-sub)', lineHeight: 1.5 }}>{ev.comment}</p>}
+                    <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.70rem', color: 'var(--c-text-muted)', marginTop: 1 }}>— {ev.actor}</div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
     </motion.div>
   )
 }
