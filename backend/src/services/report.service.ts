@@ -148,7 +148,7 @@ export const reportService = {
           take: 1,
           where: { sender: 'USER' },
           orderBy: { createdAt: 'asc' },
-          select: { content: true }
+          select: { id: true, content: true, createdAt: true }
         }
       }
     })
@@ -387,8 +387,9 @@ export const reportService = {
     const report = await prisma.report.findUnique({ where: { trackingId } })
     if (!report) throw new Error('REPORT_NOT_FOUND')
 
-    // Un student ne peut supprimer que ses propres rapports
-    if (!['SUPERVISOR', 'ADMIN'].includes(role) && report.userId !== userId) {
+    // Admin/Supervisor : accès total
+    // Student : peut supprimer son propre rapport OU un rapport sans userId (créé anonymement)
+    if (!['SUPERVISOR', 'ADMIN'].includes(role) && report.userId !== null && report.userId !== userId) {
       throw new Error('FORBIDDEN')
     }
 
@@ -398,7 +399,12 @@ export const reportService = {
       throw new Error('DELETE_TIMEOUT')
     }
 
-    await prisma.report.delete({ where: { trackingId } })
+    await prisma.$transaction([
+      prisma.chatMessage.deleteMany({ where: { reportId: report.id } }),
+      prisma.reportSummary.deleteMany({ where: { reportId: report.id } }),
+      prisma.analytics.deleteMany({ where: { reportId: report.id } }),
+      prisma.report.delete({ where: { trackingId } }),
+    ])
 
     return {
       message:      'Votre signalement a été annulé avec succès. Si vous avez besoin d\'aide, n\'hésitez pas à contacter les numéros d\'urgence fournis.',

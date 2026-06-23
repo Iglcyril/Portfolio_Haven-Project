@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -40,7 +40,7 @@ export default function ProfessionalDashboard() {
   const [sort, setSort]                   = useState<SortKey>('severity')
   const [showAddMember, setShowAddMember] = useState(false)
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     Promise.all([
       isDirector ? getDirector() : getReferentUser(),
       getProReports(),
@@ -50,6 +50,20 @@ export default function ProfessionalDashboard() {
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [isDirector])
+
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
+  useEffect(() => {
+    const onVisibility = () => { if (document.visibilityState === 'visible') fetchData() }
+    document.addEventListener('visibilitychange', onVisibility)
+    const interval = setInterval(fetchData, 30_000)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      clearInterval(interval)
+    }
+  }, [fetchData])
 
   const selectedReport = reports.find(r => r.id === selectedId) ?? null
 

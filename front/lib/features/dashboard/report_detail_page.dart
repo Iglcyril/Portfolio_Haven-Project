@@ -13,6 +13,7 @@ import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import 'dashboard_page.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/report_service.dart';
 
 class ReportDetailPage extends StatefulWidget {
   final ReportItem report;
@@ -361,9 +362,12 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
               const SizedBox(height: 24),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  final nav = Navigator.of(context);
+                  nav.pop();
                   widget.onDelete();
-                  Navigator.of(context).pop();
+                  nav.pop();
+                  ReportService.deleteReport(widget.report.caseNumber)
+                      .catchError((_) {});
                 },
                 child: Container(
                   width: double.infinity,

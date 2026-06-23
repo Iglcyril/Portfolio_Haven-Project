@@ -139,4 +139,9 @@ class ReportService {
         .map((c) => ApiChild.fromJson(c as Map<String, dynamic>))
         .toList();
   }
+
+  /// DELETE /reports/:code — annule un signalement dans les 5 minutes
+  static Future<void> deleteReport(String trackingId) async {
+    await ApiClient.delete('/reports/$trackingId');
+  }
 }

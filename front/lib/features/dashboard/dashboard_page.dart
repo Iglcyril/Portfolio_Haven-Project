@@ -246,7 +246,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   void _deleteReport(ReportItem report) {
-    setState(() => _reports.remove(report));
+    setState(() => _reports.removeWhere((r) => r.caseNumber == report.caseNumber));
   }
 
   @override
@@ -331,6 +331,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           (r) => Padding(
                                             padding: const EdgeInsets.only(bottom: 12),
                                             child: _ReportCard(
+                                              key: ValueKey(r.caseNumber),
                                               isDark: isDark,
                                               report: r,
                                               onToggleTheme: widget.onToggleTheme,
@@ -520,6 +521,7 @@ class _ReportCard extends StatefulWidget {
   final VoidCallback onDelete;
 
   const _ReportCard({
+    super.key,
     required this.isDark,
     required this.report,
     required this.onToggleTheme,
