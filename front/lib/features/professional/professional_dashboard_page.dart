@@ -776,22 +776,59 @@ class _ProfessionalDashboardPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // ── App bar (theme toggle uniquement) ─────────────────
+                    // ── App bar ───────────────────────────────────────────
                     Padding(
                       padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: widget.onToggleTheme,
-                          child: GlassCircleButton(
-                            isDark: isDark,
-                            child: Icon(
-                              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                              color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
-                              size: 20,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.10)
+                                    : Colors.black.withValues(alpha: 0.07),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.logout_rounded,
+                                      size: 16,
+                                      color: isDark
+                                          ? Colors.white.withValues(alpha: 0.70)
+                                          : AppColors.lightTextSecondary),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Déconnexion',
+                                    style: GoogleFonts.manrope(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: isDark
+                                          ? Colors.white.withValues(alpha: 0.70)
+                                          : AppColors.lightTextSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 10),
+                          GestureDetector(
+                            onTap: widget.onToggleTheme,
+                            child: GlassCircleButton(
+                              isDark: isDark,
+                              child: Icon(
+                                isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+                                color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
 
@@ -801,7 +838,7 @@ class _ProfessionalDashboardPageState
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 32),
 
                             // ── Greeting ──────────────────────────────────
                             Text(

@@ -285,38 +285,41 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                       padding: const EdgeInsets.fromLTRB(24, 12, 24, 0),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Mes signalements',
-                                  style: GoogleFonts.fraunces(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? Colors.white
-                                        : AppColors.lightTextPrimary,
-                                    letterSpacing: -0.5,
-                                    height: 1.1,
-                                  ),
-                                ),
-                                if (widget.currentUserName != null) ...[
-                                  const SizedBox(height: 2),
+                          GestureDetector(
+                            onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.symmetric(horizontal: 14),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.10)
+                                    : Colors.black.withValues(alpha: 0.07),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.logout_rounded,
+                                      size: 16,
+                                      color: isDark
+                                          ? Colors.white.withValues(alpha: 0.70)
+                                          : AppColors.lightTextSecondary),
+                                  const SizedBox(width: 6),
                                   Text(
-                                    widget.currentUserName!,
+                                    'Déconnexion',
                                     style: GoogleFonts.manrope(
                                       fontSize: 13,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
                                       color: isDark
-                                          ? Colors.white.withValues(alpha: 0.50)
+                                          ? Colors.white.withValues(alpha: 0.70)
                                           : AppColors.lightTextSecondary,
                                     ),
                                   ),
                                 ],
-                              ],
+                              ),
                             ),
                           ),
+                          const Spacer(),
                           GestureDetector(
                             onTap: widget.onToggleTheme,
                             child: GlassCircleButton(
@@ -334,6 +337,41 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                               ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+
+                    // ── Titre ─────────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Mes signalements',
+                            style: GoogleFonts.fraunces(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w700,
+                              color: isDark
+                                  ? Colors.white
+                                  : AppColors.lightTextPrimary,
+                              letterSpacing: -0.5,
+                              height: 1.1,
+                            ),
+                          ),
+                          if (widget.currentUserName != null) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              widget.currentUserName!,
+                              style: GoogleFonts.manrope(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.50)
+                                    : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
