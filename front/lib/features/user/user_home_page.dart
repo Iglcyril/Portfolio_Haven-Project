@@ -7,6 +7,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import '../../core/services/auth_service.dart';
+import '../breathing/breathing_page.dart';
 import '../report/confidential_choice_page.dart';
 import '../dashboard/dashboard_page.dart';
 
@@ -391,9 +392,12 @@ class _ResourcesSection extends StatelessWidget {
             const SizedBox(width: 10),
             Expanded(
               child: _ResourceTile(
-                label: 'Guide sécurité',
-                icon: Icons.shield_outlined,
+                label: 'Respiration',
+                icon: Icons.self_improvement_rounded,
                 isDark: isDark,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const BreathingPage()),
+                ),
               ),
             ),
           ],
@@ -407,17 +411,19 @@ class _ResourceTile extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool isDark;
+  final VoidCallback? onTap;
 
   const _ResourceTile({
     required this.label,
     required this.icon,
     required this.isDark,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(

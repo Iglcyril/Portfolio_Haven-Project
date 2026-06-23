@@ -11,6 +11,7 @@ import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/haven_app_bar.dart';
 import '../../core/services/report_service.dart';
 import '../../core/services/auth_service.dart';
+import '../breathing/breathing_page.dart';
 import '../report/confidential_choice_page.dart';
 import 'report_detail_page.dart';
 
@@ -487,7 +488,9 @@ class _BreathingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const BreathingPage()),
+      ),
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
         decoration: BoxDecoration(
