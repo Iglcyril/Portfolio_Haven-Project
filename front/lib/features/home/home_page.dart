@@ -168,11 +168,14 @@ class _AppIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/logo.PNG',
-      width: 120,
-      height: 120,
-      fit: BoxFit.contain,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(28),
+      child: Image.asset(
+        'assets/logo.PNG',
+        width: 120,
+        height: 120,
+        fit: BoxFit.contain,
+      ),
     );
   }
 }
