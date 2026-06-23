@@ -11,6 +11,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/circle_back_button.dart';
+import '../../core/widgets/emergency_sheet.dart';
 import '../../core/widgets/haven_app_bar.dart';
 import '../report/anon_level.dart';
 import '../../core/services/storage_service.dart';
@@ -392,7 +393,10 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     _ActionRow(
                       isDark: isDark,
-                      onEmergency: () => HapticFeedback.heavyImpact(),
+                      onEmergency: () {
+                        HapticFeedback.heavyImpact();
+                        showEmergencySheet(context);
+                      },
                       onSend: _confirmSend,
                     ),
                     _InputBar(

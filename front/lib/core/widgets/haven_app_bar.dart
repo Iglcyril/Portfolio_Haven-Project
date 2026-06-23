@@ -6,6 +6,7 @@ class HavenAppBar extends StatelessWidget {
   final VoidCallback onToggleTheme;
   final Widget? leading;
   final Widget? title;
+  final Widget? trailing;
 
   const HavenAppBar({
     super.key,
@@ -13,6 +14,7 @@ class HavenAppBar extends StatelessWidget {
     required this.onToggleTheme,
     this.leading,
     this.title,
+    this.trailing,
   });
 
   @override
@@ -23,6 +25,7 @@ class HavenAppBar extends StatelessWidget {
         children: [
           if (leading != null) leading!,
           if (title != null) Expanded(child: title!) else const Spacer(),
+          if (trailing != null) ...[trailing!, const SizedBox(width: 8)],
           GestureDetector(
             onTap: onToggleTheme,
             child: GlassCircleButton(

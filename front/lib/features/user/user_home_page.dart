@@ -7,6 +7,7 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/widgets/emergency_sheet.dart';
 import '../breathing/breathing_page.dart';
 import '../report/confidential_choice_page.dart';
 import '../dashboard/dashboard_page.dart';
@@ -387,6 +388,7 @@ class _ResourcesSection extends StatelessWidget {
                 label: 'Urgences',
                 icon: Icons.phone_outlined,
                 isDark: isDark,
+                onTap: () => showEmergencySheet(context),
               ),
             ),
             const SizedBox(width: 10),

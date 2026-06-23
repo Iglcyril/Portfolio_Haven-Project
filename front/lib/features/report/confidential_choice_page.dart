@@ -10,6 +10,7 @@ import '../../core/widgets/glass_circle_button.dart';
 import 'anon_level.dart';
 import '../chat/chat_page.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/widgets/emergency_sheet.dart';
 import '../chat/report_submitted_page.dart';
 
 class ConfidentialChoicePage extends StatefulWidget {
@@ -348,7 +349,7 @@ class _EmergencyTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => showEmergencySheet(context),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
         child: BackdropFilter(
