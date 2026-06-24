@@ -1,7 +1,7 @@
 {
   "version": "6.1",
-  "id": "coegju9viyhwa0elo0pmqssu",
-  "name": "My typebot",
+  "id": "y85xul40708ux2ib96rkhzu8",
+  "name": "Haven-V1.1",
   "events": [
     {
       "id": "n2fl29djtd0b2lxj5yomx7pp",
@@ -32,7 +32,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Bonjour. Ce que tu vas partager ici est en sécurité.\nUn adulte de confiance recevra ton message — personne d'autre."
+                    "text": "Bonjour. Ce que tu vas partager ici est en sécurité.\nUn adulte de confiance recevra ton message, personne d'autre."
                   }
                 ]
               }
@@ -60,55 +60,6 @@
       ]
     },
     {
-      "id": "owtg314923xbnlq6v3zcmiy0",
-      "title": "check-in humeur ",
-      "graphCoordinates": {
-        "x": -1451.32,
-        "y": 567.71
-      },
-      "blocks": [
-        {
-          "id": "yy3u3164ezc2qgecbm50qdre",
-          "type": "choice input",
-          "items": [
-            {
-              "id": "t4i7s6bfzh4l043cidt952qd",
-              "outgoingEdgeId": "ohvekoe0pkh1m6tdvs2ff6p4",
-              "content": "Trés mal",
-              "value": "1{{mood}}"
-            },
-            {
-              "id": "gwrjc2irc9oscyv8xximx4e3",
-              "outgoingEdgeId": "d9dtwlkkmbs52m965j4ohu5z",
-              "content": "Pas bien",
-              "value": "2"
-            },
-            {
-              "id": "zutvci71sq0h4v4l9f2ec05t",
-              "outgoingEdgeId": "t6n5hcchrnut61etzjbgxq6s",
-              "content": "Bof",
-              "value": "3"
-            },
-            {
-              "id": "l6dielgx3cpc9w13df6fevac",
-              "outgoingEdgeId": "gbnfahiffkzthf25yrmrom22",
-              "content": "ça va ",
-              "value": "4"
-            },
-            {
-              "id": "kit1o3a5kw2ixeiodfhds11v",
-              "outgoingEdgeId": "ilp1kwuaio57ezgkuejedxgt",
-              "content": "Bien",
-              "value": "5"
-            }
-          ],
-          "options": {
-            "variableId": "vj2jm9rt8dmqzhx6o4qgknffo"
-          }
-        }
-      ]
-    },
-    {
       "id": "um9hbcs9j6q1f6sd9p8rw89n",
       "title": "Question check-in",
       "graphCoordinates": {
@@ -118,7 +69,7 @@
       "blocks": [
         {
           "id": "f9po3wqb61yjo9g4i1x1hnul",
-          "outgoingEdgeId": "frg7u4lxi68jxjw4o7q6h1kc",
+          "outgoingEdgeId": "vs5iit15jkru472fyfjog56t",
           "type": "text",
           "content": {
             "richText": [
@@ -127,111 +78,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Comment tu te sens en ce moment ?"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "vjk9x8vgdor2fygyclmmihd2",
-      "title": "Conditions check-in",
-      "graphCoordinates": {
-        "x": -943.77,
-        "y": 702.1
-      },
-      "blocks": [
-        {
-          "id": "mfpnura7ff3pw0hvgzkj3mv9",
-          "outgoingEdgeId": "dhh2mx76qjo59ee6tzknx2kv",
-          "type": "Condition",
-          "items": [
-            {
-              "id": "f1feibxghf2bqz3a13gf2uta",
-              "outgoingEdgeId": "mfx7ja6p4tkr18wbrv39pvtn",
-              "content": {
-                "comparisons": [
-                  {
-                    "id": "q4noym8xlfe4nzkrv60sh7bk",
-                    "variableId": "vj2jm9rt8dmqzhx6o4qgknffo",
-                    "comparisonOperator": "Less or equal to",
-                    "value": "2"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ycpz6bews73okbz02v59d76k",
-      "title": "True",
-      "graphCoordinates": {
-        "x": -497.74,
-        "y": 537.98
-      },
-      "blocks": [
-        {
-          "id": "an9zcnm2lwzig34loezmwikc",
-          "type": "text",
-          "content": {
-            "richText": [
-              {
-                "id": "FcjjjyG9wI",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Merci de me le dire. Je suis là, on avancer ensemble doucement."
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "id": "vsmg5u7yiaq36ue6575ppxcr",
-          "outgoingEdgeId": "m2650doswfchfnkli83iwn25",
-          "type": "text",
-          "content": {
-            "richText": [
-              {
-                "id": "xsoFkNer2c",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "As tu vu quelque chose ou as tu subis quelque chose ?"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "jvf295mgdn30nkmcvj863w7x",
-      "title": "False",
-      "graphCoordinates": {
-        "x": -63.12,
-        "y": 1022.12
-      },
-      "blocks": [
-        {
-          "id": "o7nfwolapog6ayg6p4aynjym",
-          "outgoingEdgeId": "vvgulifvhpf12vc7bm8qtvpz",
-          "type": "text",
-          "content": {
-            "richText": [
-              {
-                "id": "CWit2ZddqH",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "ok"
+                    "text": "Tout d'abord, donne-moi le contexte, s'il te plaît."
                   }
                 ]
               }
@@ -273,8 +120,8 @@
       "id": "rrlyck19bzzt80s6cwfdyclt",
       "title": "J'AI SUBI / Message de soutien",
       "graphCoordinates": {
-        "x": 534.55,
-        "y": -1849.28
+        "x": 535.8,
+        "y": -1851.78
       },
       "blocks": [
         {
@@ -287,7 +134,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "C'est trés courageux de vouloir en parler. J'ai encore quelques questions à te poser."
+                    "text": "C'est très courageux de vouloir en parler. J'ai encore quelques questions à te poser."
                   }
                 ]
               }
@@ -305,7 +152,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "De quelles situation il s'agit ?"
+                    "text": "De quelle situation s'agit-il ?"
                   }
                 ]
               }
@@ -344,7 +191,7 @@
             {
               "id": "glp4cytvw5kbnh0vqbtdzi5f",
               "outgoingEdgeId": "n91dv45k9v6yqwpant4wveo5",
-              "content": "A l'extérieur"
+              "content": "À l'extérieur"
             }
           ],
           "options": {
@@ -355,7 +202,7 @@
     },
     {
       "id": "sbmwnfcn1oxko5nkx8an4ckf",
-      "title": " J'AI SUBI ELEVE / déposition ",
+      "title": "J'AI SUBI ELEVE / déposition",
       "graphCoordinates": {
         "x": 3913.38,
         "y": -4818.88
@@ -371,7 +218,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Trés bien, je te laisse m'expliquer tout en détail, lache toi dis tout se que tu as sur le coeur. N'est pas peur des détails et de siter des noms "
+                    "text": "Très bien, je te laisse m'expliquer tout en détail. Lâche-toi, dis tout ce que tu as sur le cœur. N'aie pas peur des détails et de citer des noms."
                   }
                 ]
               }
@@ -407,7 +254,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Trés bien, je te laisse m'expliquer tout en détail, lache toi dis tout se que tu as sur le coeur. N'est pas peur des détails et de siter des noms "
+                    "text": "Très bien, je te laisse m'expliquer tout en détail. Lâche-toi, dis tout ce que tu as sur le cœur. N'aie pas peur des détails et de citer des noms."
                   }
                 ]
               }
@@ -443,7 +290,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Trés bien, je te laisse m'expliquer tout en détail, lache toi dis tout se que tu as sur le coeur. N'est pas peur des détails et de siter des noms "
+                    "text": "Très bien, je te laisse m'expliquer tout en détail. Lâche-toi, dis tout ce que tu as sur le cœur. N'aie pas peur des détails et de citer des noms."
                   }
                 ]
               }
@@ -479,7 +326,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Trés bien, je te laisse m'expliquer tout en détail, lache toi dis tout se que tu as sur le coeur. N'est pas peur des détails et de siter des noms "
+                    "text": "Très bien, je te laisse m'expliquer tout en détail. Lâche-toi, dis tout ce que tu as sur le cœur. N'aie pas peur des détails et de citer des noms."
                   }
                 ]
               }
@@ -499,7 +346,7 @@
     },
     {
       "id": "kli2y1lj8smvizavt60lupo2",
-      "title": "J'AI SUBI ELEVE/ A remplacer par balise HTTP request",
+      "title": "J'AI SUBI ELEVE / À remplacer par balise HTTP request",
       "graphCoordinates": {
         "x": 4263.61,
         "y": -4753.24
@@ -549,7 +396,7 @@
     },
     {
       "id": "xrwc1n2gjtzjnrnmtg824f3n",
-      "title": "J'AI SUBI EMPLOYE / A remplacer par balise HTTP request",
+      "title": "J'AI SUBI EMPLOYE / À remplacer par balise HTTP request",
       "graphCoordinates": {
         "x": 4299.92,
         "y": -3559.41
@@ -599,7 +446,7 @@
     },
     {
       "id": "z5v02zpsqpshh9ns2vj13yxh",
-      "title": "J'AI SUBI CHEZ MOI / A remplacer par balise HTTP request",
+      "title": "J'AI SUBI CHEZ MOI / À remplacer par balise HTTP request",
       "graphCoordinates": {
         "x": 4418.32,
         "y": -1920
@@ -649,7 +496,7 @@
     },
     {
       "id": "ylmrdnnunvt793vfcd42bi9d",
-      "title": "J'AI SUBI EXTERIEUR / A remplacer par balise HTTP request",
+      "title": "J'AI SUBI EXTERIEUR / À remplacer par balise HTTP request",
       "graphCoordinates": {
         "x": 4392.02,
         "y": -539.76
@@ -716,7 +563,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ne t’en fais pas tous va bien se passer appelle un de ces numéros :"
+                    "text": "Ne t'en fais pas, tout va bien se passer. Appelle un de ces numéros :"
                   }
                 ]
               },
@@ -725,7 +572,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Prévention suicide : 3114 "
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
@@ -761,7 +608,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": " je suis toujours la si besoin."
+                    "text": "Je suis toujours là si besoin."
                   }
                 ]
               }
@@ -789,7 +636,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ne t’en fais pas tous va bien se passer appelle un de ces numéros :"
+                    "text": "Ne t'en fais pas, tout va bien se passer. Appelle un de ces numéros :"
                   }
                 ]
               },
@@ -798,7 +645,16 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Prévention suicide : 3114 Enfance en danger : 119"
+                    "text": "Prévention suicide : 3114"
+                  }
+                ]
+              },
+              {
+                "id": "1pQi-p2o9u-bis",
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
@@ -816,7 +672,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Pour les personnes sourd-aveugles : 114 "
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               },
@@ -825,7 +681,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "je suis toujours la si besoin."
+                    "text": "Je suis toujours là si besoin."
                   }
                 ]
               }
@@ -882,7 +738,16 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\" pour leur signaler ta détresse ?"
+                    "text": "Es-tu d'accord pour que j'envoie un message à l'équipe Haven ?"
+                  }
+                ]
+              },
+              {
+                "id": "hlvVZhoLVg",
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Avec toutes les informations que tu m'as données."
                   }
                 ]
               }
@@ -895,8 +760,8 @@
       "id": "epw4fuh8j1qwl243b03w590v",
       "title": "J'AI SUBI ELEVE / réponse interpeller équipe OUI",
       "graphCoordinates": {
-        "x": 5696.74,
-        "y": -5250.33
+        "x": 5747.99,
+        "y": -5275.33
       },
       "blocks": [
         {
@@ -905,7 +770,7 @@
           "items": [
             {
               "id": "ysld1wper82vezucrx6m9k89",
-              "outgoingEdgeId": "n5czz593qancbt6nbx9wbfc9",
+              "outgoingEdgeId": "yowx533tepqpbvmk0pkfcpu9",
               "content": "Oui"
             },
             {
@@ -924,13 +789,13 @@
       "id": "xjop3c46dlernkjajorftxqx",
       "title": "J'AI SUBI ELEVE / Positif contact équipe",
       "graphCoordinates": {
-        "x": 6027.78,
-        "y": -5419.88
+        "x": 6211.12,
+        "y": -5452.8
       },
       "blocks": [
         {
           "id": "zep90hg7fpve7f0504mypdvy",
-          "outgoingEdgeId": "ynhitewa56q8cazyrq7s89l8",
+          "outgoingEdgeId": "omumzqmojl1w09zd2x3kd1bj",
           "type": "text",
           "content": {
             "richText": [
@@ -939,7 +804,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -961,8 +826,8 @@
       "id": "viunxy1ryxiqrh087zwiktwj",
       "title": "J'AI SUBI ELEVE / Envoi email 1",
       "graphCoordinates": {
-        "x": 6372.6,
-        "y": -5242.92
+        "x": 6645.51,
+        "y": -5406.69
       },
       "blocks": [
         {
@@ -998,16 +863,16 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Se serait vraiment judicieux que tu le fasse !"
+                    "text": "Es-tu d'accord pour que j'envoie un message à l'équipe Haven ?"
                   }
                 ]
               },
               {
-                "id": "luEbMO85m4",
+                "id": "hlvVZhoLVg",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\"  pour leur signaler tout ce que tu m'as dis ? Personne ne te jugera au contraire on est tous là pour t'aider!"
+                    "text": "Avec toutes les informations que tu m'as données."
                   }
                 ]
               },
@@ -1027,7 +892,7 @@
     },
     {
       "id": "sb7e4cdfb01aohnh8lj9p8go",
-      "title": "J'AI SUBI ELEVE / Réponse interpeller équipe  NON",
+      "title": "J'AI SUBI ELEVE / Réponse interpeller équipe NON",
       "graphCoordinates": {
         "x": 5668.17,
         "y": -4503.5
@@ -1073,7 +938,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -1117,8 +982,8 @@
       "id": "o8haul4yph0uy95tks9rlc1c",
       "title": "J'AI SUBI ELEVE / Négatif contact équipe",
       "graphCoordinates": {
-        "x": 6026.05,
-        "y": -5176.04
+        "x": 6194.8,
+        "y": -5151.04
       },
       "blocks": [
         {
@@ -1131,43 +996,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               },
@@ -1203,52 +1068,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -1301,13 +1157,13 @@
           "content": {
             "richText": [
               {
-                "id": "aAPjTwujov",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\" pour leur signaler la situation ?"
+                    "text": "Es-tu d'accord pour que j'envoie un message à l'équipe Haven ?\n Avec toutes les informations que tu m'as données. Ne t'inquiète pas, la personne qui t'a fait du mal ne sera pas mise au courant de ton signalement."
                   }
-                ]
+                ],
+                "id": "5e1UuQZ6f1"
               }
             ]
           }
@@ -1316,7 +1172,7 @@
     },
     {
       "id": "nhsbqomptwp6fnb42uu7dfp3",
-      "title": "J'AI SUBI EMPLOYE  / réponse interpeller équipe  OUI",
+      "title": "J'AI SUBI EMPLOYE / réponse interpeller équipe OUI",
       "graphCoordinates": {
         "x": 5829.74,
         "y": -3847.38
@@ -1345,7 +1201,7 @@
     },
     {
       "id": "lrf1rm6qfg3o66nsyemet2tq",
-      "title": "J'AI SUBI EMPLOYE / Positif contact équipe ",
+      "title": "J'AI SUBI EMPLOYE / Positif contact équipe",
       "graphCoordinates": {
         "x": 6238.41,
         "y": -3964.41
@@ -1362,7 +1218,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -1398,52 +1254,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -1493,7 +1340,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "En as tu parlé à tes parents ou à quelqu'un de ton établissement?"
+                    "text": "En as-tu parlé à tes parents ou à quelqu'un de ton établissement ?"
                   }
                 ]
               }
@@ -1521,7 +1368,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "En as tu parlé à tes parents ou à une personne en qui tu as totalement confiance dans l'établissement ?"
+                    "text": "En as-tu parlé à tes parents ou à une personne en qui tu as totalement confiance dans ton établissement ?"
                   }
                 ]
               }
@@ -1534,8 +1381,8 @@
       "id": "mbs7724l4qtoxb0yv0ovg6u9",
       "title": "J'AI SUBI EMPLOYE / Négatif contact adulte",
       "graphCoordinates": {
-        "x": 5465.22,
-        "y": -3189.5
+        "x": 5440.22,
+        "y": -3190.75
       },
       "blocks": [
         {
@@ -1545,29 +1392,29 @@
           "content": {
             "richText": [
               {
-                "id": "aAPjTwujov",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Se serait vraiment judicieux que tu le fasse !"
+                    "text": "Es-tu d'accord pour que j'envoie un message à l'équipe Haven ?"
+                  }
+                ],
+                "id": "Uo_-CUbHwf"
+              },
+              {
+                "type": "p",
+                "id": "v0FDKF0VNT",
+                "children": [
+                  {
+                    "text": "\n Avec toutes les informations que tu m'as données. "
                   }
                 ]
               },
               {
-                "id": "luEbMO85m4",
                 "type": "p",
+                "id": "6IPVedCFWU",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\"  pour leur signaler tout ce que tu m'as dis ? Personne ne te jugera au contraire on est tous là pour t'aider!"
-                  }
-                ]
-              },
-              {
-                "id": "ch67h2XpYc",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Ne t'inquiète pas, la personne qui t'a fait du mal ne sera pas mise au courant de ton signalement."
                   }
                 ]
               }
@@ -1624,7 +1471,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -1660,52 +1507,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -1784,7 +1622,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Est ce que la personne à qui tu en as parlé serait d'accord pour t'accompagner pour faire des démarches auprès de la police ou la gendarmerie et les urgences."
+                    "text": "Est-ce que la personne à qui tu en as parlé serait d'accord pour t'accompagner dans tes démarches auprès de la police, de la gendarmerie ou des urgences ?"
                   }
                 ]
               }
@@ -1808,20 +1646,29 @@
           "content": {
             "richText": [
               {
-                "id": "aAPjTwujov",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Se serait vraiment judicieux que tu le fasse !"
+                    "text": "Ce serait vraiment judicieux que tu le fasses !"
+                  }
+                ],
+                "id": "7-W8VkvzJt"
+              },
+              {
+                "type": "p",
+                "id": "ULCngjWu2D",
+                "children": [
+                  {
+                    "text": "\n Es-tu d'accord pour que j'envoie un message à l'équipe Haven afin de leur signaler tout ce que tu m'as dit ? "
                   }
                 ]
               },
               {
-                "id": "luEbMO85m4",
                 "type": "p",
+                "id": "hxUvEj1K-5",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\"  pour leur signaler tout ce que tu m'as dis ? Personne ne te jugera au contraire on est tous là pour t'aider!"
+                    "text": "Personne ne te jugera, au contraire, on est tous là pour t'aider !"
                   }
                 ]
               },
@@ -1841,7 +1688,7 @@
     },
     {
       "id": "p3saox8l6x4uhqd9u4b5s0he",
-      "title": "J'AI SUBI CHEZ MOI  / Réponse accompagant",
+      "title": "J'AI SUBI CHEZ MOI / Réponse accompagnant",
       "graphCoordinates": {
         "x": 5895.3,
         "y": -2326.42
@@ -1934,7 +1781,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Si vous ne savez pas par quoi commencer, appelez le 119 ils vous guideront étapes par étapes."
+                    "text": "Si vous ne savez pas par où commencer, appelez le 119, ils vous guideront étape par étape."
                   }
                 ]
               }
@@ -1961,52 +1808,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -2017,7 +1855,7 @@
     },
     {
       "id": "yafh5n69uzwx4ai4qs6cp07g",
-      "title": "J'AI SUBI CHEZ MOI / interpeller équipe ",
+      "title": "J'AI SUBI CHEZ MOI / interpeller équipe",
       "graphCoordinates": {
         "x": 6669.73,
         "y": -2528.73
@@ -2034,7 +1872,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Est ce que tu veux que j'en informe l'équipe pédagogique de ton établissement."
+                    "text": "Est-ce que tu veux que j'en informe l'équipe pédagogique de ton établissement ?"
                   }
                 ]
               },
@@ -2043,7 +1881,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Eux aussi sont la pour t'aider ."
+                    "text": "Eux aussi sont là pour t'aider."
                   }
                 ]
               }
@@ -2070,52 +1908,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -2165,7 +1994,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -2202,7 +2031,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ne t’en fais pas tous va bien se passer appelle un de ces numéros :"
+                    "text": "Ne t'en fais pas, tout va bien se passer. Appelle un de ces numéros :"
                   }
                 ]
               },
@@ -2211,7 +2040,16 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Prévention suicide : 3114 Enfance en danger : 119"
+                    "text": "Prévention suicide : 3114"
+                  }
+                ]
+              },
+              {
+                "id": "1pQi-p2o9u-bis",
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
@@ -2229,7 +2067,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Pour les personnes sourd-aveugles : 114 "
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               },
@@ -2238,7 +2076,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "je suis toujours la si besoin."
+                    "text": "Je suis toujours là si besoin."
                   }
                 ]
               }
@@ -2266,7 +2104,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "En as tu parlé à quelu'un en qui tu as totalement confiance ou à quelqu'un de ton établissement scolaire ?"
+                    "text": "En as-tu parlé à quelqu'un en qui tu as totalement confiance ou à quelqu'un de ton établissement scolaire ?"
                   }
                 ]
               }
@@ -2323,7 +2161,16 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\" pour leur signaler la situation ?"
+                    "text": "Es-tu d'accord pour que j'envoie un message à l'équipe Haven ?"
+                  }
+                ]
+              },
+              {
+                "id": "hlvVZhoLVg",
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Avec toutes les informations que tu m'as données."
                   }
                 ]
               }
@@ -2347,22 +2194,40 @@
           "content": {
             "richText": [
               {
-                "id": "aAPjTwujov",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Se serait vraiment judicieux que tu le fasse !"
+                    "text": "Ce serait vraiment judicieux que tu le fasses !"
+                  }
+                ],
+                "id": "7-W8VkvzJt"
+              },
+              {
+                "type": "p",
+                "id": "ULCngjWu2D",
+                "children": [
+                  {
+                    "text": "\n Es-tu d'accord pour que j'envoie un message à l'équipe Haven afin de leur signaler tout ce que tu m'as dit ? "
                   }
                 ]
               },
               {
-                "id": "luEbMO85m4",
+                "type": "p",
+                "id": "hxUvEj1K-5",
+                "children": [
+                  {
+                    "text": "Personne ne te jugera, au contraire, on est tous là pour t'aider !"
+                  }
+                ]
+              },
+              {
                 "type": "p",
                 "children": [
                   {
-                    "text": "Es tu d'accord pour que j'envoie un message à \" EQUIPE EN CHARGE\"  pour leur signaler tout ce que tu m'as dis ? Personne ne te jugera au contraire on est tous là pour t'aider!"
+                    "text": ""
                   }
-                ]
+                ],
+                "id": "h0wHanavYB"
               },
               {
                 "id": "ch67h2XpYc",
@@ -2380,7 +2245,7 @@
     },
     {
       "id": "hh0cxzd3639vn1v7ereye7hk",
-      "title": "J'AI SUBI EXTERIEUR  / réponse interpeller équipe 1",
+      "title": "J'AI SUBI EXTERIEUR / réponse interpeller équipe 1",
       "graphCoordinates": {
         "x": 5976.1,
         "y": -797.84
@@ -2409,7 +2274,7 @@
     },
     {
       "id": "gijthuwq4xjgbsp0fbq275m8",
-      "title": "J'AI SUBI EXTERIEUR  / réponse interpeller équipe 1",
+      "title": "J'AI SUBI EXTERIEUR / réponse interpeller équipe 1",
       "graphCoordinates": {
         "x": 5983.66,
         "y": -142.7
@@ -2455,7 +2320,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -2475,7 +2340,7 @@
     },
     {
       "id": "dlz1ve6azji4ddppz2lp2wqu",
-      "title": "J'AI SUBI EXTERIEUR / Négatif contact équipe ",
+      "title": "J'AI SUBI EXTERIEUR / Négatif contact équipe",
       "graphCoordinates": {
         "x": 6338.89,
         "y": -674.17
@@ -2491,52 +2356,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -2547,7 +2403,7 @@
     },
     {
       "id": "gdw1llyalr9q46dhbl314586",
-      "title": "J'AI SUBI EXTERIEUR / Positif interpeller équipe ",
+      "title": "J'AI SUBI EXTERIEUR / Positif interpeller équipe",
       "graphCoordinates": {
         "x": 6333.68,
         "y": -280.71
@@ -2564,7 +2420,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu es décidément trés courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie immédiatement!"
+                    "text": "Tu es décidément très courageux/se ! Personne n'a le droit de te faire du mal ! Je leur envoie ton message immédiatement !"
                   }
                 ]
               },
@@ -2584,7 +2440,7 @@
     },
     {
       "id": "up60k2g94kjffimvth8jx3g5",
-      "title": "J'AI SUBI EXTERIEUR / Négatif interpeller équipe ",
+      "title": "J'AI SUBI EXTERIEUR / Négatif interpeller équipe",
       "graphCoordinates": {
         "x": 6332.9,
         "y": -11.1
@@ -2600,52 +2456,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je te laisse réfléchir Mais se serait bien que tu en parle avec une personne a ces numéros :"
+                    "text": "Je te laisse réfléchir. Mais ce serait bien que tu en parles à quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "OMZQuGwGOb",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "rR7kOUqVE0",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "p3nzi8-1eV",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "B2rmyPPPd6",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
-                  }
-                ]
-              },
-              {
-                "id": "Cc4n8-D129",
-                "type": "p",
-                "children": [
-                  {
-                    "text": ""
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -2717,7 +2564,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "En as tu parlé à quelqu'un en qui tu as totalement confiance ou à quelqu'un de ton établissement scolaire ?"
+                    "text": "En as-tu parlé à quelqu'un en qui tu as totalement confiance ou à quelqu'un de ton établissement scolaire ?"
                   }
                 ]
               }
@@ -2745,7 +2592,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Si tu appelles un de ces numéros des personnes seront la pour t'aider : "
+                    "text": "Si tu appelles un de ces numéros, des personnes seront là pour t'aider :"
                   }
                 ]
               },
@@ -2754,7 +2601,16 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Prévention suicide : 3114 Enfance en danger : 119"
+                    "text": "Prévention suicide : 3114"
+                  }
+                ]
+              },
+              {
+                "id": "1pQi-p2o9u-bis",
+                "type": "p",
+                "children": [
+                  {
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
@@ -2772,7 +2628,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Pour les personnes sourd-aveugles : 114 "
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               },
@@ -2781,7 +2637,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "je suis toujours la si besoin."
+                    "text": "Je suis toujours là si besoin."
                   }
                 ]
               }
@@ -2792,7 +2648,7 @@
     },
     {
       "id": "v38juvxsnroumdd8f0m9llms",
-      "title": "J'AI SUBI CHEZ MOI  / réponse interpeller équipe ",
+      "title": "J'AI SUBI CHEZ MOI / réponse interpeller équipe",
       "graphCoordinates": {
         "x": 7113.17,
         "y": -2550.07
@@ -2821,7 +2677,7 @@
     },
     {
       "id": "x5onyaajl7p4g41x8z28tub5",
-      "title": "J'AI SUBI CHEZ MOI / Signalement positif ",
+      "title": "J'AI SUBI CHEZ MOI / Signalement positif",
       "graphCoordinates": {
         "x": 7537.46,
         "y": -2696.26
@@ -2838,7 +2694,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu ai vraiment trés courageux / euse !"
+                    "text": "Tu es vraiment très courageux / euse !"
                   }
                 ]
               },
@@ -2847,7 +2703,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je les informe de suite et ils vont vite prendre contact avec toi pour t'aider."
+                    "text": "Je les informe tout de suite et ils vont vite prendre contact avec toi pour t'aider."
                   }
                 ]
               }
@@ -2874,7 +2730,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je respecte ton choix cependant si tu change d'avis sache qu'ils sont la, eux aussi, pour t'aider."
+                    "text": "Je respecte ton choix. Cependant, si tu changes d'avis, sache qu'ils sont là, eux aussi, pour t'aider."
                   }
                 ]
               },
@@ -2954,7 +2810,7 @@
             {
               "id": "kw6w2xq6ji654qm5846kq420",
               "outgoingEdgeId": "kzntq1cepb5r1w1voonyp88g",
-              "content": "Mal être"
+              "content": "Mal-être"
             }
           ],
           "options": {
@@ -2982,7 +2838,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu souhaites que ton témoignages soit :"
+                    "text": "Tu souhaites que ton témoignage soit :"
                   }
                 ]
               }
@@ -3006,17 +2862,17 @@
             {
               "id": "fbz2v1dae4s52po1cwnym84j",
               "outgoingEdgeId": "tfdg94dvmk0u960kp85xb52c",
-              "content": "Totalement Anonyme"
+              "content": "Totalement anonyme"
             },
             {
               "id": "xdexxcyamac1kohadi4imq5f",
               "outgoingEdgeId": "liskf2sy6rbb3cenm0c9ypjw",
-              "content": "Partiellement Anonyme ( seulement ta classe)"
+              "content": "Partiellement anonyme (seulement ta classe)"
             },
             {
               "id": "m3hy4ft78vpfqbhtfod0163h",
               "outgoingEdgeId": "v327zvf63x1cqd5uac26cfjd",
-              "content": "Pas anonyme "
+              "content": "Pas anonyme"
             }
           ],
           "options": {
@@ -3044,7 +2900,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Avec qui as tu eu des problèmes?"
+                    "text": "Avec qui as-tu eu des problèmes ?"
                   }
                 ]
               }
@@ -3071,7 +2927,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "C'est trés courageux de vouloir témoigner de cette situation. J'ai encore quelques questions à te poser."
+                    "text": "C'est très courageux de vouloir témoigner de cette situation. J'ai encore quelques questions à te poser."
                   }
                 ]
               }
@@ -3089,7 +2945,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "De quelles situation il s'agit ?"
+                    "text": "De quelle situation s'agit-il ?"
                   }
                 ]
               }
@@ -3138,7 +2994,7 @@
             {
               "id": "s3f0vwg1ens8whp5yhvk5cgb",
               "outgoingEdgeId": "ck8qigfsqzsptz7swnionrdu",
-              "content": "Mal être"
+              "content": "Mal-être"
             }
           ],
           "options": {
@@ -3166,7 +3022,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Tu souhaites que ton témoignages soit :"
+                    "text": "Tu souhaites que ton témoignage soit :"
                   }
                 ]
               }
@@ -3190,17 +3046,17 @@
             {
               "id": "qrathx8an6i5v8vwvuy8g0ar",
               "outgoingEdgeId": "hx82ex2ovphkmxnhwzfe8ram",
-              "content": "Totalement Anonyme"
+              "content": "Totalement anonyme"
             },
             {
               "id": "rs23ppqvju4dryd072pgcimt",
               "outgoingEdgeId": "jb4whx11s7ho07abbwhfu605",
-              "content": "Partiellement Anonyme ( seulement ta classe)"
+              "content": "Partiellement anonyme (seulement ta classe)"
             },
             {
               "id": "t0o8t9js1ho43s6cq1rd8p46",
               "outgoingEdgeId": "rvwrbb7qyjwxbh55mzccgkc7",
-              "content": "Pas anonyme "
+              "content": "Pas anonyme"
             }
           ],
           "options": {
@@ -3228,7 +3084,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Avec qui ou ou ?"
+                    "text": "Avec qui, ou où ?"
                   }
                 ]
               }
@@ -3267,7 +3123,7 @@
             {
               "id": "hpxqjfinpvdnqiyetwl797pc",
               "outgoingEdgeId": "lqy63dslej47kyp93d28xidj",
-              "content": "A l'extérieur"
+              "content": "À l'extérieur"
             }
           ],
           "options": {
@@ -3294,7 +3150,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner ta classe s'il te plait ?"
+                    "text": "Peux-tu me donner ta classe, s'il te plaît ?"
                   }
                 ]
               }
@@ -3329,7 +3185,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner ton nom, ton prénom et ta classe s'il te plait ?"
+                    "text": "Peux-tu me donner ton nom, ton prénom et ta classe, s'il te plaît ?"
                   }
                 ]
               }
@@ -3365,7 +3221,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -3393,7 +3249,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -3421,7 +3277,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -3449,7 +3305,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -3476,7 +3332,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner ta classe s'il te plait ?"
+                    "text": "Peux-tu me donner ta classe, s'il te plaît ?"
                   }
                 ]
               }
@@ -3511,7 +3367,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner ton nom, ton prénom et ta classe s'il te plait ?"
+                    "text": "Peux-tu me donner ton nom, ton prénom et ta classe, s'il te plaît ?"
                   }
                 ]
               }
@@ -3546,7 +3402,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -3564,7 +3420,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner des informations sur cet élève ?"
+                    "text": "Peux-tu me donner des informations sur cet élève ?"
                   }
                 ]
               },
@@ -3648,7 +3504,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -3676,7 +3532,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant peux tu me donner des informations sur ceux qui lui ont fait du mal s'il te plait."
+                    "text": "Maintenant, peux-tu me donner des informations sur ceux qui lui ont fait du mal, s'il te plaît ?"
                   }
                 ]
               },
@@ -3759,7 +3615,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -3777,7 +3633,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -3786,7 +3642,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -3799,8 +3655,8 @@
       "id": "k4b4iui6a9pihym68dv6gilv",
       "title": "J'AI VU ELEVE / Positif Description situation",
       "graphCoordinates": {
-        "x": 9313.17,
-        "y": 967.51
+        "x": 9314.15,
+        "y": 966.27
       },
       "blocks": [
         {
@@ -3832,7 +3688,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore merci, se que tu fais est très important."
+                    "text": "Encore merci, ce que tu fais est très important."
                   }
                 ]
               }
@@ -3845,8 +3701,8 @@
       "id": "ynwgytrdm00ktlory4qwwm3u",
       "title": "J'AI VU ELEVE / Positif Message conseil contact adulte",
       "graphCoordinates": {
-        "x": 9699.3,
-        "y": 936.29
+        "x": 9724.3,
+        "y": 951.29
       },
       "blocks": [
         {
@@ -3859,7 +3715,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Si ce n'est pas le cas, tu devrais en parler avec tes parents et même avec \"CHARGE PEDAGO\" de ton établissement"
+                    "text": "Si ce n'est pas le cas, tu devrais en parler à tes parents et même à un AED de ton établissement."
                   }
                 ]
               }
@@ -3877,7 +3733,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je vais transmettre toutes ces informations a \" CHARGE PEDAGO \" en respectant ton choix d'anonymat biensur."
+                    "text": "Je vais transmettre toutes ces informations à l'équipe Haven en respectant ton choix d'anonymat, bien sûr."
                   }
                 ]
               }
@@ -3905,43 +3761,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant :"
+                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant  quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "a-M23L8rmi",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "l2X7So2xU-",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "g_XwRpxuJG",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "SQaP-AMz_u",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -3969,9 +3825,18 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Pas grave"
+                    "text": "Ce n'est pas grave ! "
                   }
                 ]
+              },
+              {
+                "children": [
+                  {
+                    "text": "Passons à la question suivante."
+                  }
+                ],
+                "type": "p",
+                "id": "o6HcBt25S9"
               }
             ]
           }
@@ -3997,7 +3862,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -4006,7 +3871,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -4033,7 +3898,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -4051,7 +3916,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner des informations sur cet élève ?"
+                    "text": "Peux-tu me donner des informations sur cet élève ?"
                   }
                 ]
               },
@@ -4135,7 +4000,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -4191,7 +4056,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant peux tu me donner des informations sur ceux qui lui ont fait du mal s'il te plait."
+                    "text": "Maintenant, peux-tu me donner des informations sur ceux qui lui ont fait du mal, s'il te plaît ?"
                   }
                 ]
               },
@@ -4274,7 +4139,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -4292,7 +4157,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -4301,7 +4166,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -4329,7 +4194,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -4338,7 +4203,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -4384,7 +4249,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore merci, se que tu fais est très important."
+                    "text": "Encore merci, ce que tu fais est très important."
                   }
                 ]
               }
@@ -4411,7 +4276,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Si ce n'est pas le cas, tu devrais en parler avec tes parents et même avec \"CHARGE PEDAGO\" de ton établissement"
+                    "text": "Si ce n'est pas le cas, tu devrais en parler à tes parents et même à un AED de ton établissement."
                   }
                 ]
               }
@@ -4429,7 +4294,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je vais transmettre toutes ces informations a \" CHARGE PEDAGO \" en respectant ton choix d'anonymat biensur."
+                    "text": "Je vais transmettre toutes ces informations à l'équipe Haven en respectant ton choix d'anonymat, bien sûr."
                   }
                 ]
               }
@@ -4457,43 +4322,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant :"
+                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant  quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "a-M23L8rmi",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "l2X7So2xU-",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "g_XwRpxuJG",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "SQaP-AMz_u",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -4520,7 +4385,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -4538,7 +4403,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner des informations sur cet élève ?"
+                    "text": "Peux-tu me donner des informations sur cet élève ?"
                   }
                 ]
               },
@@ -4622,7 +4487,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -4678,7 +4543,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant peux tu me donner des informations sur ceux qui lui ont fait du mal s'il te plait."
+                    "text": "Maintenant, peux-tu me donner des informations sur ceux qui lui ont fait du mal, s'il te plaît ?"
                   }
                 ]
               },
@@ -4761,7 +4626,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -4779,7 +4644,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -4788,7 +4653,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -4816,7 +4681,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -4825,7 +4690,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -4871,7 +4736,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore merci, se que tu fais est très important."
+                    "text": "Encore merci, ce que tu fais est très important."
                   }
                 ]
               }
@@ -4898,7 +4763,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Si ce n'est pas le cas, tu devrais en parler avec tes parents et même avec \"CHARGE PEDAGO\" de ton établissement"
+                    "text": "Si ce n'est pas le cas, tu devrais en parler à tes parents et même à un AED de ton établissement."
                   }
                 ]
               }
@@ -4916,7 +4781,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je vais transmettre toutes ces informations a \" CHARGE PEDAGO \" en respectant ton choix d'anonymat biensur."
+                    "text": "Je vais transmettre toutes ces informations à l'équipe Haven en respectant ton choix d'anonymat, bien sûr."
                   }
                 ]
               }
@@ -4944,43 +4809,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant :"
+                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant  quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "a-M23L8rmi",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "l2X7So2xU-",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "g_XwRpxuJG",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "SQaP-AMz_u",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -5007,7 +4872,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore une foi c'est très courageux de tout me dire ! "
+                    "text": "Encore une fois, c'est très courageux de tout me dire !"
                   }
                 ]
               }
@@ -5025,7 +4890,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Peux tu me donner des informations sur cet élève ?"
+                    "text": "Peux-tu me donner des informations sur cet élève ?"
                   }
                 ]
               },
@@ -5109,7 +4974,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -5165,7 +5030,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant peux tu me donner des informations sur ceux qui lui ont fait du mal s'il te plait."
+                    "text": "Maintenant, peux-tu me donner des informations sur ceux qui lui ont fait du mal, s'il te plaît ?"
                   }
                 ]
               },
@@ -5248,7 +5113,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Merci beaucoup ! "
+                    "text": "Merci beaucoup !"
                   }
                 ]
               }
@@ -5266,7 +5131,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -5275,7 +5140,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -5303,7 +5168,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Maintenant décris moi la situation dont tu as été témoin."
+                    "text": "Maintenant, décris-moi la situation dont tu as été témoin."
                   }
                 ]
               },
@@ -5312,7 +5177,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Sois le plus précis possible s'il te plait"
+                    "text": "Sois le plus précis possible, s'il te plaît."
                   }
                 ]
               }
@@ -5358,7 +5223,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Encore merci, se que tu fais est très important."
+                    "text": "Encore merci, ce que tu fais est très important."
                   }
                 ]
               }
@@ -5385,7 +5250,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Si ce n'est pas le cas, tu devrais en parler avec tes parents et même avec \"CHARGE PEDAGO\" de ton établissement"
+                    "text": "Si ce n'est pas le cas, tu devrais en parler à tes parents et même à un AED de ton établissement."
                   }
                 ]
               }
@@ -5403,7 +5268,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Je vais transmettre toutes ces informations a \" CHARGE PEDAGO \" en respectant ton choix d'anonymat biensur."
+                    "text": "Je vais transmettre toutes ces informations à l'équipe Haven en respectant ton choix d'anonymat, bien sûr."
                   }
                 ]
               }
@@ -5431,43 +5296,43 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant :"
+                    "text": "Il y a aussi des personnes qui peuvent t'aider et te rassurer sur cette démarche en appelant  quelqu'un, à l'un de ces numéros :"
                   }
                 ]
               },
               {
-                "id": "a-M23L8rmi",
+                "id": "lsxPkxCNzh",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Prévention suicide : 3114"
                   }
                 ]
               },
               {
-                "id": "l2X7So2xU-",
+                "id": "m3j-rBFl3h",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Enfance en danger : 119"
                   }
                 ]
               },
               {
-                "id": "g_XwRpxuJG",
+                "id": "eSte4n1EGu",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Cyberharcèlement : 3018"
                   }
                 ]
               },
               {
-                "id": "SQaP-AMz_u",
+                "id": "RpJeUERvHD",
                 "type": "p",
                 "children": [
                   {
-                    "text": "-"
+                    "text": "Pour les personnes sourd-aveugles : 114"
                   }
                 ]
               }
@@ -5529,7 +5394,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
@@ -5538,25 +5403,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "tHeVdP5sGY",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "hMpxHLfDqZ",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -5584,7 +5431,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
@@ -5593,25 +5440,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "tHeVdP5sGY",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "hMpxHLfDqZ",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -5673,7 +5502,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
@@ -5682,25 +5511,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "tHeVdP5sGY",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "hMpxHLfDqZ",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -5762,7 +5573,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
@@ -5771,25 +5582,7 @@
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "tHeVdP5sGY",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "hMpxHLfDqZ",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -5834,7 +5627,7 @@
     },
     {
       "id": "spueiqk99zdv64sosjxgrtzd",
-      "title": "J'AI VU ELEVE / envoie résumé 1",
+      "title": "J'AI VU ELEVE / envoi résumé 1",
       "graphCoordinates": {
         "x": 10616.04,
         "y": 1014.37
@@ -5856,7 +5649,7 @@
     },
     {
       "id": "nlb3ygi41110xk0ky1c0k2y3",
-      "title": "J'AI VU EMPLOYE / envoie résumé 2",
+      "title": "J'AI VU EMPLOYE / envoi résumé 2",
       "graphCoordinates": {
         "x": 10608.23,
         "y": 1980.46
@@ -5878,7 +5671,7 @@
     },
     {
       "id": "hbg588km6vlq146h8jjeqkrn",
-      "title": "J'AI VU CHEZ ELEVE / envoie résumé 3",
+      "title": "J'AI VU CHEZ ELEVE / envoi résumé 3",
       "graphCoordinates": {
         "x": 10636.26,
         "y": 3063.98
@@ -5900,7 +5693,7 @@
     },
     {
       "id": "oip087fevwqz3utqd20dgx9y",
-      "title": "J'AI VU EXTERIEUR / envoie résumé 4",
+      "title": "J'AI VU EXTERIEUR / envoi résumé 4",
       "graphCoordinates": {
         "x": 10684.18,
         "y": 4273.29
@@ -5969,38 +5762,20 @@
           "content": {
             "richText": [
               {
-                "id": "vu_conf_p1",
+                "id": "_OGsflCtFZ",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
               {
-                "id": "vu_conf_p2",
+                "id": "JiSVfLAFzc",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p3",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p4",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -6058,38 +5833,20 @@
           "content": {
             "richText": [
               {
-                "id": "vu_conf_p1",
+                "id": "_OGsflCtFZ",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
               {
-                "id": "vu_conf_p2",
+                "id": "JiSVfLAFzc",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p3",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p4",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -6100,7 +5857,7 @@
     },
     {
       "id": "vu_wh_CHEZ_ELEVE",
-      "title": "J'AI VU CHEZ_ELEVE / Webhook POST reports",
+      "title": "J'AI VU CHEZ ELEVE / Webhook POST reports",
       "graphCoordinates": {
         "x": 5145.01,
         "y": 3021.46
@@ -6134,7 +5891,7 @@
     },
     {
       "id": "vu_conf_CHEZ_ELEVE",
-      "title": "J'AI VU CHEZ_ELEVE / Confirmation tracking code",
+      "title": "J'AI VU CHEZ ELEVE / Confirmation tracking code",
       "graphCoordinates": {
         "x": 5553.57,
         "y": 2971.91
@@ -6147,38 +5904,20 @@
           "content": {
             "richText": [
               {
-                "id": "vu_conf_p1",
+                "id": "_OGsflCtFZ",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
               {
-                "id": "vu_conf_p2",
+                "id": "JiSVfLAFzc",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p3",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p4",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -6236,38 +5975,20 @@
           "content": {
             "richText": [
               {
-                "id": "vu_conf_p1",
+                "id": "_OGsflCtFZ",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton signalement a bien été reçu. "
+                    "text": "Ton signalement a bien été reçu."
                   }
                 ]
               },
               {
-                "id": "vu_conf_p2",
+                "id": "JiSVfLAFzc",
                 "type": "p",
                 "children": [
                   {
-                    "text": "Ton code de suivi est :"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p3",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "{{tracking_code}}"
-                  }
-                ]
-              },
-              {
-                "id": "vu_conf_p4",
-                "type": "p",
-                "children": [
-                  {
-                    "text": "Garde-le précieusement — il te permettra de suivre l'état de ton dossier."
+                    "text": "Ton code de suivi a été créé, tu le retrouveras sur ton signalement."
                   }
                 ]
               }
@@ -6300,15 +6021,6 @@
       }
     },
     {
-      "id": "sz2iu99jjx15tid1ibq15jab",
-      "from": {
-        "blockId": "tfzzgwpuka8z1jppazqfo5e2"
-      },
-      "to": {
-        "groupId": "owtg314923xbnlq6v3zcmiy0"
-      }
-    },
-    {
       "id": "quuw43crfehadz4gi9b1qgjw",
       "from": {
         "blockId": "rh9mxtyh9o0r0t4zn7702n4w",
@@ -6316,91 +6028,6 @@
       },
       "to": {
         "groupId": "um9hbcs9j6q1f6sd9p8rw89n"
-      }
-    },
-    {
-      "id": "frg7u4lxi68jxjw4o7q6h1kc",
-      "from": {
-        "blockId": "f9po3wqb61yjo9g4i1x1hnul"
-      },
-      "to": {
-        "groupId": "owtg314923xbnlq6v3zcmiy0"
-      }
-    },
-    {
-      "id": "ohvekoe0pkh1m6tdvs2ff6p4",
-      "from": {
-        "blockId": "yy3u3164ezc2qgecbm50qdre",
-        "itemId": "t4i7s6bfzh4l043cidt952qd"
-      },
-      "to": {
-        "groupId": "vjk9x8vgdor2fygyclmmihd2",
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9"
-      }
-    },
-    {
-      "id": "mfx7ja6p4tkr18wbrv39pvtn",
-      "from": {
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9",
-        "itemId": "f1feibxghf2bqz3a13gf2uta"
-      },
-      "to": {
-        "groupId": "ycpz6bews73okbz02v59d76k",
-        "blockId": "an9zcnm2lwzig34loezmwikc"
-      }
-    },
-    {
-      "id": "d9dtwlkkmbs52m965j4ohu5z",
-      "from": {
-        "blockId": "yy3u3164ezc2qgecbm50qdre",
-        "itemId": "gwrjc2irc9oscyv8xximx4e3"
-      },
-      "to": {
-        "groupId": "vjk9x8vgdor2fygyclmmihd2",
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9"
-      }
-    },
-    {
-      "id": "t6n5hcchrnut61etzjbgxq6s",
-      "from": {
-        "blockId": "yy3u3164ezc2qgecbm50qdre",
-        "itemId": "zutvci71sq0h4v4l9f2ec05t"
-      },
-      "to": {
-        "groupId": "vjk9x8vgdor2fygyclmmihd2",
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9"
-      }
-    },
-    {
-      "id": "gbnfahiffkzthf25yrmrom22",
-      "from": {
-        "blockId": "yy3u3164ezc2qgecbm50qdre",
-        "itemId": "l6dielgx3cpc9w13df6fevac"
-      },
-      "to": {
-        "groupId": "vjk9x8vgdor2fygyclmmihd2",
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9"
-      }
-    },
-    {
-      "id": "ilp1kwuaio57ezgkuejedxgt",
-      "from": {
-        "blockId": "yy3u3164ezc2qgecbm50qdre",
-        "itemId": "kit1o3a5kw2ixeiodfhds11v"
-      },
-      "to": {
-        "groupId": "vjk9x8vgdor2fygyclmmihd2",
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9"
-      }
-    },
-    {
-      "id": "dhh2mx76qjo59ee6tzknx2kv",
-      "from": {
-        "blockId": "mfpnura7ff3pw0hvgzkj3mv9"
-      },
-      "to": {
-        "groupId": "jvf295mgdn30nkmcvj863w7x",
-        "blockId": "o7nfwolapog6ayg6p4aynjym"
       }
     },
     {
@@ -6474,26 +6101,6 @@
       "to": {
         "groupId": "epw4fuh8j1qwl243b03w590v",
         "blockId": "khl62esjfin2bi3d4v0ixz6j"
-      }
-    },
-    {
-      "id": "n5czz593qancbt6nbx9wbfc9",
-      "from": {
-        "blockId": "khl62esjfin2bi3d4v0ixz6j",
-        "itemId": "ysld1wper82vezucrx6m9k89"
-      },
-      "to": {
-        "groupId": "xjop3c46dlernkjajorftxqx"
-      }
-    },
-    {
-      "id": "ynhitewa56q8cazyrq7s89l8",
-      "from": {
-        "blockId": "zep90hg7fpve7f0504mypdvy"
-      },
-      "to": {
-        "groupId": "viunxy1ryxiqrh087zwiktwj",
-        "blockId": "mcw0il6raojspq229cskn4qh"
       }
     },
     {
@@ -7369,15 +6976,6 @@
       },
       "to": {
         "groupId": "b5x3uv7qsfyup2ufblswnwio"
-      }
-    },
-    {
-      "id": "vvgulifvhpf12vc7bm8qtvpz",
-      "from": {
-        "blockId": "o7nfwolapog6ayg6p4aynjym"
-      },
-      "to": {
-        "groupId": "ycpz6bews73okbz02v59d76k"
       }
     },
     {
@@ -8379,6 +7977,37 @@
       "to": {
         "groupId": "jwkj6368omn3nr165b2fzfs9"
       }
+    },
+    {
+      "id": "vs5iit15jkru472fyfjog56t",
+      "from": {
+        "blockId": "f9po3wqb61yjo9g4i1x1hnul"
+      },
+      "to": {
+        "groupId": "yijn9jq2ind8dc3p8ubm2ldv",
+        "blockId": "gl519roexyjp5vcnif3288dr"
+      }
+    },
+    {
+      "id": "yowx533tepqpbvmk0pkfcpu9",
+      "from": {
+        "blockId": "khl62esjfin2bi3d4v0ixz6j",
+        "itemId": "ysld1wper82vezucrx6m9k89"
+      },
+      "to": {
+        "groupId": "xjop3c46dlernkjajorftxqx",
+        "blockId": "zep90hg7fpve7f0504mypdvy"
+      }
+    },
+    {
+      "id": "omumzqmojl1w09zd2x3kd1bj",
+      "from": {
+        "blockId": "zep90hg7fpve7f0504mypdvy"
+      },
+      "to": {
+        "groupId": "viunxy1ryxiqrh087zwiktwj",
+        "blockId": "mcw0il6raojspq229cskn4qh"
+      }
     }
   ],
   "variables": [
@@ -8520,10 +8149,13 @@
   "settings": {
     "general": {
       "isBrandingEnabled": true
+    },
+    "publicShare": {
+      "isEnabled": true
     }
   },
-  "createdAt": "2026-06-17T13:40:40.834Z",
-  "updatedAt": "2026-06-17T13:40:40.834Z",
+  "createdAt": "2026-06-24T11:21:35.379Z",
+  "updatedAt": "2026-06-24T11:53:25.486Z",
   "icon": null,
   "folderId": null,
   "publicId": null,

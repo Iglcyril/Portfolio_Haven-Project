@@ -71,7 +71,7 @@ class _ChatPageState extends State<ChatPage> {
   bool _nextUserMsgIsDeposition = false;
   String? _depositionText;
 
-  static const _typebotId = 'my-typebot-9nx8sja';
+  static const _typebotId = 'haven-v-1-1-6rkhzu8';
   static const _typebotBase = 'https://typebot.co/api/v1';
 
   static const _depositionInputIds = {
@@ -124,11 +124,31 @@ class _ChatPageState extends State<ChatPage> {
         body: jsonEncode(bodyMap),
       );
       if (!mounted) return;
+      if (res.statusCode != 200) {
+        setState(() {
+          _messages.add(_Msg(
+            text: 'Impossible de démarrer le chatbot (erreur ${res.statusCode}). Réessaie plus tard.',
+            isBot: true,
+            time: DateTime.now(),
+          ));
+          _botTyping = false;
+        });
+        return;
+      }
       final data = jsonDecode(res.body) as Map<String, dynamic>;
       _sessionId = data['sessionId'] as String?;
       _handleTypebotResponse(data);
-    } catch (_) {
-      if (mounted) setState(() => _botTyping = false);
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _messages.add(_Msg(
+            text: 'Connexion impossible au chatbot. Vérifie ta connexion et réessaie.',
+            isBot: true,
+            time: DateTime.now(),
+          ));
+          _botTyping = false;
+        });
+      }
     }
   }
 
