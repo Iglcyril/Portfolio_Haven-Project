@@ -17,6 +17,7 @@ import { bearer } from '@elysiajs/bearer'
 import { requireAuth } from '../middlewares/auth.middleware'
 import { handleError } from '../middlewares/error.middleware'
 import { reportService } from '../services/report.service'
+import { wsManager } from '../ws/ws-manager'
 
 // --- Mots clés de crise ---
 // Liste à compléter — prendre en compte les fautes d'orthographe courantes
@@ -160,6 +161,14 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
     try {
       const crisisAlert = containsAlertKeywords(body.content)
       const report = await reportService.addDeposition(params.code, body.content, crisisAlert)
+
+      if (crisisAlert) {
+        wsManager.broadcastCrisis({
+          type:         'crisis_alert',
+          trackingCode: report?.trackingId ?? params.code,
+          category:     'Signalement urgent',
+        })
+      }
 
       return {
         trackingCode:   report?.trackingId,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/services/report_service.dart';
 import '../../core/services/api_client.dart';
+import '../../core/services/websocket_service.dart';
+import 'crisis_alert_dialog.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -84,6 +87,7 @@ class _ProfessionalDashboardPageState
 
   List<_TeamMember> _teamMembers = const [];
   bool _isLoading = true;
+  StreamSubscription<CrisisAlert>? _wsSub;
 
   static const _riskColors = AppConstants.riskColors;
 
@@ -101,6 +105,17 @@ class _ProfessionalDashboardPageState
     super.initState();
     ReportStore.instance.addListener(_rebuild);
     _fetchData();
+    WebSocketService.instance.connect();
+    _wsSub = WebSocketService.instance.alerts.listen(_onCrisisAlert);
+  }
+
+  void _onCrisisAlert(CrisisAlert alert) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CrisisAlertDialog(alert: alert),
+    );
   }
 
   Future<void> _fetchData() async {
@@ -167,6 +182,7 @@ class _ProfessionalDashboardPageState
 
   @override
   void dispose() {
+    _wsSub?.cancel();
     ReportStore.instance.removeListener(_rebuild);
     super.dispose();
   }

@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/report_service.dart';
+import '../../core/services/websocket_service.dart';
+import 'crisis_alert_dialog.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
@@ -30,6 +32,7 @@ class ReferentDashboardPage extends StatefulWidget {
 class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
   bool _isLoading = true;
   Timer? _pollingTimer;
+  StreamSubscription<CrisisAlert>? _wsSub;
 
   List<HavenReport> get _myReports => widget.currentUserName == null
       ? []
@@ -54,10 +57,22 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
     ReportStore.instance.addListener(_rebuild);
     _fetchReports();
     _pollingTimer = Timer.periodic(const Duration(seconds: 30), (_) => _fetchReports());
+    WebSocketService.instance.connect();
+    _wsSub = WebSocketService.instance.alerts.listen(_onCrisisAlert);
+  }
+
+  void _onCrisisAlert(CrisisAlert alert) {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CrisisAlertDialog(alert: alert),
+    );
   }
 
   @override
   void dispose() {
+    _wsSub?.cancel();
     _pollingTimer?.cancel();
     ReportStore.instance.removeListener(_rebuild);
     super.dispose();

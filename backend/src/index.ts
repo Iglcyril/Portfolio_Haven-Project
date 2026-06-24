@@ -20,7 +20,7 @@
  *   PORT          → optionnel, défaut 3000
  */
 
-import { Elysia } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { cors } from '@elysiajs/cors'
 import { bearer } from '@elysiajs/bearer'
 import { swagger } from '@elysiajs/swagger'
@@ -28,6 +28,8 @@ import { authRoutes } from './routes/auth'
 import { adminRoutes } from './routes/admin'
 import { parentsRoutes } from './routes/parents'
 import { reportsRoutes } from './routes/reports'
+import { verifyToken } from './middlewares/auth.middleware'
+import { wsManager } from './ws/ws-manager'
 // import { chatRoutes } from './routes/chat' → à ajouter quand Haven Lab fournit leur API
 
 // --- Validation des variables d'environnement ---
@@ -77,6 +79,26 @@ const app = new Elysia()
 
   // Health check
   .get('/health', () => ({ status: 'ok', project: 'Haven', version: '0.1.0' }))
+
+  // WebSocket — alertes temps réel pour le staff (SUPERVISOR / ADMIN)
+  // Connexion : ws://host:port/ws?token=<JWT>
+  .ws('/ws', {
+    query: t.Object({ token: t.Optional(t.String()) }),
+    open(ws) {
+      const token = (ws.data as { query?: { token?: string } }).query?.token
+      if (!token) { ws.close(); return }
+      try {
+        const { userId, role } = verifyToken(token)
+        if (!['SUPERVISOR', 'ADMIN'].includes(role)) { ws.close(); return }
+        wsManager.add(ws, userId, role)
+      } catch {
+        ws.close()
+      }
+    },
+    close(ws) {
+      wsManager.remove(ws)
+    },
+  })
 
   .listen(process.env.PORT ?? 3000)
 
