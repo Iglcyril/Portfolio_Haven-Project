@@ -13,14 +13,20 @@ const iStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', minWidth: 0,
 }
 
-export function AddMemberForm({ onAdd, onCancel }: {
-  onAdd: (m: TeamMember) => void
+export function EditMemberForm({ member, onSave, onCancel }: {
+  member: TeamMember
+  onSave: (updated: TeamMember) => void
   onCancel: () => void
 }) {
+  const nameParts = member.fullName.split(' ')
   const [form, setForm] = useState({
-    firstName: '', lastName: '', role: 'cpe' as ProfessionalRole,
-    jobTitle: '', phone: '',
+    firstName: member.firstName ?? nameParts[0] ?? '',
+    lastName:  member.lastName  ?? nameParts.slice(1).join(' ') ?? '',
+    role:      member.role as ProfessionalRole,
+    jobTitle:  member.jobTitle,
+    phone:     member.phone,
   })
+
   const canSubmit = form.firstName.trim() && form.lastName.trim() && form.jobTitle.trim() && form.phone.trim()
 
   useEffect(() => {
@@ -33,31 +39,29 @@ export function AddMemberForm({ onAdd, onCancel }: {
     if (!canSubmit) return
     const initials  = `${form.firstName[0]}${form.lastName[0]}`.toUpperCase()
     const roleLabel = ROLE_OPTIONS.find(r => r.key === form.role)?.label ?? form.role
-    onAdd({
-      id: `tm_new_${Date.now()}`,
-      fullName: `${form.firstName} ${form.lastName}`,
-      firstName: form.firstName,
-      lastName: form.lastName,
+    onSave({
+      ...member,
+      fullName:       `${form.firstName} ${form.lastName}`,
+      firstName:      form.firstName,
+      lastName:       form.lastName,
       avatarInitials: initials,
-      role: form.role,
+      role:           form.role,
       roleLabel,
-      jobTitle: form.jobTitle,
-      phone: form.phone,
-      email: '',
-      activeCount: 0,
-      resolvedCount: 0,
+      jobTitle:       form.jobTitle,
+      phone:          form.phone,
     })
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -8 }}
+      initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
+      exit={{ opacity: 0, y: -6 }}
       style={{
         background: 'var(--c-card)', border: `1.5px solid ${PRIMARY}`,
         borderRadius: 14, padding: '18px',
         boxShadow: 'var(--c-card-shadow)',
+        height: '100%', boxSizing: 'border-box',
         position: 'relative',
       }}
     >
@@ -77,7 +81,7 @@ export function AddMemberForm({ onAdd, onCancel }: {
       </button>
 
       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--c-text)', marginBottom: 14, paddingRight: 28 }}>
-        Ajouter un membre
+        Modifier le membre
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
         <input placeholder="Prénom" value={form.firstName} onChange={e => setForm(p => ({ ...p, firstName: e.target.value }))} style={iStyle} />
@@ -106,7 +110,7 @@ export function AddMemberForm({ onAdd, onCancel }: {
           fontFamily: 'inherit', transition: 'background 0.2s',
         }}
       >
-        Ajouter
+        Enregistrer
       </button>
     </motion.div>
   )

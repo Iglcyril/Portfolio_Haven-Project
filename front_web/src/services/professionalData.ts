@@ -300,6 +300,42 @@ function mapTeamMember(m: BackendTeamMember): TeamMember {
   }
 }
 
+// ─── Team localStorage persistence ───────────────────────────────────────────
+
+const LS_OVERRIDES = 'haven_team_overrides'
+const LS_LOCAL     = 'haven_team_local'
+
+function loadOverrides(): Record<string, Partial<TeamMember>> {
+  try { return JSON.parse(localStorage.getItem(LS_OVERRIDES) ?? '{}') } catch { return {} }
+}
+
+function loadLocalMembers(): TeamMember[] {
+  try { return JSON.parse(localStorage.getItem(LS_LOCAL) ?? '[]') } catch { return [] }
+}
+
+export function saveTeamMemberOverride(m: TeamMember): void {
+  const overrides = loadOverrides()
+  overrides[m.id] = { fullName: m.fullName, firstName: m.firstName, lastName: m.lastName,
+    avatarInitials: m.avatarInitials, role: m.role, roleLabel: m.roleLabel,
+    jobTitle: m.jobTitle, phone: m.phone }
+  localStorage.setItem(LS_OVERRIDES, JSON.stringify(overrides))
+}
+
+export function saveLocalTeamMember(m: TeamMember): void {
+  const locals = loadLocalMembers().filter(x => x.id !== m.id)
+  localStorage.setItem(LS_LOCAL, JSON.stringify([...locals, m]))
+}
+
+export function removeLocalTeamMember(id: string): void {
+  if (id.startsWith('tm_new_')) {
+    localStorage.setItem(LS_LOCAL, JSON.stringify(loadLocalMembers().filter(m => m.id !== id)))
+  } else {
+    const overrides = loadOverrides()
+    delete overrides[id]
+    localStorage.setItem(LS_OVERRIDES, JSON.stringify(overrides))
+  }
+}
+
 // ─── Service functions ────────────────────────────────────────────────────────
 
 export async function getProReports(): Promise<ProReport[]> {
@@ -308,8 +344,13 @@ export async function getProReports(): Promise<ProReport[]> {
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {
-  const res = await api.get<AdminTeamResponse>('/admin/team')
-  return res.team_info.map(mapTeamMember)
+  const res       = await api.get<AdminTeamResponse>('/admin/team')
+  const overrides = loadOverrides()
+  const backend   = res.team_info.map(m => {
+    const base = mapTeamMember(m)
+    return overrides[base.id] ? { ...base, ...overrides[base.id] } : base
+  })
+  return [...backend, ...loadLocalMembers()]
 }
 
 export async function getDirector(): Promise<User> {

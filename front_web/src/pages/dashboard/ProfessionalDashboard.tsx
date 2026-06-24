@@ -8,6 +8,7 @@ import DashboardLayout from '../../layouts/DashboardLayout'
 import {
   getProReports, getTeamMembers, getDirector, getReferentUser,
   updateStatus, updateSeverity, assignReferent, saveEvent,
+  saveTeamMemberOverride, saveLocalTeamMember, removeLocalTeamMember,
   type BackendSeverity, type BackendStatus,
 } from '../../services/professionalData'
 import type { User, ProReport, TeamMember, ReportEvent, Severity } from '../../types'
@@ -18,6 +19,7 @@ import { SortBar } from './professional/SortBar'
 import { DetailPanel } from './professional/DetailPanel'
 import { TeamCard } from './professional/TeamCard'
 import { AddMemberForm } from './professional/AddMemberForm'
+import { EditMemberForm } from './professional/EditMemberForm'
 import { StatsTab } from './professional/StatsTab'
 import { TeamSidebarFooter } from './professional/TeamSidebarFooter'
 
@@ -38,7 +40,8 @@ export default function ProfessionalDashboard() {
   const [loading, setLoading]     = useState(true)
   const [selectedId, setSelectedId]       = useState<string | null>(null)
   const [sort, setSort]                   = useState<SortKey>('severity')
-  const [showAddMember, setShowAddMember] = useState(false)
+  const [showAddMember, setShowAddMember]     = useState(false)
+  const [editingMemberId, setEditingMemberId] = useState<string | null>(null)
 
   const fetchData = useCallback(() => {
     Promise.all([
@@ -141,12 +144,25 @@ export default function ProfessionalDashboard() {
   }
 
   const handleAddMember = (m: TeamMember) => {
+    saveLocalTeamMember(m)
     setTeam(prev => [...prev, m])
     setShowAddMember(false)
   }
 
-  const handleRemoveMember = (id: string) =>
+  const handleRemoveMember = (id: string) => {
+    removeLocalTeamMember(id)
     setTeam(prev => prev.filter(m => m.id !== id))
+  }
+
+  const handleEditMember = (updated: TeamMember) => {
+    if (updated.id.startsWith('tm_new_')) {
+      saveLocalTeamMember(updated)
+    } else {
+      saveTeamMemberOverride(updated)
+    }
+    setTeam(prev => prev.map(m => m.id === updated.id ? updated : m))
+    setEditingMemberId(null)
+  }
 
   const handleArchive = async (id: string) => {
     const report = reports.find(r => r.id === id)
@@ -329,7 +345,20 @@ export default function ProfessionalDashboard() {
                     exit={{ opacity: 0, scale: 0.92 }}
                     style={{ height: '100%' }}
                   >
-                    <TeamCard member={m} isDirector={isDirector} onRemove={handleRemoveMember} />
+                    {editingMemberId === m.id ? (
+                      <EditMemberForm
+                        member={m}
+                        onSave={handleEditMember}
+                        onCancel={() => setEditingMemberId(null)}
+                      />
+                    ) : (
+                      <TeamCard
+                        member={m}
+                        isDirector={isDirector}
+                        onRemove={handleRemoveMember}
+                        onEdit={setEditingMemberId}
+                      />
+                    )}
                   </motion.div>
                 ))}
               </AnimatePresence>

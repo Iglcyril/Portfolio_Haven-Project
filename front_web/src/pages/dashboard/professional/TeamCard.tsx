@@ -1,11 +1,12 @@
-import { Phone, Trash2 } from 'lucide-react'
+import { Pencil, Phone, Trash2 } from 'lucide-react'
 import type { TeamMember } from '../../../types'
 import { PRIMARY } from './constants'
 
-export function TeamCard({ member, isDirector, onRemove }: {
+export function TeamCard({ member, isDirector, onRemove, onEdit }: {
   member: TeamMember
   isDirector: boolean
   onRemove: (id: string) => void
+  onEdit: (id: string) => void
 }) {
   return (
     <div style={{
@@ -17,29 +18,49 @@ export function TeamCard({ member, isDirector, onRemove }: {
       height: '100%', boxSizing: 'border-box',
     }}>
       {isDirector && (
-        <button
-          onClick={() => onRemove(member.id)}
-          title="Retirer du groupe"
-          style={{
-            position: 'absolute', top: 12, right: 12,
-            background: 'var(--c-badge)', border: 'none', borderRadius: 7,
-            padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
-            display: 'flex', transition: 'background 0.15s, color 0.15s',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(192,57,43,0.15)'
-            e.currentTarget.style.color = '#C0392B'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'var(--c-badge)'
-            e.currentTarget.style.color = 'var(--c-text-muted)'
-          }}
-        >
-          <Trash2 size={13} />
-        </button>
+        <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6 }}>
+          <button
+            onClick={() => onEdit(member.id)}
+            title="Modifier"
+            style={{
+              background: 'var(--c-badge)', border: 'none', borderRadius: 7,
+              padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
+              display: 'flex', transition: 'background 0.15s, color 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = `${PRIMARY}22`
+              e.currentTarget.style.color = PRIMARY
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'var(--c-badge)'
+              e.currentTarget.style.color = 'var(--c-text-muted)'
+            }}
+          >
+            <Pencil size={13} />
+          </button>
+          <button
+            onClick={() => onRemove(member.id)}
+            title="Retirer du groupe"
+            style={{
+              background: 'var(--c-badge)', border: 'none', borderRadius: 7,
+              padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
+              display: 'flex', transition: 'background 0.15s, color 0.15s',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = 'rgba(192,57,43,0.15)'
+              e.currentTarget.style.color = '#C0392B'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'var(--c-badge)'
+              e.currentTarget.style.color = 'var(--c-text-muted)'
+            }}
+          >
+            <Trash2 size={13} />
+          </button>
+        </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingRight: isDirector ? 28 : 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingRight: isDirector ? 60 : 0 }}>
         <div style={{
           width: 44, height: 44, borderRadius: '50%', background: PRIMARY,
           display: 'flex', alignItems: 'center', justifyContent: 'center',

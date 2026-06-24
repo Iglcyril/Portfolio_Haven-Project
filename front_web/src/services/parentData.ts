@@ -136,7 +136,7 @@ function buildEvents(report: BackendChildReport): ReportEvent[] {
     .map(m => {
       try {
         const parsed = JSON.parse(m.content) as { type: string; comment?: string | null }
-        return { id: m.id, type: parsed.type, comment: parsed.comment ?? undefined, createdAt: m.createdAt, actor }
+        return { id: m.id, type: parsed.type, comment: parsed.comment ?? undefined, createdAt: m.createdAt, actor } as ReportEvent
       } catch {
         return null
       }
