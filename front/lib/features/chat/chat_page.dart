@@ -38,6 +38,7 @@ class ChatPage extends StatefulWidget {
   final AnonLevel anonLevel;
   final String reportType;
   final VoidCallback onSend;
+  final VoidCallback onDecline;
   final String userName;
   final String userInitials;
 
@@ -47,6 +48,7 @@ class ChatPage extends StatefulWidget {
     required this.anonLevel,
     required this.reportType,
     required this.onSend,
+    required this.onDecline,
     this.userName = 'Utilisateur',
     this.userInitials = '?',
   });
@@ -70,6 +72,8 @@ class _ChatPageState extends State<ChatPage> {
   late final DateTime _openedAt;
   bool _nextUserMsgIsDeposition = false;
   String? _depositionText;
+  String? _currentInputId;
+  bool _userRefusedReport = false;
 
   static const _typebotId = 'haven-v-1-1-6rkhzu8';
   static const _typebotBase = 'https://typebot.co/api/v1';
@@ -85,6 +89,17 @@ class _ChatPageState extends State<ChatPage> {
     'oy840bapvcxnjepe01v0ekhd',
     'd0icmwix9txp71h0a1e9j9hm',
     'hwf5f311ia6xgyv1rofd4yz7',
+  };
+
+  // Blocs "Es-tu d'accord pour envoyer à l'équipe Haven ?" (Oui/Non)
+  static const _sendConfirmBlockIds = {
+    'khl62esjfin2bi3d4v0ixz6j', // J'AI SUBI ELEVE    — après contact adulte OUI
+    'd9l2zcne2etbzo6274zrlhsg', // J'AI SUBI ELEVE    — après contact adulte NON
+    'bdpy3tnn81umfm38tey1ofnq', // J'AI SUBI EMPLOYE  — après contact adulte OUI
+    'vitecvvsjubh8f0vj14xbrml', // J'AI SUBI EMPLOYE  — après contact adulte NON
+    'qckh0xy0ces9x5hrzbv3ew0s', // J'AI SUBI CHEZ MOI
+    'em9tn314owagk0lhc2527ffg', // J'AI SUBI EXTERIEUR — branche 1
+    'rswbc1ddt5wy46sj3fjipxm2', // J'AI SUBI EXTERIEUR — branche 2
   };
 
   final List<_Msg> _messages = [];
@@ -198,6 +213,7 @@ class _ChatPageState extends State<ChatPage> {
       }
       _choiceItems = choices;
       _botTyping = false;
+      _currentInputId = inputId;
       if (inputId != null && _depositionInputIds.contains(inputId)) {
         _nextUserMsgIsDeposition = true;
       }
@@ -272,6 +288,11 @@ class _ChatPageState extends State<ChatPage> {
       if (_nextUserMsgIsDeposition && content.isNotEmpty) {
         _depositionText = content;
         _nextUserMsgIsDeposition = false;
+      }
+      if (_currentInputId != null &&
+          _sendConfirmBlockIds.contains(_currentInputId!) &&
+          content.isNotEmpty) {
+        _userRefusedReport = content == 'Non';
       }
       if (text == null) _textCtrl.clear();
     });
@@ -358,6 +379,10 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _confirmSend() {
+    if (_userRefusedReport) {
+      widget.onDecline();
+      return;
+    }
     final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
@@ -413,6 +438,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     _ActionRow(
                       isDark: isDark,
+                      sendLabel: _userRefusedReport ? 'Terminer' : 'Envoyer',
                       onEmergency: () {
                         HapticFeedback.heavyImpact();
                         showEmergencySheet(context);
@@ -958,11 +984,13 @@ class _QuickRepliesRow extends StatelessWidget {
 
 class _ActionRow extends StatelessWidget {
   final bool isDark;
+  final String sendLabel;
   final VoidCallback onEmergency;
   final VoidCallback onSend;
 
   const _ActionRow({
     required this.isDark,
+    required this.sendLabel,
     required this.onEmergency,
     required this.onSend,
   });
@@ -1031,7 +1059,7 @@ class _ActionRow extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Envoyer',
+                    sendLabel,
                     style: AppTextStyles.button(fontSize: 14),
                   ),
                   const SizedBox(width: 6),

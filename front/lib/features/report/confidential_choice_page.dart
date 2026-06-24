@@ -12,6 +12,7 @@ import '../chat/chat_page.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/widgets/emergency_sheet.dart';
 import '../chat/report_submitted_page.dart';
+import '../chat/report_declined_page.dart';
 
 class ConfidentialChoicePage extends StatefulWidget {
   final VoidCallback onToggleTheme;
@@ -106,6 +107,13 @@ class _ConfidentialChoicePageState extends State<ConfidentialChoicePage> {
                                           onSend: () => Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (_) => ReportSubmittedPage(
+                                                onToggleTheme: widget.onToggleTheme,
+                                              ),
+                                            ),
+                                          ),
+                                          onDecline: () => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) => ReportDeclinedPage(
                                                 onToggleTheme: widget.onToggleTheme,
                                               ),
                                             ),
