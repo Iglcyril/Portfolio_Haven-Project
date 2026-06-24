@@ -3,6 +3,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
@@ -178,9 +179,12 @@ class _DashboardPageState extends State<DashboardPage> {
   Future<void> _fetchReports() async {
     try {
       final apiReports = await ReportService.getStudentReports();
+      final prefs = await SharedPreferences.getInstance();
+      final archived = prefs.getStringList('student_archived_reports') ?? [];
       if (!mounted) return;
       setState(() {
-        _reports = apiReports.map(_toItem).toList();
+        _reports = apiReports.map(_toItem).toList()
+          ..removeWhere((r) => archived.contains(r.caseNumber));
         _isLoading = false;
       });
     } catch (e) {
@@ -265,8 +269,14 @@ class _DashboardPageState extends State<DashboardPage> {
     if (mounted) _fetchReports();
   }
 
-  void _archiveReport(ReportItem report) {
-    setState(() => _reports.remove(report));
+  Future<void> _archiveReport(ReportItem report) async {
+    final prefs = await SharedPreferences.getInstance();
+    final archived = prefs.getStringList('student_archived_reports') ?? [];
+    if (!archived.contains(report.caseNumber)) {
+      archived.add(report.caseNumber);
+      await prefs.setStringList('student_archived_reports', archived);
+    }
+    if (mounted) setState(() => _reports.remove(report));
   }
 
   void _deleteReport(ReportItem report) {

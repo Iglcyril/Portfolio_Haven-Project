@@ -217,6 +217,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                             trailing: GestureDetector(
                               onTap: () {
                                 ReportStore.instance.archiveByReferent(r);
+                                ReportService.updateStatus(r.caseNumber, 'ARCHIVE').catchError((_) {});
                                 setSheet(() {});
                               },
                               child: Container(

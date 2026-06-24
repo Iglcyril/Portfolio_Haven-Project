@@ -546,6 +546,7 @@ class _ProfessionalDashboardPageState
               GestureDetector(
                 onTap: () {
                   ReportStore.instance.archiveByDirector(report);
+                  ReportService.updateStatus(report.caseNumber, 'ARCHIVE').catchError((_) {});
                   Navigator.pop(sheetCtx);
                 },
                 child: Container(
