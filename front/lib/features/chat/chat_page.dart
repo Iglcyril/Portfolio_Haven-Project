@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' show ImageFilter;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -366,16 +367,19 @@ class _ChatPageState extends State<ChatPage> {
     return 'autre';
   }
 
-  Future<void> _createReport() async {
+  Future<bool> _createReport() async {
     try {
-      await ApiClient.post('/reports', {
+      final res = await ApiClient.post('/reports', {
         'anonymat_level': _anonLevelStr,
         'type':           widget.reportType,
         'categorie':      _detectCategorie(),
         if (_depositionText != null && _depositionText!.length >= 10)
           'contenu': _depositionText,
       });
-    } catch (_) {}
+      return res['crisisDetected'] as bool? ?? false;
+    } catch (_) {
+      return false;
+    }
   }
 
   void _confirmSend() {
@@ -390,7 +394,19 @@ class _ChatPageState extends State<ChatPage> {
         isDark: isDark,
         onConfirm: () async {
           Navigator.pop(context);
-          await _createReport();
+          final crisis = await _createReport();
+          if (!mounted) return;
+          if (crisis) {
+            await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              isDismissible: false,
+              enableDrag: false,
+              builder: (_) => _CrisisSheet(isDark: isDark, onClose: () => Navigator.pop(context)),
+            );
+          }
+          if (!mounted) return;
           widget.onSend();
         },
         onCancel: () => Navigator.pop(context),
@@ -1273,6 +1289,149 @@ class _PickOption extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ─── Crisis bottom sheet ──────────────────────────────────────────────────────
+
+class _CrisisSheet extends StatelessWidget {
+  final bool isDark;
+  final VoidCallback onClose;
+
+  const _CrisisSheet({required this.isDark, required this.onClose});
+
+  static const _numbers = [
+    ('Prévention suicide', '3114'),
+    ('Enfance en danger', '119'),
+    ('Cyberharcèlement', '3018'),
+    ('Sourds-aveugles', '114'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.darkGradientTop : AppColors.warmWhite,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(context).padding.bottom + 24),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40, height: 4,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.white24 : Colors.black12,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Container(
+            width: 56, height: 56,
+            decoration: BoxDecoration(
+              color: const Color(0xFFC0392B).withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.favorite_rounded, color: Color(0xFFC0392B), size: 28),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Tu n\'es pas seul(e)',
+            style: GoogleFonts.fraunces(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: isDark ? Colors.white : AppColors.lightTextPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Des professionnels sont disponibles maintenant pour t\'écouter.',
+            style: GoogleFonts.manrope(
+              fontSize: 14,
+              height: 1.5,
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.65)
+                  : AppColors.lightTextSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ..._numbers.map((e) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: GestureDetector(
+              onTap: () => launchUrl(Uri.parse('tel:${e.$2}')),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.07)
+                      : Colors.black.withValues(alpha: 0.04),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.10)
+                        : Colors.black.withValues(alpha: 0.07),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36, height: 36,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.phone_rounded, color: AppColors.primary, size: 18),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        e.$1,
+                        style: GoogleFonts.manrope(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: isDark ? Colors.white : AppColors.lightTextPrimary,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      e.$2,
+                      style: GoogleFonts.manrope(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )),
+          const SizedBox(height: 4),
+          GestureDetector(
+            onTap: onClose,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(28),
+              ),
+              child: Text(
+                'Continuer',
+                style: GoogleFonts.manrope(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

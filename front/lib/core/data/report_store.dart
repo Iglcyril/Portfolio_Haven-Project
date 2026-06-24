@@ -61,6 +61,7 @@ class HavenReport {
   final DateTime submittedAt;
 
   String? riskLevel;
+  bool crisisDetected;
   bool isAssigned;
   String? assignedTo;
   bool isResolved;
@@ -77,6 +78,7 @@ class HavenReport {
     required this.initialText,
     required this.submittedAt,
     this.riskLevel,
+    this.crisisDetected = false,
     this.isAssigned = false,
     this.assignedTo,
     this.isResolved = false,

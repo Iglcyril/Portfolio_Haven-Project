@@ -49,7 +49,19 @@ export function ReportCard({ report, selected, onClick, isArchived }: {
             {report.title}
           </p>
         </div>
-        <SeverityBadge severity={report.severity} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          {report.crisisDetected && (
+            <span style={{
+              display: 'flex', alignItems: 'center', gap: 4,
+              padding: '3px 8px', borderRadius: 8,
+              background: 'rgba(192,57,43,0.12)',
+              color: '#C0392B', fontSize: 11, fontWeight: 700,
+            }}>
+              ⚠ Urgence
+            </span>
+          )}
+          <SeverityBadge severity={report.severity} />
+        </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>

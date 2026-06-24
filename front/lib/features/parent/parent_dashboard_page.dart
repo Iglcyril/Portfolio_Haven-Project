@@ -97,6 +97,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
       },
       initialText: '',
       submittedAt: r.createdAt,
+      crisisDetected: r.crisisDetected,
       actions: const [],
     );
   }
@@ -719,13 +720,37 @@ class _ParentReportCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 3),
-                      Text(
-                        'Déposé le ${report.date} · Responsable : ${report.counselor}',
-                        style: GoogleFonts.manrope(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Déposé le ${report.date} · Responsable : ${report.counselor}',
+                              style: GoogleFonts.manrope(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ),
+                          if (report.crisisDetected) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFC0392B).withValues(alpha: isDark ? 0.20 : 0.12),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.warning_rounded, size: 11, color: Color(0xFFC0392B)),
+                                  const SizedBox(width: 3),
+                                  Text('Urgence', style: AppTextStyles.badge(const Color(0xFFC0392B))),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ],
                   ),

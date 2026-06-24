@@ -64,6 +64,7 @@ class ReportItem {
   final String anonLabel;
   final String? studentClass;
   final String? studentName;
+  final bool crisisDetected;
   final List<ReportAction> actions;
 
   const ReportItem({
@@ -77,6 +78,7 @@ class ReportItem {
     required this.submittedAt,
     required this.anonLabel,
     required this.actions,
+    this.crisisDetected = false,
     this.studentClass,
     this.studentName,
   });

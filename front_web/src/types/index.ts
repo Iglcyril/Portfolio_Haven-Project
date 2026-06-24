@@ -37,6 +37,7 @@ export interface Report {
   status: ReportStatus
   anonymityLevel: AnonymityLevel
   progressPercent: number   // 0–100
+  crisisDetected: boolean
   createdAt: string         // ISO
   updatedAt: string         // ISO
   timeline: TimelineEntry[]

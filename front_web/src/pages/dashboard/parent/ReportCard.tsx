@@ -78,6 +78,18 @@ export function ReportCard({ report, child, selected, onClick }: {
             }}>
               {sev.label}
             </span>
+            {report.crisisDetected && (
+              <span style={{
+                display: 'flex', alignItems: 'center', gap: 3,
+                padding: '2px 7px', borderRadius: 8,
+                background: 'rgba(192,57,43,0.12)',
+                color: '#C0392B',
+                fontFamily: "'Manrope', sans-serif",
+                fontSize: '0.66rem', fontWeight: 700,
+              }}>
+                ⚠ Urgence
+              </span>
+            )}
             <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: '0.70rem', fontWeight: 600, color: sta.color }}>
               {sta.label}
             </span>

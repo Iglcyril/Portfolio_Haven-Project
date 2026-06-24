@@ -267,6 +267,7 @@ function mapProReport(r: BackendReport): ProReport {
     anonLevel:       ANON_LABEL_MAP[r.anonymatLevel] ?? 'Anonyme',
     progressPercent: PROGRESS_MAP[r.status]         ?? 10,
     progressStage:   PROGRESS_STAGE_MAP[r.status]   ?? 0,
+    crisisDetected:  r.crisisDetected,
     createdAt:       r.createdAt,
     updatedAt:       r.updatedAt,
     assignedTo:      assignedName,

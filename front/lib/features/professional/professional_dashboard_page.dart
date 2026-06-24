@@ -153,6 +153,7 @@ class _ProfessionalDashboardPageState
           'MOYEN' => 'Moyen',
           _ => null,
         },
+        crisisDetected: r.crisisDetected,
         isAssigned: r.assignedTo != null,
         assignedTo: r.assignedTo?.fullName,
         isResolved: r.status == 'RESOLU' || r.status == 'ARCHIVE',
@@ -1188,6 +1189,31 @@ class HavenReportCard extends StatelessWidget {
               const SizedBox(width: 8),
               // Badge niveau de risque
               _RiskBadge(riskLevel: report.riskLevel, isDark: isDark),
+              if (report.crisisDetected) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFC0392B).withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.warning_rounded, size: 11, color: Color(0xFFC0392B)),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Urgence',
+                        style: GoogleFonts.manrope(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFFC0392B),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const Spacer(),
               // Horodatage
               Text(

@@ -160,6 +160,7 @@ function mapChildReport(r: BackendChildReport, childId: string): ParentReport {
     status:         STATUS_MAP[r.status]          ?? 'active',
     anonymityLevel: ANONYMITY_MAP[r.anonymatLevel ?? ''] ?? 'anonymous',
     progressPercent: PROGRESS_MAP[r.status]       ?? 10,
+    crisisDetected:  r.crisisDetected,
     createdAt:      r.createdAt,
     updatedAt:      r.updatedAt,
     referentName:   assignedName,

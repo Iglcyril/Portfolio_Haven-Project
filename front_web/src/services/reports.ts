@@ -158,6 +158,7 @@ function mapReport(r: BackendReport): Report {
     status:         STATUS_MAP[r.status]         ?? 'active',
     anonymityLevel: ANONYMITY_MAP[r.anonymatLevel] ?? 'anonymous',
     progressPercent: PROGRESS_MAP[r.status]      ?? 10,
+    crisisDetected:  r.crisisDetected,
     createdAt:      r.createdAt,
     updatedAt:      r.updatedAt,
     referentName:   referentName(r.assignedTo),
