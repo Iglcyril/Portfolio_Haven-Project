@@ -10,14 +10,9 @@
  *   - listStaff  → retourne la liste des superviseurs et admins
  */
 
-import { PrismaClient } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-
-// Prisma v7 — nécessite un adapter explicite pour la connexion PostgreSQL
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
-const prisma = new PrismaClient({ adapter })
+import { prisma } from '../lib/prisma'
 
 const JWT_SECRET = process.env.JWT_SECRET!
 

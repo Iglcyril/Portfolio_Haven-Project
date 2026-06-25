@@ -17,16 +17,11 @@
 
 import { Elysia, t } from 'elysia'
 import { bearer } from '@elysiajs/bearer'
-import { PrismaClient } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
 import { requireStaff, requireSupervisor } from '../middlewares/auth.middleware'
 import { handleError } from '../middlewares/error.middleware'
 import { reportService } from '../services/report.service'
 import { authService } from '../services/auth.service'
-
-// Prisma v7 — nécessite un adapter explicite pour la connexion PostgreSQL
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
-const prisma = new PrismaClient({ adapter })
+import { prisma } from '../lib/prisma'
 
 export const adminRoutes = new Elysia({ prefix: '/admin' })
   .use(bearer())

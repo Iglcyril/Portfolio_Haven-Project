@@ -18,12 +18,8 @@
  * automatiquement les endroits à mettre à jour.
  */
 
-import { PrismaClient, ReportStatus, Severity, AnonymatLevel, Categorie } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
-
-// Prisma v7 — nécessite un adapter explicite pour la connexion PostgreSQL
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! })
-const prisma = new PrismaClient({ adapter })
+import { ReportStatus, Severity, AnonymatLevel, Categorie } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 
 export type CreateReportInput = {
   userId?:          string  // Absent si signalement anonyme via le chatbot (pas de compte)
