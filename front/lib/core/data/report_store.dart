@@ -95,7 +95,7 @@ class ReportStore extends ChangeNotifier {
   static final ReportStore instance = ReportStore._();
   ReportStore._();
 
-  final List<HavenReport> reports = _buildMockReports();
+  final List<HavenReport> reports = [];
 
   void notify() => notifyListeners();
 
@@ -123,71 +123,3 @@ class ReportStore extends ChangeNotifier {
   }
 }
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
-
-List<HavenReport> _buildMockReports() => [
-      HavenReport(
-        caseNumber: '#HVN-9102',
-        anonLevel: 'Anonyme',
-        initialText:
-            'Moqueries répétées signalées dans une classe de 4ème. Plusieurs élèves semblent impliqués dans des comportements d\'exclusion quotidiens.',
-        submittedAt: DateTime.now().subtract(const Duration(hours: 1)),
-      ),
-      HavenReport(
-        caseNumber: '#HVN-9098',
-        anonLevel: 'Semi-anonyme',
-        studentClass: '4ème A',
-        initialText:
-            'Comportement d\'intimidation dans les couloirs. L\'élève concerné refuse de s\'alimenter à la cantine depuis plusieurs jours.',
-        submittedAt: DateTime.now().subtract(const Duration(hours: 5)),
-      ),
-      HavenReport(
-        caseNumber: '#HVN-9091',
-        anonLevel: 'Identité visible',
-        studentName: 'Lucie Fontaine',
-        studentClass: '3ème B',
-        initialText:
-            'Cyberharcèlement via Instagram entre plusieurs élèves de 3ème B. Des captures d\'écran ont été jointes au dossier.',
-        submittedAt: DateTime.now().subtract(const Duration(days: 1)),
-      ),
-      HavenReport(
-        caseNumber: '#HVN-9088',
-        anonLevel: 'Anonyme',
-        initialText:
-            'Violences verbales quotidiennes signalées par un élève de 6ème de la part d\'un groupe de camarades.',
-        submittedAt: DateTime.now().subtract(const Duration(days: 2)),
-      ),
-      // Attribués à Sophie Martin — permet de tester le dashboard référent
-      HavenReport(
-        caseNumber: '#HVN-9085',
-        anonLevel: 'Semi-anonyme',
-        studentClass: '5ème C',
-        initialText:
-            'Un élève signale des brimades lors des cours de sport. L\'enseignant d\'EPS a également été alerté par un autre élève.',
-        submittedAt: DateTime.now().subtract(const Duration(days: 3)),
-        isAssigned: true,
-        assignedTo: 'Sophie Martin',
-        riskLevel: 'Moyen',
-        progressStage: 1,
-        events: [
-          ReportEvent(
-            type: 'Entretien élève',
-            comment: 'Premier contact établi. L\'élève a accepté de parler.',
-            createdAt: DateTime.now().subtract(const Duration(days: 2, hours: 4)),
-          ),
-        ],
-      ),
-      HavenReport(
-        caseNumber: '#HVN-9079',
-        anonLevel: 'Identité visible',
-        studentName: 'Thomas Leroy',
-        studentClass: '2nde A',
-        initialText:
-            'Mise à l\'écart systématique d\'un élève par son groupe de classe. La situation dure depuis le début du trimestre.',
-        submittedAt: DateTime.now().subtract(const Duration(days: 5)),
-        isAssigned: true,
-        assignedTo: 'Sophie Martin',
-        riskLevel: 'Faible',
-        progressStage: 0,
-      ),
-    ];
