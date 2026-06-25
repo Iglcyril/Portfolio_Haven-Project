@@ -12,6 +12,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
+import '../../core/widgets/pagination_row.dart';
 
 // ─── Page principale ──────────────────────────────────────────────────────────
 
@@ -33,6 +34,8 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
   bool _isLoading = true;
   Timer? _pollingTimer;
   StreamSubscription<CrisisAlert>? _wsSub;
+  int _activePage = 1;
+  static const int _kPageSize = 10;
 
   List<HavenReport> get _myReports => widget.currentUserName == null
       ? []
@@ -449,61 +452,81 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
 
                     // ── Liste signalements actifs ────────────────────────
                     Expanded(
-                      child: _active.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.inbox_outlined,
-                                    size: 52,
+                      child: Builder(builder: (context) {
+                        if (_active.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.inbox_outlined,
+                                  size: 52,
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.15)
+                                      : AppColors.lightTextSecondary
+                                          .withValues(alpha: 0.30),
+                                ),
+                                const SizedBox(height: 14),
+                                Text(
+                                  'Aucun signalement actif',
+                                  style: GoogleFonts.manrope(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
                                     color: isDark
-                                        ? Colors.white.withValues(alpha: 0.15)
+                                        ? Colors.white.withValues(alpha: 0.35)
+                                        : AppColors.lightTextSecondary,
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  'Les signalements qui vous sont attribués\napparaîtront ici',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.manrope(
+                                    fontSize: 12,
+                                    color: isDark
+                                        ? Colors.white.withValues(alpha: 0.20)
                                         : AppColors.lightTextSecondary
-                                            .withValues(alpha: 0.30),
+                                            .withValues(alpha: 0.60),
                                   ),
-                                  const SizedBox(height: 14),
-                                  Text(
-                                    'Aucun signalement actif',
-                                    style: GoogleFonts.manrope(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: isDark
-                                          ? Colors.white.withValues(alpha: 0.35)
-                                          : AppColors.lightTextSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    'Les signalements qui vous sont attribués\napparaîtront ici',
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.manrope(
-                                      fontSize: 12,
-                                      color: isDark
-                                          ? Colors.white.withValues(alpha: 0.20)
-                                          : AppColors.lightTextSecondary
-                                              .withValues(alpha: 0.60),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : ListView.builder(
-                              padding:
-                                  const EdgeInsets.fromLTRB(24, 0, 24, 32),
-                              itemCount: _active.length,
-                              itemBuilder: (ctx, i) {
-                                final report = _active[i];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 14),
-                                  child: _ReferentReportCard(
-                                    report: report,
-                                    isDark: isDark,
-                                    onTap: () => _openDetail(ctx, report),
-                                  ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
+                          );
+                        }
+                        final totalPages = (_active.length / _kPageSize).ceil().clamp(1, 9999);
+                        final page = _activePage.clamp(1, totalPages);
+                        final paged = _active
+                            .skip((page - 1) * _kPageSize)
+                            .take(_kPageSize)
+                            .toList();
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
+                                itemCount: paged.length,
+                                itemBuilder: (ctx, i) {
+                                  final report = paged[i];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 14),
+                                    child: _ReferentReportCard(
+                                      report: report,
+                                      isDark: isDark,
+                                      onTap: () => _openDetail(ctx, report),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            PaginationRow(
+                              page: page,
+                              totalPages: totalPages,
+                              onPageChange: (p) => setState(() => _activePage = p),
+                              isDark: isDark,
+                            ),
+                          ],
+                        );
+                      }),
                     ),
                   ],
                 ),

@@ -169,9 +169,18 @@ function mapReport(r: BackendReport): Report {
 
 // ─── Service functions ────────────────────────────────────────────────────────
 
-export async function getStudentReports(): Promise<Report[]> {
-  const raw = await api.get<BackendReport[]>('/reports')
-  return raw.map(mapReport)
+export interface PaginatedReports {
+  data:       Report[]
+  total:      number
+  page:       number
+  totalPages: number
+}
+
+export async function getStudentReports(page = 1, limit = 10): Promise<PaginatedReports> {
+  const raw = await api.get<{ data: BackendReport[]; total: number; page: number; totalPages: number }>(
+    `/reports?page=${page}&limit=${limit}`
+  )
+  return { ...raw, data: raw.data.map(mapReport) }
 }
 
 export async function getReportById(trackingCode: string): Promise<Report | undefined> {

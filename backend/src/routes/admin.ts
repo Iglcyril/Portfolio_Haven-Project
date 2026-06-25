@@ -34,20 +34,21 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   .get('/reports', async ({ query, bearer, set }) => {
     try {
       const { userId, role } = requireStaff(bearer ?? '')
-      const { status } = query
-
-      const reports = await reportService.findAll(userId, role)
-      const filtered = status
-        ? reports.filter((r: any) => r.status === status)
-        : reports
-
-      return { data: filtered, total: filtered.length }
-
+      const page         = Math.max(1, parseInt(query.page   ?? '1',  10))
+      const limit        = Math.min(50, Math.max(1, parseInt(query.limit  ?? '10', 10)))
+      const statusFilter = query.status || undefined
+      return await reportService.findAll(userId, role, page, limit, statusFilter)
     } catch (e) {
       const { status, body } = handleError(e)
       set.status = status
       return body
     }
+  }, {
+    query: t.Object({
+      page:   t.Optional(t.String()),
+      limit:  t.Optional(t.String()),
+      status: t.Optional(t.String()),
+    })
   })
 
   /**

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, Clock, CheckCircle, Archive, AlertTriangle } from 'lucide-react'
 import DashboardLayout from '../../layouts/DashboardLayout'
 import { getStudentReports, getCurrentStudent, EMERGENCY_CONTACTS } from '../../services/reports'
+import { Pagination } from '../../components/Pagination'
 import type { Report, User as UserType } from '../../types'
 import { SEVERITY_ORDER } from '../../constants/severity'
 import { ACCENT, type SortKey, type StatusFilter } from './student/constants'
@@ -34,22 +35,33 @@ function sortReports(reports: Report[], key: SortKey): Report[] {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function StudentDashboard() {
-  const [reports, setReports] = useState<Report[]>([])
-  const [user, setUser]       = useState<UserType | null>(null)
-  const [selected, setSelected] = useState<Report | null>(null)
-  const [search, setSearch]   = useState('')
-  const [sort, setSort]       = useState<SortKey>('date')
+  const [reports, setReports]     = useState<Report[]>([])
+  const [total, setTotal]         = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
+  const [page, setPage]           = useState(1)
+  const [user, setUser]           = useState<UserType | null>(null)
+  const [selected, setSelected]   = useState<Report | null>(null)
+  const [search, setSearch]       = useState('')
+  const [sort, setSort]           = useState<SortKey>('date')
 
   const [searchParams, setSearchParams] = useSearchParams()
   const statusFilter = (searchParams.get('status') as StatusFilter) ?? 'all'
 
   const setStatusFilter = (v: StatusFilter) => {
+    setPage(1)
     if (v === 'all') setSearchParams({}, { replace: true })
     else setSearchParams({ status: v }, { replace: true })
   }
 
   useEffect(() => {
-    getStudentReports().then(setReports)
+    getStudentReports(page).then(res => {
+      setReports(res.data)
+      setTotal(res.total)
+      setTotalPages(res.totalPages)
+    })
+  }, [page])
+
+  useEffect(() => {
     getCurrentStudent().then(setUser)
   }, [])
 
@@ -178,6 +190,13 @@ export default function StudentDashboard() {
               )}
             </AnimatePresence>
           </div>
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            total={total}
+            onPageChange={p => { setPage(p); setSelected(null) }}
+          />
         </div>
 
         {/* Detail panel */}

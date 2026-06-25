@@ -75,15 +75,22 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
    * - STUDENT → ses propres rapports
    * - SUPERVISOR / ADMIN → tous les rapports
    */
-  .get('/', async ({ bearer, set }) => {
+  .get('/', async ({ bearer, query, set }) => {
     try {
       const { userId, role } = requireAuth(bearer ?? '')
-      return await reportService.findAll(userId, role)
+      const page  = Math.max(1, parseInt(query.page  ?? '1',  10))
+      const limit = Math.min(50, Math.max(1, parseInt(query.limit ?? '10', 10)))
+      return await reportService.findAll(userId, role, page, limit)
     } catch (e) {
       const { status, body } = handleError(e)
       set.status = status
       return body
     }
+  }, {
+    query: t.Object({
+      page:  t.Optional(t.String()),
+      limit: t.Optional(t.String()),
+    })
   })
 
   /**

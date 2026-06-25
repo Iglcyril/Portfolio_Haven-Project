@@ -115,7 +115,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         final children = await ReportService.getChildrenReports();
         allReports = children.expand((c) => c.reports).toList();
       } else {
-        allReports = await ReportService.getStudentReports();
+        allReports = (await ReportService.getStudentReports(limit: 200)).data;
       }
       final match = allReports.where((r) => r.trackingId == widget.report.caseNumber).toList();
       if (match.isEmpty || !mounted) return;

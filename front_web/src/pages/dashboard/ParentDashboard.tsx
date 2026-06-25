@@ -16,6 +16,7 @@ import { ReportCard } from './parent/ReportCard'
 import { DetailPanel } from './parent/DetailPanel'
 import { EstablishmentPanel } from './parent/EstablishmentPanel'
 import { ChildSelector } from './parent/ChildSelector'
+import { Pagination } from '../../components/Pagination'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -30,12 +31,15 @@ function sortReports(reports: ParentReport[], key: SortKey) {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function ParentDashboard() {
+  const ITEMS_PER_PAGE = 10
+
   const [allReports, setAllReports] = useState<ParentReport[]>([])
   const [children, setChildren]     = useState<Child[]>([])
   const [user, setUser]             = useState<UserType | null>(null)
   const [selected, setSelected]     = useState<ParentReport | null>(null)
   const [search, setSearch]         = useState('')
   const [sort, setSort]             = useState<SortKey>('date')
+  const [page, setPage]             = useState(1)
 
   const [searchParams, setSearchParams] = useSearchParams()
   const childId      = searchParams.get('child')
@@ -50,6 +54,7 @@ export default function ParentDashboard() {
   }
 
   const setStatusFilter = (v: StatusFilter) => {
+    setPage(1)
     const params: Record<string, string> = {}
     if (childId) params.child = childId
     if (v !== 'all') params.status = v
@@ -159,7 +164,7 @@ export default function ParentDashboard() {
                   Aucun signalement trouvé.
                 </motion.div>
               ) : (
-                filtered.map(report => {
+                filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map(report => {
                   const child = children.find(c => c.id === report.childId)
                   return (
                     <motion.div key={report.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.97 }} layout>
@@ -175,6 +180,13 @@ export default function ParentDashboard() {
               )}
             </AnimatePresence>
           </div>
+
+          <Pagination
+            page={page}
+            totalPages={Math.ceil(filtered.length / ITEMS_PER_PAGE)}
+            total={filtered.length}
+            onPageChange={p => { setPage(p); setSelected(null) }}
+          />
         </div>
 
         {/* Detail panel */}

@@ -151,8 +151,10 @@ interface BackendReport {
 }
 
 interface AdminReportsResponse {
-  data:  BackendReport[]
-  total: number
+  data:       BackendReport[]
+  total:      number
+  page:       number
+  totalPages: number
 }
 
 interface BackendTeamMember {
@@ -339,9 +341,18 @@ export function removeLocalTeamMember(id: string): void {
 
 // ─── Service functions ────────────────────────────────────────────────────────
 
-export async function getProReports(): Promise<ProReport[]> {
-  const res = await api.get<AdminReportsResponse>('/admin/reports')
-  return res.data.map(mapProReport)
+export interface PaginatedProReports {
+  data:       ProReport[]
+  total:      number
+  page:       number
+  totalPages: number
+}
+
+export async function getProReports(page = 1, limit = 10, status?: string): Promise<PaginatedProReports> {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+  if (status && status !== 'all') params.set('status', status.toUpperCase())
+  const res = await api.get<AdminReportsResponse>(`/admin/reports?${params}`)
+  return { ...res, data: res.data.map(mapProReport) }
 }
 
 export async function getTeamMembers(): Promise<TeamMember[]> {

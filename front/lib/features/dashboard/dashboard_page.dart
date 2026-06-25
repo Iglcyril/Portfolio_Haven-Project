@@ -10,6 +10,7 @@ import '../../core/widgets/anchor_background.dart';
 import '../../core/theme/app_shadows.dart';
 import '../../core/widgets/circle_back_button.dart';
 import '../../core/widgets/haven_app_bar.dart';
+import '../../core/widgets/pagination_row.dart';
 import '../../core/services/report_service.dart';
 import '../../core/services/auth_service.dart';
 import '../breathing/breathing_page.dart';
@@ -159,6 +160,8 @@ class _DashboardPageState extends State<DashboardPage> {
   bool _isLoading = true;
   String? _error;
   Timer? _pollingTimer;
+  int _page = 1;
+  int _totalPages = 1;
 
   static const _months = [
     'jan.', 'fév.', 'mars', 'avr.', 'mai', 'juin',
@@ -180,13 +183,14 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _fetchReports() async {
     try {
-      final apiReports = await ReportService.getStudentReports();
+      final result = await ReportService.getStudentReports(page: _page);
       final prefs = await SharedPreferences.getInstance();
       final archived = prefs.getStringList('student_archived_reports') ?? [];
       if (!mounted) return;
       setState(() {
-        _reports = apiReports.map(_toItem).toList()
+        _reports = result.data.map(_toItem).toList()
           ..removeWhere((r) => archived.contains(r.caseNumber));
+        _totalPages = result.totalPages;
         _isLoading = false;
       });
     } catch (e) {
@@ -196,6 +200,11 @@ class _DashboardPageState extends State<DashboardPage> {
         _isLoading = false;
       });
     }
+  }
+
+  void _goToPage(int p) {
+    setState(() { _page = p; _isLoading = true; });
+    _fetchReports();
   }
 
   static String _categorieLabel(String categorie) => switch (categorie) {
@@ -377,6 +386,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                             ),
                                           ),
                                         ),
+                                      PaginationRow(
+                                        page: _page,
+                                        totalPages: _totalPages,
+                                        onPageChange: _goToPage,
+                                        isDark: isDark,
+                                      ),
                                       const SizedBox(height: 24),
                                     ],
                                   ),

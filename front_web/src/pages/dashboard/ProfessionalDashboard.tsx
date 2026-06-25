@@ -11,6 +11,7 @@ import {
   saveTeamMemberOverride, saveLocalTeamMember, removeLocalTeamMember,
   type BackendSeverity, type BackendStatus,
 } from '../../services/professionalData'
+import { Pagination } from '../../components/Pagination'
 import type { User, ProReport, TeamMember, ReportEvent, Severity } from '../../types'
 import { SEVERITY_ORDER_MAP } from '../../constants/severity'
 import { PRIMARY, type SortKey, type StatusFilter, severityKey } from './professional/constants'
@@ -34,22 +35,25 @@ export default function ProfessionalDashboard() {
 
   const isDirector = role === 'director'
 
+  const ITEMS_PER_PAGE = 10
+
   const [user, setUser]           = useState<User | null>(null)
   const [reports, setReports]     = useState<ProReport[]>([])
   const [team, setTeam]           = useState<TeamMember[]>([])
   const [loading, setLoading]     = useState(true)
   const [selectedId, setSelectedId]       = useState<string | null>(null)
   const [sort, setSort]                   = useState<SortKey>('severity')
+  const [page, setPage]                   = useState(1)
   const [showAddMember, setShowAddMember]     = useState(false)
   const [editingMemberId, setEditingMemberId] = useState<string | null>(null)
 
   const fetchData = useCallback(() => {
     Promise.all([
       isDirector ? getDirector() : getReferentUser(),
-      getProReports(),
+      getProReports(1, 200),
       getTeamMembers(),
     ])
-      .then(([u, r, t]) => { setUser(u); setReports(r); setTeam(t) })
+      .then(([u, r, t]) => { setUser(u); setReports(r.data); setTeam(t) })
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [isDirector])
@@ -57,6 +61,11 @@ export default function ProfessionalDashboard() {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  useEffect(() => {
+    setPage(1)
+    setSelectedId(null)
+  }, [status, role])
 
   useEffect(() => {
     const onVisibility = () => { if (document.visibilityState === 'visible') fetchData() }
@@ -396,7 +405,7 @@ export default function ProfessionalDashboard() {
                   </motion.div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {filtered.map(r => (
+                    {filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map(r => (
                       <ReportCard
                         key={r.id}
                         report={r}
@@ -408,6 +417,13 @@ export default function ProfessionalDashboard() {
                   </div>
                 )}
               </AnimatePresence>
+
+              <Pagination
+                page={page}
+                totalPages={Math.ceil(filtered.length / ITEMS_PER_PAGE)}
+                total={filtered.length}
+                onPageChange={p => { setPage(p); setSelectedId(null) }}
+              />
             </div>
 
             <AnimatePresence>

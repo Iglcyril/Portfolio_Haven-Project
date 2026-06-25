@@ -13,6 +13,7 @@ import '../../core/theme/app_constants.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
+import '../../core/widgets/pagination_row.dart';
 import '../dashboard/dashboard_page.dart';
 import '../dashboard/report_detail_page.dart';
 
@@ -88,7 +89,9 @@ class _ProfessionalDashboardPageState
   List<_TeamMember> _teamMembers = const [];
   bool _isLoading = true;
   StreamSubscription<CrisisAlert>? _wsSub;
+  int _unassignedPage = 1;
 
+  static const int _kPageSize = 10;
   static const _riskColors = AppConstants.riskColors;
 
   List<HavenReport> get _reports =>
@@ -780,6 +783,12 @@ class _ProfessionalDashboardPageState
     }
 
     final unassigned = _unassigned;
+    final unassignedTotalPages = (unassigned.length / _kPageSize).ceil().clamp(1, 9999);
+    final effectivePage = _unassignedPage.clamp(1, unassignedTotalPages);
+    final pagedUnassigned = unassigned
+        .skip((effectivePage - 1) * _kPageSize)
+        .take(_kPageSize)
+        .toList();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -983,8 +992,8 @@ class _ProfessionalDashboardPageState
                                   ),
                                 ),
                               )
-                            else
-                              ...unassigned.map((report) => Padding(
+                            else ...[
+                              ...pagedUnassigned.map((report) => Padding(
                                     padding:
                                         const EdgeInsets.only(bottom: 12),
                                     child: HavenReportCard(
@@ -994,6 +1003,13 @@ class _ProfessionalDashboardPageState
                                           context, report, isDark),
                                     ),
                                   )),
+                              PaginationRow(
+                                page: effectivePage,
+                                totalPages: unassignedTotalPages,
+                                onPageChange: (p) => setState(() => _unassignedPage = p),
+                                isDark: isDark,
+                              ),
+                            ],
 
                             const SizedBox(height: 32),
                           ],

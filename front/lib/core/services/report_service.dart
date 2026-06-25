@@ -163,21 +163,43 @@ class ApiChild {
       );
 }
 
+// ─── Pagination ───────────────────────────────────────────────────────────────
+
+class PaginatedApiReports {
+  final List<ApiReport> data;
+  final int total;
+  final int page;
+  final int totalPages;
+
+  const PaginatedApiReports({
+    required this.data,
+    required this.total,
+    required this.page,
+    required this.totalPages,
+  });
+}
+
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 class ReportService {
-  /// GET /reports — signalements de l'élève connecté (retourne un tableau JSON)
-  static Future<List<ApiReport>> getStudentReports() async {
-    final data = await ApiClient.get('/reports');
-    return (data as List)
+  /// GET /reports?page=&limit= — signalements paginés de l'élève connecté
+  static Future<PaginatedApiReports> getStudentReports({int page = 1, int limit = 10}) async {
+    final raw = (await ApiClient.get('/reports?page=$page&limit=$limit')) as Map<String, dynamic>;
+    final list = (raw['data'] as List? ?? [])
         .map((r) => ApiReport.fromJson(r as Map<String, dynamic>))
         .toList();
+    return PaginatedApiReports(
+      data: list,
+      total: (raw['total'] as num?)?.toInt() ?? list.length,
+      page: (raw['page'] as num?)?.toInt() ?? page,
+      totalPages: (raw['totalPages'] as num?)?.toInt() ?? 1,
+    );
   }
 
   /// GET /admin/reports — tous les signalements (SUPERVISOR / ADMIN)
-  /// Retourne { data: [...], total: n }
-  static Future<List<ApiReport>> getAdminReports() async {
-    final data = (await ApiClient.get('/admin/reports')) as Map<String, dynamic>;
+  /// Retourne { data: [...], total: n, ... }
+  static Future<List<ApiReport>> getAdminReports({int limit = 200}) async {
+    final data = (await ApiClient.get('/admin/reports?page=1&limit=$limit')) as Map<String, dynamic>;
     final list = data['data'] as List? ?? [];
     return list
         .map((r) => ApiReport.fromJson(r as Map<String, dynamic>))

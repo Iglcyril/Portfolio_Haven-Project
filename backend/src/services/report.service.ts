@@ -118,40 +118,49 @@ export const reportService = {
    * - SUPERVISOR / ADMIN → tous les rapports
    * - STUDENT / PARENT   → uniquement les leurs
    */
-  async findAll(userId: string, role: string) {
-    const where = ['SUPERVISOR', 'ADMIN'].includes(role) ? {} : { userId }
+  async findAll(userId: string, role: string, page = 1, limit = 10, statusFilter?: string) {
+    const isStaff = ['SUPERVISOR', 'ADMIN'].includes(role)
+    const where: Record<string, unknown> = isStaff ? {} : { userId }
+    if (statusFilter) where.status = statusFilter
 
-    return prisma.report.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      select: {
-        id:             true,
-        trackingId:     true,
-        type:           true,
-        categorie:      true,
-        anonymatLevel:  true,
-        isAnonymous:    true,
-        crisisDetected: true,
-        status:         true,
-        severity:       true,
-        createdAt:      true,
-        updatedAt:      true,
-        userId:         ['SUPERVISOR', 'ADMIN'].includes(role) ? true : false,
-        user:           ['SUPERVISOR', 'ADMIN'].includes(role)
-          ? { select: { firstName: true, lastName: true } }
-          : false,
-        assignedTo: {
-          select: { id: true, firstName: true, lastName: true, email: true }
-        },
-        messages: {
-          orderBy: { createdAt: 'asc' },
-          select: { id: true, sender: true, content: true, createdAt: true }
-        },
-        summary: {
-          select: { classLevel: true }
+    const skip = (page - 1) * limit
+
+    const [data, total] = await Promise.all([
+      prisma.report.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        select: {
+          id:             true,
+          trackingId:     true,
+          type:           true,
+          categorie:      true,
+          anonymatLevel:  true,
+          isAnonymous:    true,
+          crisisDetected: true,
+          status:         true,
+          severity:       true,
+          createdAt:      true,
+          updatedAt:      true,
+          userId:         isStaff,
+          user:           isStaff ? { select: { firstName: true, lastName: true } } : false,
+          assignedTo: {
+            select: { id: true, firstName: true, lastName: true, email: true }
+          },
+          messages: {
+            orderBy: { createdAt: 'asc' },
+            select: { id: true, sender: true, content: true, createdAt: true }
+          },
+          summary: {
+            select: { classLevel: true }
+          }
         }
-      }
-    })
+      }),
+      prisma.report.count({ where }),
+    ])
+
+    return { data, total, page, totalPages: Math.ceil(total / limit), limit }
   },
 
   /**
