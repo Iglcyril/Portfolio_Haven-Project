@@ -430,9 +430,9 @@ export const reportService = {
   async link(trackingId: string, userId: string) {
     const report = await prisma.report.findUnique({ where: { trackingId } })
     if (!report) throw new Error('REPORT_NOT_FOUND')
-    if (!report.userId) {
-      await prisma.report.update({ where: { trackingId }, data: { userId } })
-    }
+    if (report.userId === userId) return { trackingCode: trackingId, linked: true }
+    if (report.userId !== null) throw new Error('REPORT_ALREADY_LINKED')
+    await prisma.report.update({ where: { trackingId }, data: { userId } })
     return { trackingCode: trackingId, linked: true }
   }
 
