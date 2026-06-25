@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'api_config.dart';
 import 'storage_service.dart';
 
 class CrisisAlert {
@@ -22,16 +22,6 @@ class WebSocketService {
   final _alertController = StreamController<CrisisAlert>.broadcast();
   Stream<CrisisAlert> get alerts => _alertController.stream;
 
-  static String get _httpBase {
-    if (Platform.isAndroid) return 'http://10.0.2.2:4000';
-    return 'http://localhost:4000';
-  }
-
-  static String get _wsBase {
-    if (Platform.isAndroid) return 'ws://10.0.2.2:4000';
-    return 'ws://localhost:4000';
-  }
-
   Future<void> connect() async {
     if (_channel != null) return;
     _disposed = false;
@@ -50,7 +40,7 @@ class WebSocketService {
 
     // Obtenir un token éphémère (30s, usage unique) pour ne pas exposer le JWT dans l'URL
     final res = await http.post(
-      Uri.parse('$_httpBase/ws/token'),
+      Uri.parse('${ApiConfig.baseUrl}/ws/token'),
       headers: {'Authorization': 'Bearer $jwt'},
     );
 
@@ -60,7 +50,7 @@ class WebSocketService {
     }
 
     final wsToken = (jsonDecode(res.body) as Map<String, dynamic>)['token'] as String;
-    final uri = Uri.parse('$_wsBase/ws?token=$wsToken');
+    final uri = Uri.parse('${ApiConfig.wsUrl}/ws?token=$wsToken');
 
     _channel = WebSocketChannel.connect(uri);
     _sub = _channel!.stream.listen(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'api_config.dart';
 import 'storage_service.dart';
 
 class ApiException implements Exception {
@@ -13,11 +14,6 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  static String get _baseUrl {
-    if (Platform.isAndroid) return 'http://10.0.2.2:4000';
-    return 'http://localhost:4000';
-  }
-
   static Future<dynamic> _request(
     String method,
     String path, {
@@ -29,7 +25,7 @@ class ApiClient {
       if (token != null) 'Authorization': 'Bearer $token',
     };
 
-    final uri = Uri.parse('$_baseUrl$path');
+    final uri = Uri.parse('${ApiConfig.baseUrl}$path');
     final encoded = body != null ? jsonEncode(body) : null;
 
     const timeout = Duration(seconds: 10);
