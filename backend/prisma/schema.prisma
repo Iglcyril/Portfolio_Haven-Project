@@ -80,6 +80,8 @@ model User {
 
   reports         Report[]
   assignedReports Report[] @relation("AssignedReports") // Dossiers dont ce membre du staff est le référent
+
+  @@index([parentId])
 }
 
 model Report {
@@ -103,6 +105,12 @@ model Report {
   messages        ChatMessage[]
   analytics       Analytics?
   summary         ReportSummary?
+
+  @@index([userId])
+  @@index([etablissementId])
+  @@index([status])
+  @@index([assignedToId])
+  @@index([createdAt])
 }
 
 // Données narratives détaillées collectées par le chatbot (résumé complet du signalement).
