@@ -50,7 +50,10 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       }),
       firstName: t.Optional(t.String({ minLength: 2, error: 'Le prénom doit contenir au moins 2 caractères' })),
       lastName:  t.Optional(t.String({ minLength: 2, error: 'Le nom doit contenir au moins 2 caractères' })),
-      birthDate: t.Optional(t.String()),
+      birthDate: t.Optional(t.String({
+        pattern: '^\\d{4}-\\d{2}-\\d{2}$',
+        error: 'Format de date invalide — attendu AAAA-MM-JJ'
+      })),
       role: t.Optional(t.Union([
         t.Literal('STUDENT'),
         t.Literal('SUPERVISOR'),
