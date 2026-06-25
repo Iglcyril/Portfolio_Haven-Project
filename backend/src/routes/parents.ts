@@ -219,6 +219,11 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
 
       if (!student) throw new Error('STUDENT_NOT_FOUND')
 
+      // Empêche d'écraser le lien si l'enfant est déjà rattaché à un autre parent
+      if (student.parentId && student.parentId !== userId) {
+        throw new Error('STUDENT_ALREADY_LINKED')
+      }
+
       await prisma.user.update({
         where: { id: student.id },
         data:  { parentId: userId }
@@ -240,6 +245,6 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
     body: t.Object({
       firstName: t.String({ minLength: 2 }),
       lastName:  t.String({ minLength: 2 }),
-      birthDate: t.String()  // format YYYY-MM-DD ex: 2010-05-15
+      birthDate: t.String({ pattern: '^\\d{4}-\\d{2}-\\d{2}$' })  // format YYYY-MM-DD ex: 2010-05-15
     })
   })

@@ -19,8 +19,9 @@ export type AppError =
   | 'REPORT_NOT_FOUND'       // Rapport introuvable en base
   | 'USER_NOT_FOUND'         // Utilisateur introuvable en base
   | 'DELETE_TIMEOUT'         // Délai d'annulation de 5 minutes dépassé
-  | 'STUDENT_NOT_FOUND'      // Aucun étudiant trouvé avec ces informations
-  | 'PARENT_NOT_FOUND'       // Aucun compte parent trouvé avec cet email
+  | 'STUDENT_NOT_FOUND'       // Aucun étudiant trouvé avec ces informations
+  | 'STUDENT_ALREADY_LINKED'  // L'enfant est déjà rattaché à un autre compte parent
+  | 'PARENT_NOT_FOUND'        // Aucun compte parent trouvé avec cet email
   | 'STUDENT_FIELDS_REQUIRED' // Prénom, nom et date de naissance manquants pour un élève
 
 /**
@@ -37,6 +38,7 @@ const errorMap: Record<AppError, { status: number; message: string }> = {
   USER_NOT_FOUND:       { status: 404, message: 'Utilisateur introuvable' },
   DELETE_TIMEOUT:       { status: 403, message: 'Délai d\'annulation dépassé — impossible de supprimer ce signalement' },
   STUDENT_NOT_FOUND:       { status: 404, message: 'Aucun élève trouvé avec ces informations' },
+  STUDENT_ALREADY_LINKED:  { status: 409, message: 'Cet élève est déjà rattaché à un autre compte parent' },
   PARENT_NOT_FOUND:        { status: 404, message: 'Aucun compte parent trouvé avec cet email' },
   STUDENT_FIELDS_REQUIRED: { status: 422, message: 'Prénom, nom et date de naissance sont obligatoires pour un compte élève' },
 }
