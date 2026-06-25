@@ -1,5 +1,6 @@
 import { api } from './api'
 import { getProfile } from './authService'
+import { CATEGORIE_LABELS, STATUS_MAP, SEVERITY_MAP, ANONYMITY_MAP } from './reportMappings'
 import type { User, TeamMember, ProReport, TimelineEntry } from '../types'
 
 // ─── Constantes UI (inchangées) ───────────────────────────────────────────────
@@ -80,35 +81,6 @@ export const MOCK_STATS = {
 }
 
 // ─── Mapping backend → frontend ───────────────────────────────────────────────
-
-const CATEGORIE_LABELS: Record<string, string> = {
-  harcelement_scolaire: 'Harcèlement scolaire',
-  violence_physique:    'Violence physique',
-  violence_verbale:     'Violence verbale',
-  cyberharcelement:     'Cyberharcèlement',
-  discrimination:       'Discrimination',
-  mal_etre:             'Mal-être',
-  autre:                'Signalement',
-}
-
-const STATUS_MAP: Record<string, ProReport['status']> = {
-  EN_ATTENTE: 'active',
-  EN_COURS:   'active',
-  RESOLU:     'resolved',
-  ARCHIVE:    'archived',
-}
-
-const SEVERITY_MAP: Record<string, NonNullable<ProReport['severity']>> = {
-  ELEVE: 'high',
-  MOYEN: 'medium',
-  BAS:   'low',
-}
-
-const ANONYMITY_MAP: Record<string, ProReport['anonymityLevel']> = {
-  total:       'anonymous',
-  partiel:     'semi',
-  pas_anonyme: 'visible',
-}
 
 const ANON_LABEL_MAP: Record<string, string> = {
   total:       'Anonyme',
