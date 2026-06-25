@@ -134,6 +134,109 @@ export const authService = {
   },
 
   /**
+   * RGPD — droit d'accès.
+   * Retourne les signalements (+ messages) de l'utilisateur connecté.
+   *   STUDENT → ses propres rapports
+   *   PARENT  → les rapports de ses enfants
+   *   Autres  → 403
+   */
+  async exportMyData(userId: string, role: string) {
+    if (role === 'STUDENT') {
+      const reports = await prisma.report.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        select: {
+          trackingId:     true,
+          type:           true,
+          categorie:      true,
+          anonymatLevel:  true,
+          status:         true,
+          severity:       true,
+          crisisDetected: true,
+          createdAt:      true,
+          updatedAt:      true,
+          messages: {
+            orderBy: { createdAt: 'asc' },
+            select: { sender: true, content: true, createdAt: true }
+          }
+        }
+      })
+      return { exportedAt: new Date().toISOString(), type: 'student_export', reports }
+    }
+
+    if (role === 'PARENT') {
+      const children = await prisma.user.findMany({
+        where: { parentId: userId },
+        select: {
+          firstName: true,
+          lastName:  true,
+          reports: {
+            orderBy: { createdAt: 'desc' },
+            select: {
+              trackingId:     true,
+              type:           true,
+              categorie:      true,
+              anonymatLevel:  true,
+              status:         true,
+              severity:       true,
+              crisisDetected: true,
+              createdAt:      true,
+              updatedAt:      true,
+              messages: {
+                orderBy: { createdAt: 'asc' },
+                select: { sender: true, content: true, createdAt: true }
+              }
+            }
+          }
+        }
+      })
+      return { exportedAt: new Date().toISOString(), type: 'parent_export', children }
+    }
+
+    throw new Error('FORBIDDEN')
+  },
+
+  /**
+   * RGPD — droit à l'effacement.
+   * Anonymise les données puis supprime le compte.
+   *   SUPERVISOR/ADMIN avec dossiers actifs → bloqué (ACCOUNT_HAS_ACTIVE_DOSSIERS)
+   *   Sinon → anonymisation + suppression
+   */
+  async deleteMyAccount(userId: string, role: string) {
+    if (role === 'SUPERVISOR' || role === 'ADMIN') {
+      const active = await prisma.report.count({
+        where: {
+          assignedToId: userId,
+          status: { in: ['EN_ATTENTE', 'EN_COURS'] }
+        }
+      })
+      if (active > 0) throw new Error('ACCOUNT_HAS_ACTIVE_DOSSIERS')
+
+      // Déréférencement des dossiers archivés/résolus
+      await prisma.report.updateMany({
+        where: { assignedToId: userId },
+        data:  { assignedToId: null }
+      })
+    }
+
+    // Anonymise les signalements de l'utilisateur (STUDENT / PARENT)
+    await prisma.report.updateMany({
+      where: { userId },
+      data:  { userId: null }
+    })
+
+    // Délie les enfants si c'est un parent
+    if (role === 'PARENT') {
+      await prisma.user.updateMany({
+        where: { parentId: userId },
+        data:  { parentId: null }
+      })
+    }
+
+    await prisma.user.delete({ where: { id: userId } })
+  },
+
+  /**
    * Retourne les comptes ADMIN et SUPERVISOR (équipe interne).
    * Utilisé par GET /admin/team.
    */

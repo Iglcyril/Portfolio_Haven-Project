@@ -92,3 +92,38 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       return err
     }
   })
+
+  /**
+   * GET /auth/me/export
+   * RGPD — droit d'accès aux données personnelles.
+   * Réponses : 200 export JSON | 401 non connecté | 403 rôle non autorisé
+   */
+  .get('/me/export', async ({ bearer, set }) => {
+    try {
+      const { userId, role } = requireAuth(bearer ?? '')
+      return await authService.exportMyData(userId, role)
+    } catch (e) {
+      const { status, body: err } = handleError(e)
+      set.status = status
+      return err
+    }
+  })
+
+  /**
+   * DELETE /auth/me
+   * RGPD — droit à l'effacement.
+   * Anonymise les données puis supprime le compte connecté.
+   * Réponses : 204 supprimé | 401 non connecté | 409 dossiers actifs (staff)
+   */
+  .delete('/me', async ({ bearer, set }) => {
+    try {
+      const { userId, role } = requireAuth(bearer ?? '')
+      await authService.deleteMyAccount(userId, role)
+      set.status = 204
+      return null
+    } catch (e) {
+      const { status, body: err } = handleError(e)
+      set.status = status
+      return err
+    }
+  })

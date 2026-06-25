@@ -60,3 +60,19 @@ export async function getProfile(): Promise<AuthUser> {
 export function logout() {
   clearToken()
 }
+
+export async function exportMyData(): Promise<void> {
+  const data = await api.get<unknown>('/auth/me/export')
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href     = url
+  a.download = `haven-export-${new Date().toISOString().slice(0, 10)}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+export async function deleteMyAccount(): Promise<void> {
+  await api.delete<null>('/auth/me')
+  clearToken()
+}

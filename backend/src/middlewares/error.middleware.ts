@@ -22,7 +22,8 @@ export type AppError =
   | 'STUDENT_NOT_FOUND'       // Aucun étudiant trouvé avec ces informations
   | 'STUDENT_ALREADY_LINKED'  // L'enfant est déjà rattaché à un autre compte parent
   | 'PARENT_NOT_FOUND'        // Aucun compte parent trouvé avec cet email
-  | 'STUDENT_FIELDS_REQUIRED' // Prénom, nom et date de naissance manquants pour un élève
+  | 'STUDENT_FIELDS_REQUIRED'       // Prénom, nom et date de naissance manquants pour un élève
+  | 'ACCOUNT_HAS_ACTIVE_DOSSIERS'   // Le compte staff a des dossiers actifs — suppression bloquée
 
 /**
  * Table de correspondance : code d'erreur métier → HTTP status + message public.
@@ -40,7 +41,8 @@ const errorMap: Record<AppError, { status: number; message: string }> = {
   STUDENT_NOT_FOUND:       { status: 404, message: 'Aucun élève trouvé avec ces informations' },
   STUDENT_ALREADY_LINKED:  { status: 409, message: 'Cet élève est déjà rattaché à un autre compte parent' },
   PARENT_NOT_FOUND:        { status: 404, message: 'Aucun compte parent trouvé avec cet email' },
-  STUDENT_FIELDS_REQUIRED: { status: 422, message: 'Prénom, nom et date de naissance sont obligatoires pour un compte élève' },
+  STUDENT_FIELDS_REQUIRED:     { status: 422, message: 'Prénom, nom et date de naissance sont obligatoires pour un compte élève' },
+  ACCOUNT_HAS_ACTIVE_DOSSIERS: { status: 409, message: 'Impossible de supprimer le compte : des dossiers actifs vous sont assignés. Veuillez les réaffecter avant de continuer.' },
 }
 
 /**

@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Phone, Sun, Moon, LogOut } from 'lucide-react'
+import { Menu, X, Phone, Sun, Moon, LogOut, UserCircle, Download, Trash2 } from 'lucide-react'
 import { useIsMobile, useIsTablet } from '../hooks/useMediaQuery'
 import { useTheme } from '../contexts/ThemeContext'
+import { useAuth } from '../contexts/AuthContext'
+import { exportMyData, deleteMyAccount } from '../services/authService'
 import type { User, EmergencyContact } from '../types'
 
 // ─── Theme CSS variables ───────────────────────────────────────────────────────
@@ -131,6 +133,206 @@ function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
         />
       </div>
     </button>
+  )
+}
+
+// ─── Logout button ────────────────────────────────────────────────────────────
+
+// ─── Manage account modal ────────────────────────────────────────────────────
+
+function ManageAccountModal({ onClose }: { onClose: () => void }) {
+  const navigate  = useNavigate()
+  const { user, logout } = useAuth()
+  const [step, setStep]       = useState<'idle' | 'confirm'>('idle')
+  const [loading, setLoading] = useState(false)
+  const [error, setError]     = useState<string | null>(null)
+
+  const canExport = user?.role === 'STUDENT' || user?.role === 'PARENT'
+
+  async function handleExport() {
+    setLoading(true)
+    setError(null)
+    try {
+      await exportMyData()
+    } catch {
+      setError('Impossible d\'exporter les données. Réessayez.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleDelete() {
+    setLoading(true)
+    setError(null)
+    try {
+      await deleteMyAccount()
+      logout()
+      navigate('/')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Une erreur est survenue.')
+      setLoading(false)
+      setStep('idle')
+    }
+  }
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 200,
+        background: 'rgba(0,0,0,0.55)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 16,
+      }}
+    >
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: '#0D2622',
+          borderRadius: 18,
+          padding: '28px 28px 24px',
+          width: '100%', maxWidth: 400,
+          boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
+          display: 'flex', flexDirection: 'column', gap: 20,
+          fontFamily: "'Manrope', sans-serif",
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ color: '#fff', fontWeight: 700, fontSize: '1rem' }}>Gérer mon compte</span>
+          <button
+            onClick={onClose}
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', padding: 4 }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {canExport && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Vos données
+            </span>
+            <button
+              onClick={handleExport}
+              disabled={loading}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 9,
+                padding: '10px 14px', borderRadius: 11,
+                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(255,255,255,0.04)',
+                color: '#fff', cursor: loading ? 'not-allowed' : 'pointer',
+                fontFamily: "'Manrope', sans-serif", fontSize: '0.85rem', fontWeight: 500,
+                opacity: loading ? 0.6 : 1,
+              }}
+            >
+              <Download size={15} />
+              Exporter mes données (JSON)
+            </button>
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.72rem' }}>
+              Télécharge vos signalements et messages au format JSON.
+            </span>
+          </div>
+        )}
+
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.07)' }} />
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Zone dangereuse
+          </span>
+
+          {step === 'idle' ? (
+            <button
+              onClick={() => setStep('confirm')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 9,
+                padding: '10px 14px', borderRadius: 11,
+                border: '1px solid rgba(255,82,82,0.3)',
+                background: 'rgba(255,82,82,0.08)',
+                color: '#FF6B6B', cursor: 'pointer',
+                fontFamily: "'Manrope', sans-serif", fontSize: '0.85rem', fontWeight: 500,
+              }}
+            >
+              <Trash2 size={15} />
+              Supprimer mon compte
+            </button>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.82rem', margin: 0, lineHeight: 1.5 }}>
+                Cette action est <strong style={{ color: '#FF6B6B' }}>irréversible</strong>. Vos données seront anonymisées et votre compte supprimé définitivement.
+              </p>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  onClick={handleDelete}
+                  disabled={loading}
+                  style={{
+                    flex: 1, padding: '9px 12px', borderRadius: 10,
+                    border: 'none', background: '#FF6B6B',
+                    color: '#fff', cursor: loading ? 'not-allowed' : 'pointer',
+                    fontFamily: "'Manrope', sans-serif", fontSize: '0.82rem', fontWeight: 700,
+                    opacity: loading ? 0.7 : 1,
+                  }}
+                >
+                  {loading ? 'Suppression…' : 'Confirmer'}
+                </button>
+                <button
+                  onClick={() => setStep('idle')}
+                  disabled={loading}
+                  style={{
+                    flex: 1, padding: '9px 12px', borderRadius: 10,
+                    border: '1px solid rgba(255,255,255,0.12)', background: 'transparent',
+                    color: 'rgba(255,255,255,0.55)', cursor: 'pointer',
+                    fontFamily: "'Manrope', sans-serif", fontSize: '0.82rem', fontWeight: 500,
+                  }}
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <span style={{ color: '#FF6B6B', fontSize: '0.78rem' }}>{error}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Manage account button ────────────────────────────────────────────────────
+
+function ManageAccountButton() {
+  const [open, setOpen] = useState(false)
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        style={{
+          width: '100%',
+          display: 'flex', alignItems: 'center', gap: 9,
+          padding: '9px 12px', borderRadius: 11,
+          border: 'none', background: 'transparent',
+          cursor: 'pointer',
+          fontFamily: "'Manrope', sans-serif",
+          fontSize: '0.85rem', fontWeight: 500,
+          color: 'rgba(255,255,255,0.35)',
+          transition: 'color 0.15s, background 0.15s',
+        }}
+        onMouseEnter={e => {
+          e.currentTarget.style.color = 'rgba(255,255,255,0.75)'
+          e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+        }}
+        onMouseLeave={e => {
+          e.currentTarget.style.color = 'rgba(255,255,255,0.35)'
+          e.currentTarget.style.background = 'transparent'
+        }}
+      >
+        <UserCircle size={15} />
+        Gérer mon compte
+      </button>
+      {open && <ManageAccountModal onClose={() => setOpen(false)} />}
+    </>
   )
 }
 
@@ -460,9 +662,10 @@ function Sidebar({
         })}
       </nav>
 
-      {/* Controls: theme + logout */}
+      {/* Controls: theme + account + logout */}
       <div style={{ paddingTop: 12, paddingBottom: 12, display: 'flex', flexDirection: 'column', gap: 3 }}>
         <ThemeToggle isDark={isDark} onToggle={toggle} />
+        <ManageAccountButton />
         <LogoutButton />
       </div>
 
