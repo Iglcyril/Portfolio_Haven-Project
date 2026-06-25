@@ -28,8 +28,9 @@ import { authRoutes } from './routes/auth'
 import { adminRoutes } from './routes/admin'
 import { parentsRoutes } from './routes/parents'
 import { reportsRoutes } from './routes/reports'
-import { verifyToken } from './middlewares/auth.middleware'
+import { verifyToken, requireStaff } from './middlewares/auth.middleware'
 import { wsManager } from './ws/ws-manager'
+import { wsTokenStore } from './ws/ws-token-store'
 // import { chatRoutes } from './routes/chat' → à ajouter quand Haven Lab fournit leur API
 
 // --- Validation des variables d'environnement ---
@@ -80,20 +81,26 @@ const app = new Elysia()
   // Health check
   .get('/health', () => ({ status: 'ok', project: 'Haven', version: '0.1.0' }))
 
-  // WebSocket — alertes temps réel pour le staff (SUPERVISOR / ADMIN)
-  // Connexion : ws://host:port/ws?token=<JWT>
+  // POST /ws/token — génère un token éphémère (30s, usage unique) pour ouvrir une connexion WS
+  .post('/ws/token', ({ bearer, set }) => {
+    try {
+      const { userId, role } = requireStaff(bearer ?? '')
+      return { token: wsTokenStore.generate(userId, role) }
+    } catch {
+      set.status = 401
+      return { error: 'Non autorisé' }
+    }
+  })
+
+  // WebSocket — connexion via token éphémère obtenu depuis POST /ws/token
   .ws('/ws', {
     query: t.Object({ token: t.Optional(t.String()) }),
     open(ws) {
       const token = (ws.data as { query?: { token?: string } }).query?.token
       if (!token) { ws.close(); return }
-      try {
-        const { userId, role } = verifyToken(token)
-        if (!['SUPERVISOR', 'ADMIN'].includes(role)) { ws.close(); return }
-        wsManager.add(ws, userId, role)
-      } catch {
-        ws.close()
-      }
+      const entry = wsTokenStore.consume(token)
+      if (!entry) { ws.close(); return }
+      wsManager.add(ws, entry.userId, entry.role)
     },
     close(ws) {
       wsManager.remove(ws)
