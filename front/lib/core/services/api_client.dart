@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -31,16 +32,24 @@ class ApiClient {
     final uri = Uri.parse('$_baseUrl$path');
     final encoded = body != null ? jsonEncode(body) : null;
 
+    const timeout = Duration(seconds: 10);
+
     final http.Response response;
-    switch (method) {
-      case 'POST':
-        response = await http.post(uri, headers: headers, body: encoded);
-      case 'PATCH':
-        response = await http.patch(uri, headers: headers, body: encoded);
-      case 'DELETE':
-        response = await http.delete(uri, headers: headers);
-      default:
-        response = await http.get(uri, headers: headers);
+    try {
+      switch (method) {
+        case 'POST':
+          response = await http.post(uri, headers: headers, body: encoded).timeout(timeout);
+        case 'PATCH':
+          response = await http.patch(uri, headers: headers, body: encoded).timeout(timeout);
+        case 'DELETE':
+          response = await http.delete(uri, headers: headers).timeout(timeout);
+        default:
+          response = await http.get(uri, headers: headers).timeout(timeout);
+      }
+    } on TimeoutException {
+      throw const ApiException('Le serveur ne répond pas. Vérifie ta connexion.', 408);
+    } on SocketException {
+      throw const ApiException('Impossible de joindre le serveur. Vérifie ta connexion.', 503);
     }
 
     final decoded = jsonDecode(response.body);
