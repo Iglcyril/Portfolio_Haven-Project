@@ -35,49 +35,18 @@ export const EVENT_COLORS: Record<string, string> = {
   'Autre':               '#7F8C8D',
 }
 
-// ─── Stats hardcodées (pas de données réelles disponibles) ────────────────────
+// ─── Stats types ─────────────────────────────────────────────────────────────
 
-export const MOCK_STATS = {
-  weekly: [
-    { label: 'S-7', total: 1, high: 1, medium: 0, low: 0 },
-    { label: 'S-6', total: 2, high: 1, medium: 1, low: 0 },
-    { label: 'S-5', total: 0, high: 0, medium: 0, low: 0 },
-    { label: 'S-4', total: 3, high: 2, medium: 1, low: 0 },
-    { label: 'S-3', total: 1, high: 0, medium: 1, low: 0 },
-    { label: 'S-2', total: 2, high: 1, medium: 0, low: 1 },
-    { label: 'S-1', total: 1, high: 0, medium: 1, low: 0 },
-    { label: 'S0',  total: 3, high: 2, medium: 1, low: 0 },
-  ],
-  monthly: [
-    { label: 'Jan.',  total: 3, high: 1, medium: 1, low: 1 },
-    { label: 'Fév.',  total: 2, high: 1, medium: 1, low: 0 },
-    { label: 'Mar.',  total: 4, high: 2, medium: 1, low: 1 },
-    { label: 'Avr.',  total: 3, high: 1, medium: 2, low: 0 },
-    { label: 'Mai',   total: 5, high: 2, medium: 2, low: 1 },
-    { label: 'Juin',  total: 4, high: 3, medium: 1, low: 0 },
-  ],
-  yearly: [
-    { label: '2024', total: 28, high: 10, medium: 12, low: 6 },
-    { label: '2025', total: 34, high: 14, medium: 13, low: 7 },
-    { label: '2026', total: 21, high: 9,  medium: 9,  low: 3 },
-  ],
-  bySeverity: [
-    { name: 'Élevé',  value: 33, color: '#C0392B' },
-    { name: 'Moyen',  value: 44, color: '#E67E22' },
-    { name: 'Faible', value: 23, color: '#2EAB7B' },
-  ],
-  byAcademie: [
-    { name: 'Paris',         rectorat: 'Rectorat de Paris',         total: 312 },
-    { name: 'Versailles',    rectorat: 'Rectorat de Versailles',    total: 278 },
-    { name: 'Créteil',       rectorat: 'Rectorat de Créteil',       total: 245 },
-    { name: 'Lyon',          rectorat: 'Rectorat de Lyon',          total: 198 },
-    { name: 'Aix-Marseille', rectorat: "Rectorat d'Aix-Marseille", total: 187 },
-    { name: 'Bordeaux',      rectorat: 'Rectorat de Bordeaux',      total: 156 },
-    { name: 'Lille',         rectorat: 'Rectorat de Lille',         total: 144 },
-    { name: 'Nantes',        rectorat: 'Rectorat de Nantes',        total: 132 },
-    { name: 'Toulouse',      rectorat: 'Rectorat de Toulouse',      total: 121 },
-    { name: 'Strasbourg',    rectorat: 'Rectorat de Strasbourg',    total: 98  },
-  ],
+export interface RealStats {
+  total:              number
+  tauxPriseEnCharge:  number
+  avgResolutionDays:  number | null
+  weekly:             Array<{ label: string; total: number; high: number; medium: number; low: number }>
+  monthly:            Array<{ label: string; total: number; high: number; medium: number; low: number }>
+  yearly:             Array<{ label: string; total: number; high: number; medium: number; low: number }>
+  bySeverity:         Array<{ name: string; value: number; color: string }>
+  byCategory:         Array<{ category: string; count: number }>
+  byStatus:           Array<{ status: string; count: number }>
 }
 
 // ─── Mapping backend → frontend ───────────────────────────────────────────────
@@ -354,8 +323,8 @@ export async function getReferentUser(): Promise<User> {
   return getDirector()
 }
 
-export async function getStats() {
-  return Promise.resolve(MOCK_STATS)
+export async function getStats(): Promise<RealStats> {
+  return api.get<RealStats>('/admin/stats')
 }
 
 // ─── Actions professionnelles ─────────────────────────────────────────────────

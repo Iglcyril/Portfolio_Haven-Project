@@ -331,59 +331,105 @@ export const reportService = {
    * Calcule les vrais chiffres depuis la base via groupBy Prisma.
    */
   async getStats(establishment_id?: string) {
-    // Filtre par établissement si fourni
-    const where = establishment_id
-      ? { etablissementId: establishment_id }
-      : {}
+    const where = establishment_id ? { etablissementId: establishment_id } : {}
+
+    // Récupère tous les signalements en une seule requête pour les calculs temporels
+    const allReports = await prisma.report.findMany({
+      where,
+      select: { createdAt: true, updatedAt: true, severity: true, status: true, categorie: true }
+    })
+
+    const total = allReports.length
+    const notPending = allReports.filter(r => r.status !== 'EN_ATTENTE').length
+    const tauxPriseEnCharge = total > 0 ? Math.round((notPending / total) * 100) : 0
+
+    // Temps moyen de résolution (en jours) sur les dossiers RESOLU/ARCHIVE
+    const resolved = allReports.filter(r => r.status === 'RESOLU' || r.status === 'ARCHIVE')
+    const avgResolutionDays = resolved.length > 0
+      ? Math.round(
+          resolved.reduce((sum, r) =>
+            sum + (new Date(r.updatedAt).getTime() - new Date(r.createdAt).getTime()), 0
+          ) / resolved.length / (1000 * 60 * 60 * 24)
+        )
+      : null
+
+    // Helpers temporels
+    const now = new Date()
+
+    const weekKey = (d: Date) => {
+      const ms  = now.getTime() - d.getTime()
+      const wk  = Math.floor(ms / (7 * 24 * 3600 * 1000))
+      return wk <= 7 ? wk : null
+    }
+    const monthKey = (d: Date) => {
+      const dm = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth())
+      return dm <= 5 ? dm : null
+    }
+    const yearKey = (d: Date) => {
+      const dy = now.getFullYear() - d.getFullYear()
+      return dy <= 2 ? dy : null
+    }
+
+    type Bucket = { total: number; high: number; medium: number; low: number }
+    const makeBuckets = (n: number): Bucket[] =>
+      Array.from({ length: n }, () => ({ total: 0, high: 0, medium: 0, low: 0 }))
+
+    const weekBuckets  = makeBuckets(8)
+    const monthBuckets = makeBuckets(6)
+    const yearBuckets  = makeBuckets(3)
+
+    const sev = (s: string) => s === 'ELEVE' ? 'high' : s === 'MOYEN' ? 'medium' : 'low'
+
+    for (const r of allReports) {
+      const d = new Date(r.createdAt)
+      const sv = sev(r.severity)
+      const fill = (bucket: Bucket) => { bucket.total++; (bucket as Record<string, number>)[sv]++ }
+
+      const wk = weekKey(d);  if (wk !== null) fill(weekBuckets[7 - wk])
+      const mo = monthKey(d); if (mo !== null) fill(monthBuckets[5 - mo])
+      const yr = yearKey(d);  if (yr !== null) fill(yearBuckets[2 - yr])
+    }
+
+    const MONTH_LABELS = ['Jan.','Fév.','Mar.','Avr.','Mai','Juin','Juil.','Août','Sep.','Oct.','Nov.','Déc.']
+    const weekly  = weekBuckets.map((b, i) => ({ label: i === 7 ? 'S0' : `S-${7 - i}`, ...b }))
+    const monthly = monthBuckets.map((b, i) => {
+      const mo = new Date(now.getFullYear(), now.getMonth() - (5 - i))
+      return { label: MONTH_LABELS[mo.getMonth()], ...b }
+    })
+    const yearly  = yearBuckets.map((b, i) => ({
+      label: String(now.getFullYear() - (2 - i)), ...b
+    }))
+
+    // Répartition par sévérité (pourcentages pour le donut)
+    const sevCounts = { ELEVE: 0, MOYEN: 0, BAS: 0 }
+    for (const r of allReports) sevCounts[r.severity as keyof typeof sevCounts]++
+    const bySeverity = [
+      { name: 'Élevé',  value: total > 0 ? Math.round(sevCounts.ELEVE / total * 100) : 0, color: '#C0392B' },
+      { name: 'Moyen',  value: total > 0 ? Math.round(sevCounts.MOYEN / total * 100) : 0, color: '#E67E22' },
+      { name: 'Faible', value: total > 0 ? Math.round(sevCounts.BAS   / total * 100) : 0, color: '#2EAB7B' },
+    ]
 
     // Répartition par catégorie
-    const byCategorie = await prisma.report.groupBy({
-      by: ['categorie'],
-      _count: { id: true },
-      where
-    })
+    const catCounts: Record<string, number> = {}
+    for (const r of allReports) catCounts[r.categorie] = (catCounts[r.categorie] ?? 0) + 1
+    const byCategory = Object.entries(catCounts)
+      .map(([category, count]) => ({ category, count }))
+      .sort((a, b) => b.count - a.count)
 
     // Répartition par statut
-    const byStatus = await prisma.report.groupBy({
-      by: ['status'],
-      _count: { id: true },
-      where
-    })
-
-    // Répartition par sévérité
-    const bySeverity = await prisma.report.groupBy({
-      by: ['severity'],
-      _count: { id: true },
-      where
-    })
-
-    // Total des rapports
-    const total = await prisma.report.count({ where })
-
-    // Total des rapports résolus
-    const resolved = await prisma.report.count({
-      where: { ...where, status: ReportStatus.RESOLU }
-    })
+    const statusCounts: Record<string, number> = {}
+    for (const r of allReports) statusCounts[r.status] = (statusCounts[r.status] ?? 0) + 1
 
     return {
-      establishment_id,
-      by_category: byCategorie.map(r => ({
-        category: r.categorie,
-        count:    r._count.id
-      })),
-      by_status: byStatus.map(r => ({
-        status: r.status,
-        count:  r._count.id
-      })),
-      by_level: bySeverity.map(r => ({
-        level: r.severity,
-        count: r._count.id
-      })),
-      total_reports: total,
-      resolution_amount: total > 0
-        ? `${Math.round((resolved / total) * 100)}%`
-        : '0%',
-      average_resolution_time: 'À calculer'
+      total,
+      tauxPriseEnCharge,
+      avgResolutionDays,
+      weekly,
+      monthly,
+      yearly,
+      bySeverity,
+      byCategory,
+      byStatus: Object.entries(statusCounts).map(([status, count]) => ({ status, count })),
     }
   },
 
