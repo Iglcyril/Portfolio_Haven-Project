@@ -22,6 +22,8 @@ services:
       - DATABASE_URL=postgresql://haven:${POSTGRES_PASSWORD:-haven_dev}@postgres:5432/haven_db
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3000
+      # ⚠️ Changer cette valeur avant le déploiement beta/prod (URL du frontend)
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
     depends_on:
       postgres:
         condition: service_healthy

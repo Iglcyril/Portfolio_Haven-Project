@@ -34,7 +34,7 @@ import { wsTokenStore } from './ws/ws-token-store'
 // import { chatRoutes } from './routes/chat' → à ajouter quand Haven Lab fournit leur API
 
 // --- Validation des variables d'environnement ---
-const requiredEnv = ['DATABASE_URL', 'JWT_SECRET']
+const requiredEnv = ['DATABASE_URL', 'JWT_SECRET', 'CORS_ORIGIN']
 for (const key of requiredEnv) {
   if (!process.env[key]) {
     console.error(`[Haven] Missing required env variable: ${key}`)
@@ -44,8 +44,11 @@ for (const key of requiredEnv) {
 
 const app = new Elysia()
 
-  // CORS — autorise les requêtes depuis le frontend Flutter
-  .use(cors())
+  // CORS — restreint les requêtes aux origines autorisées (CORS_ORIGIN en variable d'env)
+  .use(cors({
+    origin: process.env.CORS_ORIGIN!.split(',').map(o => o.trim()),
+    credentials: true,
+  }))
 
   // Bearer — extrait le token du header Authorization: Bearer <token>
   .use(bearer())
