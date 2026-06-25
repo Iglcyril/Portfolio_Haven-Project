@@ -153,7 +153,12 @@ class _ProfessionalDashboardPageState
         _isLoading = false;
       });
     } catch (_) {
-      if (mounted) setState(() => _isLoading = false);
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Impossible de charger les données. Vérifie ta connexion.'),
+        backgroundColor: Color(0xFFE53935),
+      ));
     }
   }
 

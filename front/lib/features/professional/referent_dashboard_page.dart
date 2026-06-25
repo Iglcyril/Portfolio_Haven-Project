@@ -89,8 +89,17 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
         ..clear()
         ..addAll(apiReports.map(_toHavenReport));
       ReportStore.instance.notify();
-    } catch (_) {}
-    if (mounted) setState(() => _isLoading = false);
+      setState(() => _isLoading = false);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      if (ReportStore.instance.reports.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Impossible de charger les signalements. Vérifie ta connexion.'),
+          backgroundColor: Color(0xFFE53935),
+        ));
+      }
+    }
   }
 
   HavenReport _toHavenReport(ApiReport r) => HavenReport(

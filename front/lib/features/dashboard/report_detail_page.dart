@@ -75,6 +75,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
 
   // Actions staff chargées depuis l'API (se rafraîchissent toutes les 30s)
   List<ReportAction> _staffActions = [];
+  bool _staffLoadFailed = false;
 
   static const _riskColors = AppConstants.riskColors;
 
@@ -134,7 +135,10 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
           _ => ReportStatus.filed,
         };
       });
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) return;
+      if (_staffActions.isEmpty) setState(() => _staffLoadFailed = true);
+    }
   }
 
   void _rebuild() => setState(() {});
@@ -402,13 +406,20 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
               ),
               const SizedBox(height: 24),
               GestureDetector(
-                onTap: () {
+                onTap: () async {
                   final nav = Navigator.of(context);
+                  final messenger = ScaffoldMessenger.of(context);
                   nav.pop();
                   widget.onDelete();
                   nav.pop();
-                  ReportService.deleteReport(widget.report.caseNumber)
-                      .catchError((_) {});
+                  try {
+                    await ReportService.deleteReport(widget.report.caseNumber);
+                  } catch (_) {
+                    messenger.showSnackBar(const SnackBar(
+                      content: Text('Suppression échouée. Réessaie plus tard.'),
+                      backgroundColor: Color(0xFFE53935),
+                    ));
+                  }
                 },
                 child: Container(
                   width: double.infinity,
@@ -781,13 +792,22 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                               if (_currentStatus != ReportStatus.resolved)
                                 GestureDetector(
                                   onTap: () async {
+                                    final prevStatus = _currentStatus;
+                                    final messenger = ScaffoldMessenger.of(context);
                                     final nextStatus = _currentStatus == ReportStatus.filed || _currentStatus == ReportStatus.reviewed
                                         ? ReportStatus.inProgress
                                         : ReportStatus.resolved;
                                     final backendStatus = nextStatus == ReportStatus.resolved ? 'RESOLU' : 'EN_COURS';
                                     setState(() => _currentStatus = nextStatus);
-                                    ReportService.updateStatus(widget.report.caseNumber, backendStatus)
-                                        .catchError((_) {});
+                                    try {
+                                      await ReportService.updateStatus(widget.report.caseNumber, backendStatus);
+                                    } catch (_) {
+                                      if (mounted) setState(() => _currentStatus = prevStatus);
+                                      messenger.showSnackBar(const SnackBar(
+                                        content: Text('Impossible de mettre à jour le statut. Réessaie.'),
+                                        backgroundColor: Color(0xFFE53935),
+                                      ));
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -848,6 +868,18 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 ..._staffActions,
                               ]..sort((a, b) => a.date.compareTo(b.date)),
                             ),
+
+                            if (_staffLoadFailed && _staffActions.isEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8),
+                                child: Text(
+                                  'Impossible de charger l\'historique complet.',
+                                  style: GoogleFonts.manrope(
+                                    fontSize: 12,
+                                    color: isDark ? Colors.white38 : AppColors.lightTextSecondary,
+                                  ),
+                                ),
+                              ),
 
                             const SizedBox(height: 28),
 
