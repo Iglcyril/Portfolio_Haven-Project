@@ -6,12 +6,8 @@ export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY) ?? sessionStorage.getItem(TOKEN_KEY)
 }
 
-export function setToken(token: string, persistent: boolean) {
-  if (persistent) {
-    localStorage.setItem(TOKEN_KEY, token)
-  } else {
-    sessionStorage.setItem(TOKEN_KEY, token)
-  }
+export function setToken(token: string, _persistent?: boolean) {
+  sessionStorage.setItem(TOKEN_KEY, token)
 }
 
 export function clearToken() {
