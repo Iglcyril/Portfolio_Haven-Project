@@ -1,4 +1,4 @@
-import { Pencil, Phone, Trash2 } from 'lucide-react'
+import { Pencil, Phone, Shield, Trash2 } from 'lucide-react'
 import type { TeamMember } from '../../../types'
 import { PRIMARY } from './constants'
 
@@ -72,12 +72,24 @@ export function TeamCard({ member, isDirector, onRemove, onEdit }: {
           <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-text)' }}>{member.fullName}</div>
           <div style={{ fontSize: 12, color: 'var(--c-text-muted)' }}>{member.jobTitle}</div>
         </div>
-        <span style={{
-          fontSize: 10, fontWeight: 700, color: PRIMARY, background: `${PRIMARY}18`,
-          borderRadius: 6, padding: '2px 8px', flexShrink: 0,
-        }}>
-          {member.roleLabel}
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+          <span style={{
+            fontSize: 10, fontWeight: 700, color: PRIMARY, background: `${PRIMARY}18`,
+            borderRadius: 6, padding: '2px 8px',
+          }}>
+            {member.roleLabel}
+          </span>
+          {member.isCoRef && (
+            <span style={{
+              fontSize: 10, fontWeight: 700, color: '#fff',
+              background: PRIMARY, borderRadius: 6, padding: '2px 8px',
+              display: 'flex', alignItems: 'center', gap: 3,
+            }}>
+              <Shield size={9} />
+              CO-RESP.
+            </span>
+          )}
+        </div>
       </div>
 
       <div style={{ display: 'flex', gap: 10 }}>

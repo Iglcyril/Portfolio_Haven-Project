@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { X, Shield } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { TeamMember, ProfessionalRole } from '../../../types'
 import { PRIMARY, ROLE_OPTIONS } from './constants'
+import { updateTeamMemberCoRef } from '../../../services/professionalData'
 
 const iStyle: React.CSSProperties = {
   background: 'var(--c-input-bg)',
@@ -13,10 +14,12 @@ const iStyle: React.CSSProperties = {
   width: '100%', boxSizing: 'border-box', minWidth: 0,
 }
 
-export function EditMemberForm({ member, onSave, onCancel }: {
+export function EditMemberForm({ member, onSave, onCancel, coRefCount, isDirector }: {
   member: TeamMember
   onSave: (updated: TeamMember) => void
   onCancel: () => void
+  coRefCount: number
+  isDirector: boolean
 }) {
   const nameParts = member.fullName.split(' ')
   const [form, setForm] = useState({
@@ -25,9 +28,31 @@ export function EditMemberForm({ member, onSave, onCancel }: {
     role:      member.role as ProfessionalRole,
     jobTitle:  member.jobTitle,
     phone:     member.phone,
+    isCoRef:   member.isCoRef ?? false,
   })
+  const [coRefError, setCoRefError] = useState<string | null>(null)
+  const [coRefLoading, setCoRefLoading] = useState(false)
 
-  const canSubmit = form.firstName.trim() && form.lastName.trim() && form.jobTitle.trim() && form.phone.trim()
+  const canSubmit = form.firstName.trim() && form.lastName.trim() && form.phone.trim()
+
+  const toggleCoRef = async () => {
+    if (!isDirector) return
+    const next = !form.isCoRef
+    if (next && coRefCount >= 2 && !form.isCoRef) {
+      setCoRefError('Limite de 2 co-responsables atteinte')
+      return
+    }
+    setCoRefLoading(true)
+    setCoRefError(null)
+    try {
+      await updateTeamMemberCoRef(member.id, next)
+      setForm(p => ({ ...p, isCoRef: next }))
+    } catch (e) {
+      setCoRefError(e instanceof Error ? e.message : 'Erreur')
+    } finally {
+      setCoRefLoading(false)
+    }
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel() }
@@ -49,6 +74,7 @@ export function EditMemberForm({ member, onSave, onCancel }: {
       roleLabel,
       jobTitle:       form.jobTitle,
       phone:          form.phone,
+      isCoRef:        form.isCoRef,
     })
   }
 
@@ -99,6 +125,43 @@ export function EditMemberForm({ member, onSave, onCancel }: {
         onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
         style={{ ...iStyle, marginBottom: 12 }}
       />
+      {isDirector && member.role !== 'director' && (
+        <div style={{ marginBottom: 12 }}>
+          <button
+            onClick={toggleCoRef}
+            disabled={coRefLoading}
+            style={{
+              width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '10px 12px', borderRadius: 10, cursor: 'pointer', fontFamily: 'inherit',
+              background: form.isCoRef ? `${PRIMARY}12` : 'var(--c-badge)',
+              border: `1.5px solid ${form.isCoRef ? PRIMARY : 'var(--c-border)'}`,
+              color: form.isCoRef ? PRIMARY : 'var(--c-text-muted)',
+              transition: 'all 0.2s',
+            }}
+          >
+            <span style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, fontWeight: 700 }}>
+              <Shield size={13} />
+              Co-responsable Haven
+            </span>
+            <div style={{
+              width: 36, height: 20, borderRadius: 10, position: 'relative',
+              background: form.isCoRef ? PRIMARY : 'var(--c-border)',
+              transition: 'background 0.2s', flexShrink: 0,
+            }}>
+              <div style={{
+                position: 'absolute', top: 3, left: form.isCoRef ? 19 : 3,
+                width: 14, height: 14, borderRadius: '50%', background: '#fff',
+                transition: 'left 0.2s',
+              }} />
+            </div>
+          </button>
+          {coRefError && (
+            <div style={{ fontSize: 11, color: '#C0392B', marginTop: 5, paddingLeft: 4 }}>
+              {coRefError}
+            </div>
+          )}
+        </div>
+      )}
       <button
         onClick={submit}
         disabled={!canSubmit}

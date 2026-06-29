@@ -99,10 +99,12 @@ interface AdminReportsResponse {
 }
 
 interface BackendTeamMember {
-  id:    string
-  name:  string
-  role:  string
-  email: string
+  id:       string
+  name:     string
+  role:     string
+  email:    string
+  jobTitle: string | null
+  isCoRef:  boolean
 }
 
 interface AdminTeamResponse {
@@ -236,11 +238,12 @@ function mapTeamMember(m: BackendTeamMember): TeamMember {
     avatarInitials: [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() || '??',
     role:           role as TeamMember['role'],
     roleLabel:      ROLE_LABELS[role],
-    jobTitle:       '',
+    jobTitle:       m.jobTitle ?? '',
     phone:          '',
     email:          m.email,
     activeCount:    0,
     resolvedCount:  0,
+    isCoRef:        m.isCoRef,
   }
 }
 
@@ -261,8 +264,12 @@ export function saveTeamMemberOverride(m: TeamMember): void {
   const overrides = loadOverrides()
   overrides[m.id] = { fullName: m.fullName, firstName: m.firstName, lastName: m.lastName,
     avatarInitials: m.avatarInitials, role: m.role, roleLabel: m.roleLabel,
-    jobTitle: m.jobTitle, phone: m.phone }
+    jobTitle: m.jobTitle, phone: m.phone, isCoRef: m.isCoRef }
   localStorage.setItem(LS_OVERRIDES, JSON.stringify(overrides))
+}
+
+export async function updateTeamMemberCoRef(userId: string, isCoRef: boolean): Promise<void> {
+  await api.patch(`/admin/users/${userId}`, { isCoRef })
 }
 
 export function saveLocalTeamMember(m: TeamMember): void {

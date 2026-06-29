@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
+import '../../core/services/api_client.dart';
+import '../../core/services/auth_service.dart';
 import 'director_designation_page.dart';
 import 'referent_dashboard_page.dart';
 
@@ -37,13 +39,27 @@ class _ProfessionalRoleSelectionPageState
     extends State<ProfessionalRoleSelectionPage> {
   ProfessionalRole? _selected;
   final _otherCtrl = TextEditingController();
+  bool _isLoading = false;
+  String? _error;
 
   bool get _canContinue {
-    if (_selected == null) return false;
+    if (_selected == null || _isLoading) return false;
     if (_selected == ProfessionalRole.other) {
       return _otherCtrl.text.trim().isNotEmpty;
     }
     return true;
+  }
+
+  String get _jobTitle {
+    switch (_selected!) {
+      case ProfessionalRole.director:    return 'Directeur·rice';
+      case ProfessionalRole.cpe:         return 'CPE';
+      case ProfessionalRole.nurse:       return 'Infirmier·ère';
+      case ProfessionalRole.aed:         return 'AED';
+      case ProfessionalRole.teacher:     return 'Professeur·e';
+      case ProfessionalRole.socialWorker: return 'Assistant·e Social·e';
+      case ProfessionalRole.other:       return _otherCtrl.text.trim();
+    }
   }
 
   @override
@@ -52,21 +68,34 @@ class _ProfessionalRoleSelectionPageState
     super.dispose();
   }
 
-  void _onContinue() {
+  Future<void> _onContinue() async {
     if (!_canContinue) return;
-    if (_selected == ProfessionalRole.director) {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => DirectorDesignationPage(
-          onToggleTheme: widget.onToggleTheme,
-        ),
-      ));
-    } else {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => ReferentDashboardPage(
-          onToggleTheme: widget.onToggleTheme,
-          // currentUserName sera fourni par le backend à la connexion
-        ),
-      ));
+    final userId = AuthService.currentUser?.id;
+    if (userId == null) return;
+
+    setState(() { _isLoading = true; _error = null; });
+    try {
+      final isDirector = _selected == ProfessionalRole.director;
+      final body = <String, dynamic>{ 'jobTitle': _jobTitle };
+      if (isDirector) body['role'] = 'ADMIN';
+      await ApiClient.patch('/admin/users/$userId', body);
+
+      if (!mounted) return;
+      if (isDirector) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => DirectorDesignationPage(onToggleTheme: widget.onToggleTheme),
+        ));
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ReferentDashboardPage(onToggleTheme: widget.onToggleTheme),
+        ));
+      }
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() { _isLoading = false; _error = e.message; });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() { _isLoading = false; _error = e.toString(); });
     }
   }
 
@@ -239,6 +268,27 @@ class _ProfessionalRoleSelectionPageState
                         ),
                       ),
                     ),
+
+                    // ── Message d'erreur ────────────────────────────────
+                    if (_error != null)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.10),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: Colors.red.withValues(alpha: 0.25)),
+                          ),
+                          child: Text(
+                            _error!,
+                            style: const TextStyle(fontFamily: 'Manrope',
+                              fontSize: 13, fontWeight: FontWeight.w600,
+                              color: Colors.red, height: 1.4,
+                            ),
+                          ),
+                        ),
+                      ),
 
                     // ── Bouton Continuer ────────────────────────────────
                     Padding(

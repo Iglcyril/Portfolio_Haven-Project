@@ -11,7 +11,8 @@
  *   POST  /admin/reports/:id/assign   → assigner un référent
  *   PATCH /admin/reports/:id          → modifier statut, catégorie, niveau
  *   GET   /admin/stats                → statistiques par établissement
- *   GET   /admin/team                 → liste de l'équipe
+ *   GET   /admin/team                 → liste de l'équipe (inclut jobTitle et isCoRef)
+ *   PATCH /admin/users/:userId        → mettre à jour jobTitle, isCoRef, ou promouvoir en ADMIN
  *   PATCH /admin/users/:studentId/parent → lier un parent à un étudiant
  */
 
@@ -229,7 +230,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   /**
    * GET /admin/team
    * Réservé : ADMIN et SUPERVISOR
-   * Retourne la liste de l'équipe depuis la base.
+   * Retourne la liste de l'équipe depuis la base (inclut jobTitle et isCoRef).
    */
   .get('/team', async ({ query, bearer, set }) => {
     try {
@@ -239,10 +240,12 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
 
       const staff = await authService.listStaff()
       const team = staff.map(member => ({
-        id:    member.id,
-        name:  [member.firstName, member.lastName].filter(Boolean).join(' ') || member.email,
-        role:  member.role,
-        email: member.email
+        id:       member.id,
+        name:     [member.firstName, member.lastName].filter(Boolean).join(' ') || member.email,
+        role:     member.role,
+        email:    member.email,
+        jobTitle: member.jobTitle ?? null,
+        isCoRef:  member.isCoRef,
       }))
 
       const filtered = team_info
@@ -259,15 +262,97 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
   })
 
   /**
-   * PATCH /admin/users/:studentId/parent
+   * PATCH /admin/users/:userId
+   * Réservé : staff (SUPERVISOR ou ADMIN)
+   * - jobTitle : tout staff peut mettre à jour le sien ; ADMIN peut mettre à jour n'importe qui
+   * - isCoRef  : ADMIN uniquement, max 2 co-responsables dans toute l'équipe
+   * - role → ADMIN : auto-promotion SUPERVISOR→ADMIN lors de l'onboarding (une seule fois, jobTitle null)
+   */
+  .patch('/users/:userId', async ({ params, body, bearer, set }) => {
+    try {
+      const { userId: tokenUserId, role: tokenRole } = requireStaff(bearer ?? '')
+
+      const isSelf  = tokenUserId === params.userId
+      const isAdmin = tokenRole === 'ADMIN'
+
+      if (!isSelf && !isAdmin) {
+        set.status = 403
+        return { error: 'FORBIDDEN' }
+      }
+
+      const target = await prisma.user.findUnique({ where: { id: params.userId } })
+      if (!target) throw new Error('USER_NOT_FOUND')
+
+      const data: Record<string, unknown> = {}
+
+      if (body.jobTitle !== undefined) {
+        data.jobTitle = body.jobTitle
+      }
+
+      if (body.isCoRef !== undefined) {
+        if (!isAdmin) {
+          set.status = 403
+          return { error: 'Seul un directeur peut désigner un co-responsable' }
+        }
+        if (body.isCoRef === true) {
+          const coRefCount = await prisma.user.count({
+            where: { isCoRef: true, id: { not: params.userId } }
+          })
+          if (coRefCount >= 2) {
+            set.status = 400
+            return { error: 'Limite de 2 co-responsables atteinte' }
+          }
+        }
+        data.isCoRef = body.isCoRef
+      }
+
+      if (body.role === 'ADMIN') {
+        if (!isSelf) {
+          set.status = 403
+          return { error: 'FORBIDDEN' }
+        }
+        if (target.role !== 'SUPERVISOR') {
+          set.status = 400
+          return { error: 'Seul un superviseur peut être promu directeur' }
+        }
+        if (target.jobTitle !== null) {
+          set.status = 400
+          return { error: 'Promotion déjà effectuée' }
+        }
+        data.role = 'ADMIN'
+      }
+
+      const updated = await prisma.user.update({
+        where:  { id: params.userId },
+        data,
+        select: { id: true, email: true, role: true, firstName: true, lastName: true, jobTitle: true, isCoRef: true }
+      })
+
+      return updated
+
+    } catch (e) {
+      const { status, body } = handleError(e)
+      set.status = status
+      return body
+    }
+  }, {
+    body: t.Object({
+      jobTitle: t.Optional(t.String()),
+      isCoRef:  t.Optional(t.Boolean()),
+      role:     t.Optional(t.Literal('ADMIN')),
+    })
+  })
+
+  /**
+   * PATCH /admin/users/:userId/parent
    * Réservé : ADMIN et SUPERVISOR
    * Lie un compte parent à un compte étudiant.
    */
-  .patch('/users/:studentId/parent', async ({ params, body, bearer, set }) => {
+  .patch('/users/:userId/parent', async ({ params, body, bearer, set }) => {
     try {
       requireStaff(bearer ?? '')
 
-      const student = await prisma.user.findUnique({ where: { id: params.studentId } })
+      const student = await prisma.user.findUnique({ where: { id: params.userId } })
       if (!student) throw new Error('USER_NOT_FOUND')
       if (student.role !== 'STUDENT') {
         set.status = 400
@@ -288,7 +373,7 @@ export const adminRoutes = new Elysia({ prefix: '/admin' })
 
       return {
         message:   'Lien parent/enfant créé avec succès',
-        studentId: params.studentId,
+        studentId: params.userId,
         parentId:  body.parentId
       }
 

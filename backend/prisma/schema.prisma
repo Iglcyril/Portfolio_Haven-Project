@@ -71,6 +71,8 @@ model User {
   firstName    String?   // Prénom - requis pour les STUDENT et PARENT
   lastName     String?   // Nom - requis pour les STUDENT et PARENT
   birthDate    DateTime? // Date de naissance - requis pour les STUDENT
+  jobTitle     String?   // Poste dans l'établissement (CPE, Infirmier·ère, etc.) — SUPERVISOR et ADMIN
+  isCoRef      Boolean   @default(false) // Co-responsable désigné par le directeur (max 2)
   createdAt    DateTime  @default(now())
 
   // Lien parent → enfant

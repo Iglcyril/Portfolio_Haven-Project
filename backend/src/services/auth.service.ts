@@ -243,7 +243,9 @@ export const authService = {
         email:     true,
         role:      true,
         firstName: true,
-        lastName:  true
+        lastName:  true,
+        jobTitle:  true,
+        isCoRef:   true,
       }
     })
   }

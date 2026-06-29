@@ -96,6 +96,7 @@ export interface TeamMember {
   email: string
   activeCount: number
   resolvedCount: number
+  isCoRef?: boolean            // co-responsable désigné par le directeur (max 2)
 }
 
 export interface ReportEvent {

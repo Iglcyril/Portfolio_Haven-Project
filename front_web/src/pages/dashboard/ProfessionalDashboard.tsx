@@ -359,6 +359,8 @@ export default function ProfessionalDashboard() {
                         member={m}
                         onSave={handleEditMember}
                         onCancel={() => setEditingMemberId(null)}
+                        coRefCount={team.filter(t => t.isCoRef).length}
+                        isDirector={isDirector}
                       />
                     ) : (
                       <TeamCard

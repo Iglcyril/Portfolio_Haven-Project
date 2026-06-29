@@ -8,6 +8,7 @@ import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
 import '../parent/parent_dashboard_page.dart';
+import '../professional/role_selection_page.dart';
 import '../professional/referent_dashboard_page.dart';
 import '../professional/professional_dashboard_page.dart';
 import '../legal/cgu_page.dart';
@@ -80,7 +81,7 @@ class _AuthPageState extends State<AuthPage> {
       }
       setState(() { _isLoading = true; _error = null; });
       try {
-        final user = await AuthService.register(
+        await AuthService.register(
           email: email,
           password: password,
           role: 'SUPERVISOR',
@@ -88,7 +89,9 @@ class _AuthPageState extends State<AuthPage> {
           lastName: lastName,
         );
         if (!mounted) return;
-        _navigateByRole(user.role, user.fullName);
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ProfessionalRoleSelectionPage(onToggleTheme: widget.onToggleTheme),
+        ));
       } catch (e) {
         if (!mounted) return;
         setState(() { _error = e.toString(); _isLoading = false; });

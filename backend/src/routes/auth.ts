@@ -57,6 +57,7 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       role: t.Optional(t.Union([
         t.Literal('STUDENT'),
         t.Literal('SUPERVISOR'),
+        t.Literal('ADMIN'),
         t.Literal('PARENT')
       ]))
     })
