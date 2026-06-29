@@ -224,11 +224,24 @@ function mapProReport(r: BackendReport): ProReport {
   }
 }
 
+function jobTitleToRole(jobTitle: string | null, dbRole: string): TeamMember['role'] {
+  if (dbRole === 'ADMIN') return 'director'
+  switch (jobTitle) {
+    case 'CPE':                  return 'cpe'
+    case 'Infirmier·ère':        return 'nurse'
+    case 'AED':                  return 'aed'
+    case 'Professeur·e':         return 'teacher'
+    case 'Assistant·e Social·e': return 'socialWorker'
+    default:                     return 'other'
+  }
+}
+
 function mapTeamMember(m: BackendTeamMember): TeamMember {
   const parts     = m.name.trim().split(/\s+/)
   const firstName = parts[0] ?? ''
   const lastName  = parts.slice(1).join(' ')
-  const role      = m.role === 'ADMIN' ? 'director' : 'other'
+  const role      = jobTitleToRole(m.jobTitle, m.role)
+  const roleLabel = m.role === 'ADMIN' ? 'Directeur·rice' : (m.jobTitle || 'Autre')
 
   return {
     id:             m.id,
@@ -236,8 +249,8 @@ function mapTeamMember(m: BackendTeamMember): TeamMember {
     firstName,
     lastName,
     avatarInitials: [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() || '??',
-    role:           role as TeamMember['role'],
-    roleLabel:      ROLE_LABELS[role],
+    role,
+    roleLabel,
     jobTitle:       m.jobTitle ?? '',
     phone:          '',
     email:          m.email,
@@ -262,9 +275,9 @@ function loadLocalMembers(): TeamMember[] {
 
 export function saveTeamMemberOverride(m: TeamMember): void {
   const overrides = loadOverrides()
+  // Never save role/roleLabel — always re-derive from backend data to prevent stale overrides
   overrides[m.id] = { fullName: m.fullName, firstName: m.firstName, lastName: m.lastName,
-    avatarInitials: m.avatarInitials, role: m.role, roleLabel: m.roleLabel,
-    jobTitle: m.jobTitle, phone: m.phone, isCoRef: m.isCoRef }
+    avatarInitials: m.avatarInitials, jobTitle: m.jobTitle, phone: m.phone, isCoRef: m.isCoRef }
   localStorage.setItem(LS_OVERRIDES, JSON.stringify(overrides))
 }
 
@@ -308,7 +321,10 @@ export async function getTeamMembers(): Promise<TeamMember[]> {
   const overrides = loadOverrides()
   const backend   = res.team_info.map(m => {
     const base = mapTeamMember(m)
-    return overrides[base.id] ? { ...base, ...overrides[base.id] } : base
+    if (!overrides[base.id]) return base
+    // Spread override but always re-derive role/roleLabel from backend source of truth
+    const { role: _r, roleLabel: _rl, ...safeOverride } = overrides[base.id] as Record<string, unknown>
+    return { ...base, ...safeOverride }
   })
   return [...backend, ...loadLocalMembers()]
 }

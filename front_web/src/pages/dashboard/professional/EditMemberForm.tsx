@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react'
 import { X, Shield } from 'lucide-react'
 import { motion } from 'framer-motion'
-import type { TeamMember, ProfessionalRole } from '../../../types'
-import { PRIMARY, ROLE_OPTIONS } from './constants'
+import type { TeamMember } from '../../../types'
+import { PRIMARY } from './constants'
 import { updateTeamMemberCoRef } from '../../../services/professionalData'
+
+const JOB_TITLE_OPTIONS = [
+  'CPE',
+  'Infirmier·ère',
+  'AED',
+  'Professeur·e',
+  'Assistant·e Social·e',
+  'Autre',
+]
 
 const iStyle: React.CSSProperties = {
   background: 'var(--c-input-bg)',
@@ -25,7 +34,6 @@ export function EditMemberForm({ member, onSave, onCancel, coRefCount, isDirecto
   const [form, setForm] = useState({
     firstName: member.firstName ?? nameParts[0] ?? '',
     lastName:  member.lastName  ?? nameParts.slice(1).join(' ') ?? '',
-    role:      member.role as ProfessionalRole,
     jobTitle:  member.jobTitle,
     phone:     member.phone,
     isCoRef:   member.isCoRef ?? false,
@@ -62,17 +70,16 @@ export function EditMemberForm({ member, onSave, onCancel, coRefCount, isDirecto
 
   const submit = () => {
     if (!canSubmit) return
-    const initials  = `${form.firstName[0]}${form.lastName[0]}`.toUpperCase()
-    const roleLabel = ROLE_OPTIONS.find(r => r.key === form.role)?.label ?? form.role
+    const initials = `${form.firstName[0]}${form.lastName[0]}`.toUpperCase()
+    // Role and roleLabel are always derived from backend — keep member's current values
     onSave({
       ...member,
       fullName:       `${form.firstName} ${form.lastName}`,
       firstName:      form.firstName,
       lastName:       form.lastName,
       avatarInitials: initials,
-      role:           form.role,
-      roleLabel,
       jobTitle:       form.jobTitle,
+      roleLabel:      member.role === 'director' ? 'Directeur·rice' : (form.jobTitle || 'Autre'),
       phone:          form.phone,
       isCoRef:        form.isCoRef,
     })
@@ -113,12 +120,15 @@ export function EditMemberForm({ member, onSave, onCancel, coRefCount, isDirecto
         <input placeholder="Prénom" value={form.firstName} onChange={e => setForm(p => ({ ...p, firstName: e.target.value }))} style={iStyle} />
         <input placeholder="Nom" value={form.lastName} onChange={e => setForm(p => ({ ...p, lastName: e.target.value }))} style={iStyle} />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
-        <select value={form.role} onChange={e => setForm(p => ({ ...p, role: e.target.value as ProfessionalRole }))} style={iStyle}>
-          {ROLE_OPTIONS.map(r => <option key={r.key} value={r.key}>{r.label}</option>)}
+      {member.role !== 'director' && (
+        <select
+          value={JOB_TITLE_OPTIONS.includes(form.jobTitle) ? form.jobTitle : 'Autre'}
+          onChange={e => setForm(p => ({ ...p, jobTitle: e.target.value }))}
+          style={{ ...iStyle, marginBottom: 10 }}
+        >
+          {JOB_TITLE_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
         </select>
-        <input placeholder="Poste" value={form.jobTitle} onChange={e => setForm(p => ({ ...p, jobTitle: e.target.value }))} style={iStyle} />
-      </div>
+      )}
       <input
         placeholder="Téléphone"
         value={form.phone}
