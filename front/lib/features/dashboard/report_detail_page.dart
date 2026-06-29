@@ -242,7 +242,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(member.name, style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.90) : AppColors.lightTextPrimary)),
-                                    Text(member.role, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary)),
+                                    Text(member.role, style: const TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary)),
                                   ],
                                 ),
                               ),
@@ -532,7 +532,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     : Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                         decoration: BoxDecoration(color: AppColors.lightCard, borderRadius: BorderRadius.circular(8), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6)]),
-                                        child: Text(widget.report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
+                                        child: Text(widget.report.caseNumber, style: const TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                                       ),
                                 const SizedBox(width: 8),
                                 // Badge priorité
@@ -615,7 +615,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.10),
                                           borderRadius: BorderRadius.circular(6),
                                         ),
-                                        child: Text(widget.report.anonLabel, style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
+                                        child: Text(widget.report.anonLabel, style: const TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
                                       ),
                                     ],
                                   ),
@@ -670,11 +670,11 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                               if (!_showAddInfo)
                                 GestureDetector(
                                   onTap: () => setState(() => _showAddInfo = true),
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      const Icon(Icons.add_circle_outline_rounded, size: 16, color: AppColors.primary),
-                                      const SizedBox(width: 6),
+                                      Icon(Icons.add_circle_outline_rounded, size: 16, color: AppColors.primary),
+                                      SizedBox(width: 6),
                                       Text(
                                         'Ajouter des informations',
                                         style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary),
@@ -831,7 +831,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                               Text('Avancer le dossier', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)),
                                               Text(
                                                 'Passer à : ${_currentStatus == ReportStatus.filed || _currentStatus == ReportStatus.reviewed ? 'EN COURS' : 'RÉSOLU'}',
-                                                style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
+                                                style: const TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
                                               ),
                                             ],
                                           ),
@@ -898,9 +898,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                     children: [
                                       const Icon(Icons.delete_outline_rounded, size: 18, color: Color(0xFFE53935)),
                                       const SizedBox(width: 8),
-                                      Text(
+                                      const Text(
                                         'Supprimer le signalement',
-                                        style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: const Color(0xFFE53935)),
+                                        style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFFE53935)),
                                       ),
                                       const Spacer(),
                                       Container(
@@ -909,7 +909,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           color: const Color(0xFFE53935).withValues(alpha: 0.15),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
-                                        child: Text(_countdownLabel, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFE53935))),
+                                        child: Text(_countdownLabel, style: const TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFFE53935))),
                                       ),
                                     ],
                                   ),
@@ -1195,7 +1195,7 @@ class _AddedInfoBubble extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.10),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Text('Précision ajoutée', style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
+                child: const Text('Précision ajoutée', style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
               ),
             ],
           ),

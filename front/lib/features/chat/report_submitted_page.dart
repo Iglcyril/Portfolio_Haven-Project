@@ -90,7 +90,7 @@ class ReportSubmittedPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Text(
+                          child: const Text(
                             'Voir mes signalements',
                             style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 15,

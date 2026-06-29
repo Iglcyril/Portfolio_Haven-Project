@@ -90,7 +90,7 @@ class ReportDeclinedPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          child: Text(
+                          child: const Text(
                             'Retour à mes signalements',
                             style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 15,

@@ -147,7 +147,7 @@ class _ProfessionalRoleSelectionPageState
                               ),
                             ),
                             const SizedBox(height: 6),
-                            Text(
+                            const Text(
                               'Quel est votre poste ?',
                               style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 22,

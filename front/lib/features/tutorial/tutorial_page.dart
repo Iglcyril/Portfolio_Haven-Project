@@ -265,7 +265,7 @@ class _TutorialPageState extends State<TutorialPage>
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: Text(
+                  child: const Text(
                     'Passer',
                     style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 14,
@@ -662,7 +662,7 @@ class _SpeechBubble extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: TextStyle(fontFamily: 'Manrope', 
+            style: const TextStyle(fontFamily: 'Manrope', 
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -809,7 +809,7 @@ class _NextButton extends StatelessWidget {
           children: [
             Text(
               label,
-              style: TextStyle(fontFamily: 'Manrope', 
+              style: const TextStyle(fontFamily: 'Manrope', 
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,

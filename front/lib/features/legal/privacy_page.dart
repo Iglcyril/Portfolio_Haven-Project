@@ -329,7 +329,7 @@ class _RetentionRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(duration,
-              style: TextStyle(fontFamily: 'Manrope', fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w700),
+              style: const TextStyle(fontFamily: 'Manrope', fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w700),
               textAlign: TextAlign.right),
           ),
         ],

@@ -268,7 +268,7 @@ class _Greeting extends StatelessWidget {
           style: AppTextStyles.dashTitle(isDark).copyWith(height: 1.15),
         ),
         const SizedBox(height: 6),
-        Text(
+        const Text(
           "Ici, vous suivrez l'avancement des signalements de votre ou vos enfant(s).",
           style: TextStyle(fontFamily: 'Fraunces', 
             fontSize: 15,
@@ -687,7 +687,7 @@ class _ParentReportCard extends StatelessWidget {
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(color: AppColors.warmWhite, borderRadius: BorderRadius.circular(8)),
-                                  child: Text(report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
+                                  child: Text(report.caseNumber, style: const TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                                 ),
                           const SizedBox(width: 8),
                           Container(

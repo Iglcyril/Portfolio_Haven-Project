@@ -316,7 +316,7 @@ class _ChatPageState extends State<ChatPage> {
                 TextSelection.collapsed(offset: _textCtrl.text.length);
           });
         },
-        localeId: 'fr_FR',
+        listenOptions: stt.SpeechListenOptions(localeId: 'fr_FR'),
       );
     }
   }
@@ -1398,7 +1398,7 @@ class _CrisisSheet extends StatelessWidget {
                     ),
                     Text(
                       e.$2,
-                      style: TextStyle(fontFamily: 'Manrope', 
+                      style: const TextStyle(fontFamily: 'Manrope', 
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                         color: AppColors.primary,
@@ -1419,7 +1419,7 @@ class _CrisisSheet extends StatelessWidget {
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(28),
               ),
-              child: Text(
+              child: const Text(
                 'Continuer',
                 style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 15,
@@ -1489,7 +1489,7 @@ class _ConfirmDialog extends StatelessWidget {
               color: AppColors.primary,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Text(
+            child: const Text(
               'Oui, envoyer',
               style: TextStyle(fontFamily: 'Manrope', 
                 fontWeight: FontWeight.w700,

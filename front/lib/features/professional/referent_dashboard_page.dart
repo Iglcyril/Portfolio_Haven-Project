@@ -254,7 +254,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                                   color: AppColors.primary.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                child: Text(
+                                child: const Text(
                                   'Archiver',
                                   style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 12,
@@ -655,17 +655,17 @@ class _ReferentReportCard extends StatelessWidget {
                       color: const Color(0xFFC0392B).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.warning_rounded, size: 11, color: Color(0xFFC0392B)),
-                        const SizedBox(width: 4),
+                        Icon(Icons.warning_rounded, size: 11, color: Color(0xFFC0392B)),
+                        SizedBox(width: 4),
                         Text(
                           'Urgence',
                           style: TextStyle(fontFamily: 'Manrope', 
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFFC0392B),
+                            color: Color(0xFFC0392B),
                           ),
                         ),
                       ],
@@ -705,7 +705,7 @@ class _ReferentReportCard extends StatelessWidget {
                   ),
                   child: Text(
                     report.anonLevel,
-                    style: TextStyle(fontFamily: 'Manrope', 
+                    style: const TextStyle(fontFamily: 'Manrope', 
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
@@ -972,7 +972,7 @@ class _ReferentStatCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 value,
-                style: TextStyle(fontFamily: 'Fraunces', 
+                style: const TextStyle(fontFamily: 'Fraunces', 
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
@@ -1447,19 +1447,19 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                 ),
                               ] else if (report.progressStage >= 3) ...[
                                 const SizedBox(height: 12),
-                                Row(
+                                const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.check_circle_rounded,
+                                    Icon(Icons.check_circle_rounded,
                                         size: 16,
                                         color: Color(0xFF2EAB7B)),
-                                    const SizedBox(width: 6),
+                                    SizedBox(width: 6),
                                     Text(
                                       'Signalement résolu',
                                       style: TextStyle(fontFamily: 'Manrope', 
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700,
-                                        color: const Color(0xFF2EAB7B),
+                                        color: Color(0xFF2EAB7B),
                                       ),
                                     ),
                                   ],
@@ -1485,13 +1485,13 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                           .withValues(alpha: 0.12),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(Icons.add_rounded,
+                                        Icon(Icons.add_rounded,
                                             size: 14,
                                             color: AppColors.primary),
-                                        const SizedBox(width: 4),
+                                        SizedBox(width: 4),
                                         Text(
                                           'Ajouter',
                                           style: TextStyle(fontFamily: 'Manrope', 

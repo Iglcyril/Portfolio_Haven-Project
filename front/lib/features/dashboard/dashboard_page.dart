@@ -557,7 +557,7 @@ class _SectionHeader extends StatelessWidget {
         const Spacer(),
         GestureDetector(
           onTap: onNewReport,
-          child: Text('+ Nouveau', style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
+          child: const Text('+ Nouveau', style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
         ),
       ],
     );
@@ -764,7 +764,7 @@ class _ReportCardState extends State<_ReportCard> {
                             : Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(color: AppColors.warmWhite, borderRadius: BorderRadius.circular(8)),
-                                child: Text(widget.report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
+                                child: Text(widget.report.caseNumber, style: const TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                               ),
                         const SizedBox(width: 8),
                         // Badge priorité
@@ -802,7 +802,7 @@ class _ReportCardState extends State<_ReportCard> {
                           ),
                           child: Text(
                             widget.report.anonLabel,
-                            style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
+                            style: const TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
                           ),
                         ),
                         if (_canDelete) ...[

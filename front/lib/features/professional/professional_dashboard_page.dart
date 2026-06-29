@@ -387,7 +387,7 @@ class _ProfessionalDashboardPageState
                                 ),
                                 Text(
                                   member.role,
-                                  style: TextStyle(fontFamily: 'Manrope', 
+                                  style: const TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
                                     color: AppColors.primary,
@@ -966,7 +966,7 @@ class _ProfessionalDashboardPageState
                                     ),
                                     child: Text(
                                       '${unassigned.length}',
-                                      style: TextStyle(fontFamily: 'Manrope', 
+                                      style: const TextStyle(fontFamily: 'Manrope', 
                                         fontSize: 11,
                                         fontWeight: FontWeight.w700,
                                         color: AppColors.primary,
@@ -1085,7 +1085,7 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               value,
-              style: TextStyle(fontFamily: 'Fraunces', 
+              style: const TextStyle(fontFamily: 'Fraunces', 
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
@@ -1233,17 +1233,17 @@ class HavenReportCard extends StatelessWidget {
                     color: const Color(0xFFC0392B).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.warning_rounded, size: 11, color: Color(0xFFC0392B)),
-                      const SizedBox(width: 4),
+                      Icon(Icons.warning_rounded, size: 11, color: Color(0xFFC0392B)),
+                      SizedBox(width: 4),
                       Text(
                         'Urgence',
                         style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFFC0392B),
+                          color: Color(0xFFC0392B),
                         ),
                       ),
                     ],
@@ -1297,7 +1297,7 @@ class HavenReportCard extends StatelessWidget {
             ),
             child: Text(
               report.anonLevel,
-              style: TextStyle(fontFamily: 'Manrope', 
+              style: const TextStyle(fontFamily: 'Manrope', 
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: AppColors.primary,
@@ -1822,7 +1822,7 @@ class _ActiveReportsPageState extends State<_ActiveReportsPage> {
               ),
               child: Text(
                 '${active.length}',
-                style: TextStyle(fontFamily: 'Manrope', 
+                style: const TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: AppColors.primary,

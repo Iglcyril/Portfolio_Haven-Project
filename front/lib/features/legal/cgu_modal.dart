@@ -260,7 +260,7 @@ class _CguSheetState extends State<_CguSheet> {
                   ),
                   child: Text(
                     _canAccept ? 'J\'accepte et continuer' : 'Faites défiler pour accepter',
-                    style: TextStyle(fontFamily: 'Manrope', 
+                    style: const TextStyle(fontFamily: 'Manrope', 
                         fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: 0.1),
                   ),
                 ),
@@ -329,7 +329,7 @@ class _CguSheetState extends State<_CguSheet> {
                 child: const Icon(Icons.info_outline_rounded, color: AppColors.primary, size: 16),
               ),
               const SizedBox(width: 10),
-              Expanded(
+              const Expanded(
                 child: Text(
                   'Point important — Levée de l\'anonymat',
                   style: TextStyle(fontFamily: 'Manrope', 
@@ -394,7 +394,7 @@ class _CguSheetState extends State<_CguSheet> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(label,
-                  style: TextStyle(fontFamily: 'Manrope', 
+                  style: const TextStyle(fontFamily: 'Manrope', 
                       fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary)),
             ),
             Icon(Icons.arrow_forward_ios_rounded,

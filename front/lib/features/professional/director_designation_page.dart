@@ -192,7 +192,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                   height: 1.05,
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 'du co-responsable.',
                                 style: TextStyle(fontFamily: 'Fraunces', 
                                   fontSize: 36,
@@ -692,7 +692,7 @@ class _PersonPreview extends StatelessWidget {
             child: Center(
               child: Text(
                 _initials.isEmpty ? '?' : _initials,
-                style: TextStyle(fontFamily: 'Manrope', 
+                style: const TextStyle(fontFamily: 'Manrope', 
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -718,7 +718,7 @@ class _PersonPreview extends StatelessWidget {
                 if (role != null && role!.isNotEmpty)
                   Text(
                     role!,
-                    style: TextStyle(fontFamily: 'Manrope', 
+                    style: const TextStyle(fontFamily: 'Manrope', 
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primary,
@@ -787,7 +787,7 @@ class _PersonChip extends StatelessWidget {
             child: Center(
               child: Text(
                 person.initials.isEmpty ? '?' : person.initials,
-                style: TextStyle(fontFamily: 'Manrope', 
+                style: const TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -813,7 +813,7 @@ class _PersonChip extends StatelessWidget {
                 ),
                 Text(
                   person.role,
-                  style: TextStyle(fontFamily: 'Manrope', 
+                  style: const TextStyle(fontFamily: 'Manrope', 
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: AppColors.primary,

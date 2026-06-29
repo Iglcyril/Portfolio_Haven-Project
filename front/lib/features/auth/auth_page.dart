@@ -580,7 +580,7 @@ class _FormFields extends StatelessWidget {
               const Spacer(),
               GestureDetector(
                 onTap: () {}, // placeholder — flux mot de passe oublié à brancher
-                child: Text(
+                child: const Text(
                   'Mot de passe oublié ?',
                   style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 13,
@@ -774,7 +774,7 @@ class _CtaButton extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      style: TextStyle(fontFamily: 'Manrope', 
+                      style: const TextStyle(fontFamily: 'Manrope', 
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,

@@ -128,7 +128,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                               ),
                             ),
                             const SizedBox(height: 6),
-                            Text(
+                            const Text(
                               'Application de lutte contre le harcèlement.',
                               style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 18,

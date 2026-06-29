@@ -36,12 +36,12 @@ class CrisisAlertDialog extends StatelessWidget {
               child: const Icon(Icons.warning_rounded, color: Color(0xFFC0392B), size: 30),
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               '⚠ Alerte de crise',
               style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: const Color(0xFFC0392B),
+                color: Color(0xFFC0392B),
               ),
             ),
             const SizedBox(height: 8),
@@ -72,7 +72,7 @@ class CrisisAlertDialog extends StatelessWidget {
                   ),
                   Text(
                     alert.trackingCode,
-                    style: TextStyle(fontFamily: 'Manrope', 
+                    style: const TextStyle(fontFamily: 'Manrope', 
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -93,7 +93,7 @@ class CrisisAlertDialog extends StatelessWidget {
                     color: const Color(0xFFC0392B),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Voir les signalements',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontFamily: 'Manrope', 

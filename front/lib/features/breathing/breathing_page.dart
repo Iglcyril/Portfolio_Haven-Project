@@ -205,7 +205,7 @@ class _BreathingPageState extends State<BreathingPage>
                             child: Text(
                               '$_countdown',
                               key: ValueKey(_countdown),
-                              style: TextStyle(fontFamily: 'Fraunces', 
+                              style: const TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 60,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -247,7 +247,7 @@ class _BreathingPageState extends State<BreathingPage>
                   },
                   key: ValueKey(_phase),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: 'Fraunces', 
+                  style: const TextStyle(fontFamily: 'Fraunces', 
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -290,7 +290,7 @@ class _BreathingPageState extends State<BreathingPage>
                         ),
                       ],
                     ),
-                    child: Text(
+                    child: const Text(
                       'Retour',
                       style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 16,
