@@ -34,13 +34,17 @@ class _AuthPageState extends State<AuthPage> {
   bool _isLoading = false;
   String? _error;
 
-  final _nameCtrl     = TextEditingController();
-  final _emailCtrl    = TextEditingController();
-  final _passwordCtrl = TextEditingController();
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl  = TextEditingController();
+  final _birthDateCtrl = TextEditingController();
+  final _emailCtrl     = TextEditingController();
+  final _passwordCtrl  = TextEditingController();
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
+    _firstNameCtrl.dispose();
+    _lastNameCtrl.dispose();
+    _birthDateCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
@@ -70,22 +74,50 @@ class _AuthPageState extends State<AuthPage> {
       return;
     }
     if (widget.portal == PortalType.student) {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => TutorialPage(onToggleTheme: widget.onToggleTheme),
-      ));
+      final firstName   = _firstNameCtrl.text.trim();
+      final lastName    = _lastNameCtrl.text.trim();
+      final birthDateRaw = _birthDateCtrl.text.trim();
+      final email       = _emailCtrl.text.trim();
+      final password    = _passwordCtrl.text;
+      if (firstName.isEmpty || lastName.isEmpty || birthDateRaw.isEmpty || email.isEmpty || password.isEmpty) {
+        setState(() => _error = 'Veuillez remplir tous les champs');
+        return;
+      }
+      final parts = birthDateRaw.split('/');
+      if (parts.length != 3 || parts[0].length != 2 || parts[1].length != 2 || parts[2].length != 4) {
+        setState(() => _error = 'Format de date invalide (JJ/MM/AAAA)');
+        return;
+      }
+      final birthDate = '${parts[2]}-${parts[1]}-${parts[0]}';
+      setState(() { _isLoading = true; _error = null; });
+      try {
+        await AuthService.register(
+          email: email,
+          password: password,
+          role: 'STUDENT',
+          firstName: firstName,
+          lastName: lastName,
+          birthDate: birthDate,
+        );
+        if (!mounted) return;
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => TutorialPage(onToggleTheme: widget.onToggleTheme),
+        ));
+      } catch (e) {
+        if (!mounted) return;
+        setState(() { _error = e.toString(); _isLoading = false; });
+      }
       return;
     }
     // Parent registration
-    final name = _nameCtrl.text.trim();
-    final email = _emailCtrl.text.trim();
-    final password = _passwordCtrl.text;
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+    final firstName = _firstNameCtrl.text.trim();
+    final lastName  = _lastNameCtrl.text.trim();
+    final email     = _emailCtrl.text.trim();
+    final password  = _passwordCtrl.text;
+    if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty) {
       setState(() => _error = 'Veuillez remplir tous les champs');
       return;
     }
-    final parts = name.split(' ');
-    final firstName = parts.first;
-    final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : parts.first;
     setState(() { _isLoading = true; _error = null; });
     try {
       await AuthService.register(
@@ -227,8 +259,11 @@ class _AuthPageState extends State<AuthPage> {
                       child: _FormFields(
                         key: ValueKey(_tab),
                         tab: _tab,
+                        portal: widget.portal,
                         isDark: isDark,
-                        nameCtrl: _nameCtrl,
+                        firstNameCtrl: _firstNameCtrl,
+                        lastNameCtrl: _lastNameCtrl,
+                        birthDateCtrl: _birthDateCtrl,
                         emailCtrl: _emailCtrl,
                         passwordCtrl: _passwordCtrl,
                         obscurePassword: _obscurePassword,
@@ -497,8 +532,11 @@ class _TabChip extends StatelessWidget {
 
 class _FormFields extends StatelessWidget {
   final _AuthTab tab;
+  final PortalType portal;
   final bool isDark;
-  final TextEditingController nameCtrl;
+  final TextEditingController firstNameCtrl;
+  final TextEditingController lastNameCtrl;
+  final TextEditingController birthDateCtrl;
   final TextEditingController emailCtrl;
   final TextEditingController passwordCtrl;
   final bool obscurePassword;
@@ -509,8 +547,11 @@ class _FormFields extends StatelessWidget {
   const _FormFields({
     super.key,
     required this.tab,
+    required this.portal,
     required this.isDark,
-    required this.nameCtrl,
+    required this.firstNameCtrl,
+    required this.lastNameCtrl,
+    required this.birthDateCtrl,
     required this.emailCtrl,
     required this.passwordCtrl,
     required this.obscurePassword,
@@ -525,16 +566,45 @@ class _FormFields extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (tab == _AuthTab.register) ...[
-          _HavenField(
-            label: 'NOM COMPLET',
-            hint: 'Votre nom',
-            controller: nameCtrl,
-            icon: Icons.person_outline_rounded,
-            isDark: isDark,
-            keyboardType: TextInputType.name,
-            textCapitalization: TextCapitalization.words,
+          Row(
+            children: [
+              Expanded(
+                child: _HavenField(
+                  label: 'PRÉNOM',
+                  hint: 'Prénom',
+                  controller: firstNameCtrl,
+                  icon: Icons.person_outline_rounded,
+                  isDark: isDark,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _HavenField(
+                  label: 'NOM',
+                  hint: 'Nom de famille',
+                  controller: lastNameCtrl,
+                  icon: Icons.person_outline_rounded,
+                  isDark: isDark,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
+          if (portal == PortalType.student) ...[
+            _HavenField(
+              label: 'DATE DE NAISSANCE',
+              hint: 'JJ/MM/AAAA',
+              controller: birthDateCtrl,
+              icon: Icons.calendar_today_outlined,
+              isDark: isDark,
+              keyboardType: TextInputType.datetime,
+            ),
+            const SizedBox(height: 12),
+          ],
         ],
         _HavenField(
           label: 'EMAIL',
