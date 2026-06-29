@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../theme/app_colors.dart';
 
@@ -103,7 +102,7 @@ class _EmergencySheetContent extends StatelessWidget {
                   children: [
                     Text(
                       "Numéros d'urgence",
-                      style: GoogleFonts.fraunces(
+                      style: TextStyle(fontFamily: 'Fraunces', 
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: textPrimary,
@@ -112,7 +111,7 @@ class _EmergencySheetContent extends StatelessWidget {
                     ),
                     Text(
                       'Appuie sur un numéro pour composer',
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: textSecondary,
@@ -191,7 +190,7 @@ class _ContactTile extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   contact.number,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color: contact.color,
@@ -207,7 +206,7 @@ class _ContactTile extends StatelessWidget {
                   children: [
                     Text(
                       contact.label,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: textPrimary,
@@ -215,7 +214,7 @@ class _ContactTile extends StatelessWidget {
                     ),
                     Text(
                       contact.description,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: textSecondary,

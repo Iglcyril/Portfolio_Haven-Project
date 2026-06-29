@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../dashboard/dashboard_page.dart';
@@ -42,7 +41,7 @@ class ReportDeclinedPage extends StatelessWidget {
                       const SizedBox(height: 24),
                       Text(
                         "C'est courageux d'y avoir pensé",
-                        style: GoogleFonts.fraunces(
+                        style: TextStyle(fontFamily: 'Fraunces', 
                           fontSize: 26,
                           fontWeight: FontWeight.w800,
                           color: isDark
@@ -55,7 +54,7 @@ class ReportDeclinedPage extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         "Si tu te sens prêt(e) un jour, l'équipe Haven est là pour toi. Tu n'es pas seul(e).",
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 18,
                           color: isDark
                               ? Colors.white.withValues(alpha: 0.65)
@@ -93,7 +92,7 @@ class ReportDeclinedPage extends StatelessWidget {
                           ),
                           child: Text(
                             'Retour à mes signalements',
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 15,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,

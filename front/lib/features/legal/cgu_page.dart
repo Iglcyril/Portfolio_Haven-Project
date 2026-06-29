@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 
 class CguPage extends StatelessWidget {
@@ -25,7 +24,7 @@ class CguPage extends StatelessWidget {
         ),
         title: Text(
           'CGU',
-          style: GoogleFonts.manrope(fontSize: 16, fontWeight: FontWeight.w700, color: textPrimary),
+          style: TextStyle(fontFamily: 'Manrope', fontSize: 16, fontWeight: FontWeight.w700, color: textPrimary),
         ),
         centerTitle: true,
       ),
@@ -36,7 +35,7 @@ class CguPage extends StatelessWidget {
           children: [
             Text(
               'Conditions Générales d\'Utilisation',
-              style: GoogleFonts.fraunces(
+              style: TextStyle(fontFamily: 'Fraunces', 
                 fontSize: 26,
                 fontWeight: FontWeight.w600,
                 color: textPrimary,
@@ -46,12 +45,12 @@ class CguPage extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               'Application Haven — Version 1.0 — Juin 2026',
-              style: GoogleFonts.manrope(fontSize: 12, color: textMuted, fontStyle: FontStyle.italic),
+              style: TextStyle(fontFamily: 'Manrope', fontSize: 12, color: textMuted, fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 4),
             Text(
               'Plateforme de signalement du harcèlement scolaire',
-              style: GoogleFonts.manrope(fontSize: 12, color: textMuted),
+              style: TextStyle(fontFamily: 'Manrope', fontSize: 12, color: textMuted),
             ),
             const SizedBox(height: 32),
 
@@ -228,7 +227,7 @@ class _Section extends StatelessWidget {
           ),
           child: Text(
             'Article $number — $title',
-            style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary),
+            style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: textPrimary),
           ),
         ),
         const SizedBox(height: 12),
@@ -246,7 +245,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: GoogleFonts.manrope(fontSize: 13.5, color: color, height: 1.7));
+    return Text(text, style: TextStyle(fontFamily: 'Manrope', fontSize: 13.5, color: color, height: 1.7));
   }
 }
 
@@ -259,7 +258,7 @@ class _SubSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w700, color: color),
+      style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w700, color: color),
     );
   }
 }
@@ -285,7 +284,7 @@ class _Bullet extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(child: Text(text, style: GoogleFonts.manrope(fontSize: 13.5, color: color, height: 1.7))),
+          Expanded(child: Text(text, style: TextStyle(fontFamily: 'Manrope', fontSize: 13.5, color: color, height: 1.7))),
         ],
       ),
     );

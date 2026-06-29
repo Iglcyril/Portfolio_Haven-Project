@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -242,8 +241,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(member.name, style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.90) : AppColors.lightTextPrimary)),
-                                    Text(member.role, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary)),
+                                    Text(member.name, style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.90) : AppColors.lightTextPrimary)),
+                                    Text(member.role, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w500, color: AppColors.primary)),
                                   ],
                                 ),
                               ),
@@ -338,8 +337,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(level, style: GoogleFonts.fraunces(fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.1)),
-                                    Text(descriptions[i], style: GoogleFonts.manrope(fontSize: 11, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
+                                    Text(level, style: TextStyle(fontFamily: 'Fraunces', fontSize: 16, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.1)),
+                                    Text(descriptions[i], style: TextStyle(fontFamily: 'Manrope', fontSize: 11, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary)),
                                   ],
                                 ),
                               ),
@@ -386,7 +385,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
               const SizedBox(height: 16),
               Text(
                 'Supprimer le signalement ?',
-                style: GoogleFonts.fraunces(
+                style: TextStyle(fontFamily: 'Fraunces', 
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -397,7 +396,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
               const SizedBox(height: 8),
               Text(
                 'Cette action est irréversible. Ton signalement sera définitivement supprimé.',
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary,
                   height: 1.5,
@@ -444,7 +443,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
                     'Annuler',
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary,
@@ -526,14 +525,14 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           child: Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                             decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(8)),
-                                            child: Text(widget.report.caseNumber, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
+                                            child: Text(widget.report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
                                           ),
                                         ),
                                       )
                                     : Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                         decoration: BoxDecoration(color: AppColors.lightCard, borderRadius: BorderRadius.circular(8), boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 6)]),
-                                        child: Text(widget.report.caseNumber, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
+                                        child: Text(widget.report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                                       ),
                                 const SizedBox(width: 8),
                                 // Badge priorité
@@ -607,7 +606,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                       const SizedBox(width: 4),
                                       Text(
                                         'Déposé le ${widget.report.date}',
-                                        style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.40) : AppColors.lightTextSecondary),
+                                        style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.40) : AppColors.lightTextSecondary),
                                       ),
                                       const SizedBox(width: 10),
                                       Container(
@@ -616,7 +615,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.10),
                                           borderRadius: BorderRadius.circular(6),
                                         ),
-                                        child: Text(widget.report.anonLabel, style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
+                                        child: Text(widget.report.anonLabel, style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
                                       ),
                                     ],
                                   ),
@@ -630,7 +629,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           const SizedBox(width: 4),
                                           Text(
                                             widget.report.studentName!,
-                                            style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary),
+                                            style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary),
                                           ),
                                           const SizedBox(width: 10),
                                         ],
@@ -639,7 +638,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           const SizedBox(width: 4),
                                           Text(
                                             widget.report.studentClass!,
-                                            style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary),
+                                            style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary),
                                           ),
                                         ],
                                       ],
@@ -649,7 +648,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                   // Texte du signalement
                                   Text(
                                     widget.report.initialText,
-                                    style: GoogleFonts.manrope(
+                                    style: TextStyle(fontFamily: 'Manrope', 
                                       fontSize: 14,
                                       fontWeight: FontWeight.w400,
                                       color: isDark ? Colors.white.withValues(alpha: 0.85) : AppColors.lightTextPrimary,
@@ -678,7 +677,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                       const SizedBox(width: 6),
                                       Text(
                                         'Ajouter des informations',
-                                        style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary),
+                                        style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary),
                                       ),
                                     ],
                                   ),
@@ -728,7 +727,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                             Text('Attribuer à', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)),
                                             Text(
                                               _assignedTo ?? 'Non attribué',
-                                              style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: _assignedTo != null ? AppColors.primary : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
+                                              style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: _assignedTo != null ? AppColors.primary : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
                                             ),
                                           ],
                                         ),
@@ -775,7 +774,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                                 ],
                                                 Text(
                                                   _riskLevel ?? 'Non évalué',
-                                                  style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: _riskLevel != null ? _riskColors[_riskLevel]! : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
+                                                  style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: _riskLevel != null ? _riskColors[_riskLevel]! : (isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
                                                 ),
                                               ],
                                             ),
@@ -832,7 +831,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                               Text('Avancer le dossier', style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)),
                                               Text(
                                                 'Passer à : ${_currentStatus == ReportStatus.filed || _currentStatus == ReportStatus.reviewed ? 'EN COURS' : 'RÉSOLU'}',
-                                                style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
+                                                style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
                                               ),
                                             ],
                                           ),
@@ -874,7 +873,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
                                   'Impossible de charger l\'historique complet.',
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 12,
                                     color: isDark ? Colors.white38 : AppColors.lightTextSecondary,
                                   ),
@@ -901,7 +900,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                       const SizedBox(width: 8),
                                       Text(
                                         'Supprimer le signalement',
-                                        style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w700, color: const Color(0xFFE53935)),
+                                        style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w700, color: const Color(0xFFE53935)),
                                       ),
                                       const Spacer(),
                                       Container(
@@ -910,7 +909,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                                           color: const Color(0xFFE53935).withValues(alpha: 0.15),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
-                                        child: Text(_countdownLabel, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFE53935))),
+                                        child: Text(_countdownLabel, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w700, color: const Color(0xFFE53935))),
                                       ),
                                     ],
                                   ),
@@ -1010,7 +1009,7 @@ class _DetailProgressTracker extends StatelessWidget {
               final isPast = i < ci;
               return Text(
                 _labels[i],
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 9,
                   fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
                   color: isCurrent
@@ -1112,7 +1111,7 @@ class _Timeline extends StatelessWidget {
                         children: [
                           Text(
                             action.actor,
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                               color: isDark ? Colors.white.withValues(alpha: 0.85) : AppColors.lightTextPrimary,
@@ -1121,7 +1120,7 @@ class _Timeline extends StatelessWidget {
                           const SizedBox(width: 8),
                           Text(
                             _formatDate(action.date),
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
                               color: isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary,
@@ -1132,7 +1131,7 @@ class _Timeline extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         action.description,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
                           color: isDark ? Colors.white.withValues(alpha: 0.65) : AppColors.lightTextSecondary,
@@ -1187,7 +1186,7 @@ class _AddedInfoBubble extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 _formatDate(info.date),
-                style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.40) : AppColors.lightTextSecondary),
+                style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.40) : AppColors.lightTextSecondary),
               ),
               const SizedBox(width: 10),
               Container(
@@ -1196,14 +1195,14 @@ class _AddedInfoBubble extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.10),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Text('Précision ajoutée', style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
+                child: Text('Précision ajoutée', style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary)),
               ),
             ],
           ),
           const SizedBox(height: 10),
           Text(
             info.text,
-            style: GoogleFonts.manrope(fontSize: 14, fontWeight: FontWeight.w400, color: isDark ? Colors.white.withValues(alpha: 0.85) : AppColors.lightTextPrimary, height: 1.6),
+            style: TextStyle(fontFamily: 'Manrope', fontSize: 14, fontWeight: FontWeight.w400, color: isDark ? Colors.white.withValues(alpha: 0.85) : AppColors.lightTextPrimary, height: 1.6),
           ),
         ],
       ),
@@ -1239,14 +1238,14 @@ class _AddInfoField extends StatelessWidget {
             maxLines: 4,
             minLines: 3,
             autofocus: true,
-            style: GoogleFonts.manrope(
+            style: TextStyle(fontFamily: 'Manrope', 
               fontSize: 14,
               color: isDark ? Colors.white : AppColors.lightTextPrimary,
               height: 1.5,
             ),
             decoration: InputDecoration(
               hintText: 'Ajoute des précisions à ton signalement…',
-              hintStyle: GoogleFonts.manrope(
+              hintStyle: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 14,
                 color: isDark ? Colors.white.withValues(alpha: 0.30) : AppColors.lightTextSecondary.withValues(alpha: 0.60),
               ),
@@ -1277,7 +1276,7 @@ class _AddInfoField extends StatelessWidget {
                 onTap: onCancel,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text('Annuler', style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary)),
+                  child: Text('Annuler', style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary)),
                 ),
               ),
               // Envoyer

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../user/user_home_page.dart';
@@ -268,7 +267,7 @@ class _TutorialPageState extends State<TutorialPage>
                   ),
                   child: Text(
                     'Passer',
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
@@ -663,7 +662,7 @@ class _SpeechBubble extends StatelessWidget {
           ),
           child: Text(
             text,
-            style: GoogleFonts.manrope(
+            style: TextStyle(fontFamily: 'Manrope', 
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Colors.white,
@@ -810,7 +809,7 @@ class _NextButton extends StatelessWidget {
           children: [
             Text(
               label,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,

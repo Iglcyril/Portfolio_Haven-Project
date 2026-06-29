@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/circle_clipper.dart';
 
@@ -497,7 +496,7 @@ class _Wordmark extends StatelessWidget {
         child: Text(
           'Haven',
           textAlign: TextAlign.center,
-          style: GoogleFonts.fraunces(
+          style: TextStyle(fontFamily: 'Fraunces', 
             fontSize: 132 * sx,
             fontWeight: FontWeight.w600,
             letterSpacing: -0.02 * 132 * sx,
@@ -540,7 +539,7 @@ class _Tagline extends StatelessWidget {
             Text(
               'Ta Safe Place',
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 40 * sx,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 0.01 * 40 * sx,
@@ -651,7 +650,7 @@ class _TrustBadge extends StatelessWidget {
                       SizedBox(width: 14 * sx),
                       Text(
                         'Confidentiel · Anonyme · Toujours',
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 27 * sx,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.02 * 27 * sx,

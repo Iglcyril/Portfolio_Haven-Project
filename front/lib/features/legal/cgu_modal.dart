@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import 'cgu_page.dart';
@@ -107,7 +106,7 @@ class _CguSheetState extends State<_CguSheet> {
                 const SizedBox(height: 8),
                 Text(
                   'Conditions Générales d\'Utilisation',
-                  style: GoogleFonts.fraunces(
+                  style: TextStyle(fontFamily: 'Fraunces', 
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: textPrimary,
@@ -118,7 +117,7 @@ class _CguSheetState extends State<_CguSheet> {
                 const SizedBox(height: 3),
                 Text(
                   'Version 1.0 — Juin 2026',
-                  style: GoogleFonts.manrope(fontSize: 11.5, color: textMuted),
+                  style: TextStyle(fontFamily: 'Manrope', fontSize: 11.5, color: textMuted),
                 ),
               ],
             ),
@@ -139,7 +138,7 @@ class _CguSheetState extends State<_CguSheet> {
                   const SizedBox(width: 4),
                   Text(
                     'Faites défiler jusqu\'en bas pour accepter',
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary.withValues(alpha: 0.8),
@@ -161,7 +160,7 @@ class _CguSheetState extends State<_CguSheet> {
                   const SizedBox(height: 8),
                   Text(
                     'Bienvenue sur Haven. En utilisant cette application, vous acceptez les conditions ci-dessous. Veuillez les lire attentivement avant de continuer.',
-                    style: GoogleFonts.manrope(fontSize: 13, color: textMuted, height: 1.65),
+                    style: TextStyle(fontFamily: 'Manrope', fontSize: 13, color: textMuted, height: 1.65),
                   ),
                   const SizedBox(height: 20),
 
@@ -190,7 +189,7 @@ class _CguSheetState extends State<_CguSheet> {
                   // Links to full documents
                   Text(
                     'DOCUMENTS COMPLETS',
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       color: textMuted,
@@ -220,7 +219,7 @@ class _CguSheetState extends State<_CguSheet> {
                   const SizedBox(height: 24),
                   Text(
                     'En appuyant sur « J\'accepte et continuer », vous reconnaissez avoir pris connaissance des Conditions Générales d\'Utilisation et de la Politique de confidentialité de Haven, y compris les dispositions relatives à la levée de l\'anonymat prévues par la loi.',
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 11,
                       color: textMuted,
                       height: 1.65,
@@ -261,7 +260,7 @@ class _CguSheetState extends State<_CguSheet> {
                   ),
                   child: Text(
                     _canAccept ? 'J\'accepte et continuer' : 'Faites défiler pour accepter',
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: 0.1),
                   ),
                 ),
@@ -295,11 +294,11 @@ class _CguSheetState extends State<_CguSheet> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 13, fontWeight: FontWeight.w700, color: textPrimary)),
                 const SizedBox(height: 3),
                 Text(body,
-                    style: GoogleFonts.manrope(fontSize: 12, color: textMuted, height: 1.55)),
+                    style: TextStyle(fontFamily: 'Manrope', fontSize: 12, color: textMuted, height: 1.55)),
               ],
             ),
           ),
@@ -333,7 +332,7 @@ class _CguSheetState extends State<_CguSheet> {
               Expanded(
                 child: Text(
                   'Point important — Levée de l\'anonymat',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary),
                 ),
               ),
@@ -342,7 +341,7 @@ class _CguSheetState extends State<_CguSheet> {
           const SizedBox(height: 12),
           Text(
             'L\'anonymat choisi n\'est pas un droit absolu et peut être levé sans consentement préalable dans les cas suivants :',
-            style: GoogleFonts.manrope(fontSize: 12.5, color: textPrimary, height: 1.6),
+            style: TextStyle(fontFamily: 'Manrope', fontSize: 12.5, color: textPrimary, height: 1.6),
           ),
           const SizedBox(height: 10),
           _bulletItem(
@@ -376,7 +375,7 @@ class _CguSheetState extends State<_CguSheet> {
         const SizedBox(width: 8),
         Expanded(
           child: Text(text,
-              style: GoogleFonts.manrope(fontSize: 12, color: textPrimary, height: 1.6)),
+              style: TextStyle(fontFamily: 'Manrope', fontSize: 12, color: textPrimary, height: 1.6)),
         ),
       ],
     );
@@ -395,7 +394,7 @@ class _CguSheetState extends State<_CguSheet> {
             const SizedBox(width: 10),
             Expanded(
               child: Text(label,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.primary)),
             ),
             Icon(Icons.arrow_forward_ios_rounded,

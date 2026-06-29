@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../core/theme/app_colors.dart';
@@ -554,7 +553,7 @@ class _ChatAppBar extends StatelessWidget {
                 ),
                 Text(
                   'Confidentiel',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                     color: isDark
@@ -621,7 +620,7 @@ class _UserBanner extends StatelessWidget {
           Expanded(
             child: Text(
               userName,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: isDark
@@ -718,7 +717,7 @@ class _DateSeparator extends StatelessWidget {
       child: Center(
         child: Text(
           "Aujourd'hui · $hh:$mm",
-          style: GoogleFonts.manrope(
+          style: TextStyle(fontFamily: 'Manrope', 
             fontSize: 11,
             fontWeight: FontWeight.w500,
             color: isDark
@@ -801,7 +800,7 @@ class _BubbleRow extends StatelessWidget {
                       if (msg.media != null) const SizedBox(height: 6),
                       Text(
                         msg.text!,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 14,
                           color: textColor,
                           height: 1.45,
@@ -812,7 +811,7 @@ class _BubbleRow extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       '$hh:$mm',
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 10,
                         color: timeColor,
                         fontWeight: FontWeight.w500,
@@ -977,7 +976,7 @@ class _QuickRepliesRow extends StatelessWidget {
                       ),
                       child: Text(
                         r,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: isDark
@@ -1150,7 +1149,7 @@ class _InputBar extends StatelessWidget {
               onSubmitted: (_) => onSubmit(),
               decoration: InputDecoration(
                 hintText: 'Tapez un message...',
-                hintStyle: GoogleFonts.manrope(
+                hintStyle: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 14,
                   color: isDark
                       ? Colors.white.withValues(alpha: 0.35)
@@ -1160,7 +1159,7 @@ class _InputBar extends StatelessWidget {
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(vertical: 8),
               ),
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 14,
                 color: isDark ? Colors.white : AppColors.lightTextPrimary,
               ),
@@ -1281,7 +1280,7 @@ class _PickOption extends StatelessWidget {
             const SizedBox(width: 14),
             Text(
               label,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -1339,7 +1338,7 @@ class _CrisisSheet extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Tu n\'es pas seul(e)',
-            style: GoogleFonts.fraunces(
+            style: TextStyle(fontFamily: 'Fraunces', 
               fontSize: 22,
               fontWeight: FontWeight.w800,
               color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -1349,7 +1348,7 @@ class _CrisisSheet extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Des professionnels sont disponibles maintenant pour t\'écouter.',
-            style: GoogleFonts.manrope(
+            style: TextStyle(fontFamily: 'Manrope', 
               fontSize: 14,
               height: 1.5,
               color: isDark
@@ -1390,7 +1389,7 @@ class _CrisisSheet extends StatelessWidget {
                     Expanded(
                       child: Text(
                         e.$1,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -1399,7 +1398,7 @@ class _CrisisSheet extends StatelessWidget {
                     ),
                     Text(
                       e.$2,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                         color: AppColors.primary,
@@ -1422,7 +1421,7 @@ class _CrisisSheet extends StatelessWidget {
               ),
               child: Text(
                 'Continuer',
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -1458,7 +1457,7 @@ class _ConfirmDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: Text(
         'Terminer le signalement ?',
-        style: GoogleFonts.fraunces(
+        style: TextStyle(fontFamily: 'Fraunces', 
           fontSize: 20,
           fontWeight: FontWeight.w700,
           color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -1473,7 +1472,7 @@ class _ConfirmDialog extends StatelessWidget {
           onPressed: onCancel,
           child: Text(
             'Non',
-            style: GoogleFonts.manrope(
+            style: TextStyle(fontFamily: 'Manrope', 
               fontWeight: FontWeight.w600,
               color: isDark
                   ? Colors.white.withValues(alpha: 0.65)
@@ -1492,7 +1491,7 @@ class _ConfirmDialog extends StatelessWidget {
             ),
             child: Text(
               'Oui, envoyer',
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),

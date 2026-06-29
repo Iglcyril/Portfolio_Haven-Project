@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/services/websocket_service.dart';
 
 class CrisisAlertDialog extends StatelessWidget {
@@ -39,7 +38,7 @@ class CrisisAlertDialog extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               '⚠ Alerte de crise',
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
                 color: const Color(0xFFC0392B),
@@ -49,7 +48,7 @@ class CrisisAlertDialog extends StatelessWidget {
             Text(
               'Un nouveau signalement avec des indicateurs de crise vient d\'être déposé.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 color: Colors.white.withValues(alpha: 0.80),
@@ -69,11 +68,11 @@ class CrisisAlertDialog extends StatelessWidget {
                 children: [
                   Text(
                     'Dossier ',
-                    style: GoogleFonts.manrope(fontSize: 13, color: Colors.white.withValues(alpha: 0.55)),
+                    style: TextStyle(fontFamily: 'Manrope', fontSize: 13, color: Colors.white.withValues(alpha: 0.55)),
                   ),
                   Text(
                     alert.trackingCode,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
@@ -97,7 +96,7 @@ class CrisisAlertDialog extends StatelessWidget {
                   child: Text(
                     'Voir les signalements',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -329,7 +328,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     child: Text(
                                       _error!,
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.manrope(
+                                      style: TextStyle(fontFamily: 'Manrope', 
                                         fontSize: 14,
                                         color: isDark
                                             ? Colors.white54
@@ -363,7 +362,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                           child: Text(
                                             'Aucun signalement pour le moment.',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.manrope(
+                                            style: TextStyle(fontFamily: 'Manrope', 
                                               fontSize: 14,
                                               color: isDark
                                                   ? Colors.white38
@@ -427,7 +426,7 @@ class _Greeting extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           'Voici un résumé de tes signalements.',
-          style: GoogleFonts.manrope(
+          style: TextStyle(fontFamily: 'Manrope', 
             fontSize: 14,
             fontWeight: FontWeight.w500,
             color: isDark
@@ -558,7 +557,7 @@ class _SectionHeader extends StatelessWidget {
         const Spacer(),
         GestureDetector(
           onTap: onNewReport,
-          child: Text('+ Nouveau', style: GoogleFonts.manrope(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
+          child: Text('+ Nouveau', style: TextStyle(fontFamily: 'Manrope', fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
         ),
       ],
     );
@@ -758,14 +757,14 @@ class _ReportCardState extends State<_ReportCard> {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(8)),
-                                    child: Text(widget.report.caseNumber, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
+                                    child: Text(widget.report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
                                   ),
                                 ),
                               )
                             : Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(color: AppColors.warmWhite, borderRadius: BorderRadius.circular(8)),
-                                child: Text(widget.report.caseNumber, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
+                                child: Text(widget.report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                               ),
                         const SizedBox(width: 8),
                         // Badge priorité
@@ -789,7 +788,7 @@ class _ReportCardState extends State<_ReportCard> {
                     const SizedBox(height: 4),
                     Text(
                       widget.report.title,
-                      style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.4, height: 1.2),
+                      style: TextStyle(fontFamily: 'Manrope', fontSize: 15, fontWeight: FontWeight.w700, color: isDark ? Colors.white : AppColors.lightTextPrimary, letterSpacing: -0.4, height: 1.2),
                     ),
                     const SizedBox(height: 5),
                     Row(
@@ -803,7 +802,7 @@ class _ReportCardState extends State<_ReportCard> {
                           ),
                           child: Text(
                             widget.report.anonLabel,
-                            style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
+                            style: TextStyle(fontFamily: 'Manrope', fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.primary),
                           ),
                         ),
                         if (_canDelete) ...[
@@ -829,7 +828,7 @@ class _ReportCardState extends State<_ReportCard> {
                     const SizedBox(height: 4),
                     Text(
                       'Déposé le ${widget.report.date} · Responsable : ${widget.report.counselor}',
-                      style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary),
+                      style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary),
                     ),
                   ],
                 ),
@@ -892,9 +891,9 @@ class _SheetOption extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w600, color: textColor)),
+                  Text(label, style: TextStyle(fontFamily: 'Manrope', fontSize: 15, fontWeight: FontWeight.w600, color: textColor)),
                   if (subtitle != null)
-                    Text(subtitle!, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary)),
+                    Text(subtitle!, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary)),
                 ],
               ),
             ),
@@ -952,7 +951,7 @@ class _ProgressTracker extends StatelessWidget {
             final isCurrent = i == ci;
             return Text(
               _labels[i],
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 8,
                 fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
                 color: isCurrent ? active : (isDark ? Colors.white.withValues(alpha: 0.35) : AppColors.lightTextSecondary.withValues(alpha: 0.70)),
@@ -1004,13 +1003,13 @@ class _ReportTypeSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Nouveau signalement',
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   color: textPrimary)),
           const SizedBox(height: 4),
           Text('Tu signales en tant que…',
-              style: GoogleFonts.manrope(fontSize: 13, color: textSub)),
+              style: TextStyle(fontFamily: 'Manrope', fontSize: 13, color: textSub)),
           const SizedBox(height: 20),
           _TypeTile(
             isDark: isDark,
@@ -1074,10 +1073,10 @@ class _TypeTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 15, fontWeight: FontWeight.w700, color: textColor)),
                   Text(subtitle,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 12, fontWeight: FontWeight.w500, color: subColor)),
                 ],
               ),

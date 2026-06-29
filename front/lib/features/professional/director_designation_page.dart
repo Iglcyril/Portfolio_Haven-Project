@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
@@ -183,7 +182,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                               // ── Titre ────────────────────────────────────
                               Text(
                                 'Désignation',
-                                style: GoogleFonts.fraunces(
+                                style: TextStyle(fontFamily: 'Fraunces', 
                                   fontSize: 36,
                                   fontWeight: FontWeight.w800,
                                   color: isDark
@@ -195,7 +194,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                               ),
                               Text(
                                 'du co-responsable.',
-                                style: GoogleFonts.fraunces(
+                                style: TextStyle(fontFamily: 'Fraunces', 
                                   fontSize: 36,
                                   fontWeight: FontWeight.w800,
                                   color: AppColors.primary,
@@ -206,7 +205,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                               const SizedBox(height: 12),
                               Text(
                                 'Désignez le·s membre·s de votre équipe qui co-géreront Haven avec vous. Ces personnes pourront assigner des signalements aux membres de votre équipe.',
-                                style: GoogleFonts.manrope(
+                                style: TextStyle(fontFamily: 'Manrope', 
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                   height: 1.6,
@@ -349,7 +348,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                       ),
                                       child: Text(
                                         role,
-                                        style: GoogleFonts.manrope(
+                                        style: TextStyle(fontFamily: 'Manrope', 
                                           fontSize: 13,
                                           fontWeight: isSelected
                                               ? FontWeight.w700
@@ -407,7 +406,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                             onChanged: (_) => _onFieldChanged(),
                                             textCapitalization:
                                                 TextCapitalization.sentences,
-                                            style: GoogleFonts.manrope(
+                                            style: TextStyle(fontFamily: 'Manrope', 
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
                                               color: isDark
@@ -416,7 +415,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                             ),
                                             decoration: InputDecoration(
                                               hintText: 'Saisissez le poste…',
-                                              hintStyle: GoogleFonts.manrope(
+                                              hintStyle: TextStyle(fontFamily: 'Manrope', 
                                                 fontSize: 14,
                                                 color: isDark
                                                     ? Colors.white.withValues(
@@ -457,7 +456,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                             const SizedBox(width: 6),
                                             Text(
                                               'Limite de $_maxPersons co-responsables atteinte.',
-                                              style: GoogleFonts.manrope(
+                                              style: TextStyle(fontFamily: 'Manrope', 
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w500,
                                                 color: AppColors.primary
@@ -517,7 +516,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                         const SizedBox(width: 6),
                                         Text(
                                           'Ajouter',
-                                          style: GoogleFonts.manrope(
+                                          style: TextStyle(fontFamily: 'Manrope', 
                                             fontSize: 14,
                                             fontWeight: FontWeight.w700,
                                             color: _canAdd
@@ -598,7 +597,7 @@ class _DirectorDesignationPageState extends State<DirectorDesignationPage> {
                                 children: [
                                   Text(
                                     'Valider',
-                                    style: GoogleFonts.manrope(
+                                    style: TextStyle(fontFamily: 'Manrope', 
                                       fontSize: 15,
                                       fontWeight: FontWeight.w700,
                                       color: _canValidate
@@ -693,7 +692,7 @@ class _PersonPreview extends StatelessWidget {
             child: Center(
               child: Text(
                 _initials.isEmpty ? '?' : _initials,
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -708,7 +707,7 @@ class _PersonPreview extends StatelessWidget {
               children: [
                 Text(
                   _fullName,
-                  style: GoogleFonts.fraunces(
+                  style: TextStyle(fontFamily: 'Fraunces', 
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color:
@@ -719,7 +718,7 @@ class _PersonPreview extends StatelessWidget {
                 if (role != null && role!.isNotEmpty)
                   Text(
                     role!,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       color: AppColors.primary,
@@ -788,7 +787,7 @@ class _PersonChip extends StatelessWidget {
             child: Center(
               child: Text(
                 person.initials.isEmpty ? '?' : person.initials,
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: Colors.white,
@@ -803,7 +802,7 @@ class _PersonChip extends StatelessWidget {
               children: [
                 Text(
                   person.fullName,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: isDark
@@ -814,7 +813,7 @@ class _PersonChip extends StatelessWidget {
                 ),
                 Text(
                   person.role,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: AppColors.primary,
@@ -861,7 +860,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label,
-      style: GoogleFonts.manrope(
+      style: TextStyle(fontFamily: 'Manrope', 
         fontSize: 11,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.9,
@@ -903,14 +902,14 @@ class _InputField extends StatelessWidget {
         controller: controller,
         onChanged: onChanged,
         textCapitalization: TextCapitalization.words,
-        style: GoogleFonts.manrope(
+        style: TextStyle(fontFamily: 'Manrope', 
           fontSize: 15,
           fontWeight: FontWeight.w500,
           color: isDark ? Colors.white : AppColors.lightTextPrimary,
         ),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.manrope(
+          hintStyle: TextStyle(fontFamily: 'Manrope', 
             fontSize: 15,
             fontWeight: FontWeight.w500,
             color: isDark

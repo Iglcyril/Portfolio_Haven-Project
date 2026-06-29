@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/data/report_store.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/report_service.dart';
@@ -257,7 +256,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                                 ),
                                 child: Text(
                                   'Archiver',
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 12,
                                     fontWeight: FontWeight.w700,
                                     color: AppColors.primary,
@@ -336,7 +335,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                                   const SizedBox(width: 6),
                                   Text(
                                     'Déconnexion',
-                                    style: GoogleFonts.manrope(
+                                    style: TextStyle(fontFamily: 'Manrope', 
                                       fontSize: 13,
                                       fontWeight: FontWeight.w600,
                                       color: isDark
@@ -378,7 +377,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                         children: [
                           Text(
                             'Mes signalements',
-                            style: GoogleFonts.fraunces(
+                            style: TextStyle(fontFamily: 'Fraunces', 
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
                               color: isDark
@@ -392,7 +391,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                             const SizedBox(height: 2),
                             Text(
                               widget.currentUserName!,
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(fontFamily: 'Manrope', 
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                                 color: isDark
@@ -478,7 +477,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                                 const SizedBox(height: 14),
                                 Text(
                                   'Aucun signalement actif',
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                     color: isDark
@@ -490,7 +489,7 @@ class _ReferentDashboardPageState extends State<ReferentDashboardPage> {
                                 Text(
                                   'Les signalements qui vous sont attribués\napparaîtront ici',
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 12,
                                     color: isDark
                                         ? Colors.white.withValues(alpha: 0.20)
@@ -619,7 +618,7 @@ class _ReferentReportCard extends StatelessWidget {
                     ),
                     child: Text(
                       report.riskLevel!,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         color: _riskColors[report.riskLevel]!,
@@ -638,7 +637,7 @@ class _ReferentReportCard extends StatelessWidget {
                     ),
                     child: Text(
                       'Non évalué',
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                         color: isDark
@@ -663,7 +662,7 @@ class _ReferentReportCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           'Urgence',
-                          style: GoogleFonts.manrope(
+                          style: TextStyle(fontFamily: 'Manrope', 
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: const Color(0xFFC0392B),
@@ -678,7 +677,7 @@ class _ReferentReportCard extends StatelessWidget {
                 if (trailing == null)
                   Text(
                     _timeAgo(report.submittedAt),
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 11,
                       color: isDark
                           ? Colors.white.withValues(alpha: 0.35)
@@ -706,7 +705,7 @@ class _ReferentReportCard extends StatelessWidget {
                   ),
                   child: Text(
                     report.anonLevel,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                       color: AppColors.primary,
@@ -725,7 +724,7 @@ class _ReferentReportCard extends StatelessWidget {
                     ),
                     child: Text(
                       report.studentName!,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                         color: isDark
@@ -746,7 +745,7 @@ class _ReferentReportCard extends StatelessWidget {
                     ),
                     child: Text(
                       report.studentClass!,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                         color: isDark
@@ -765,7 +764,7 @@ class _ReferentReportCard extends StatelessWidget {
               report.initialText,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 13,
                 fontWeight: FontWeight.w500,
                 height: 1.5,
@@ -898,7 +897,7 @@ class _ReferentMiniBar extends StatelessWidget {
             final isActive = step == progressStage;
             return Text(
               kProgressSteps[step],
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 9,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                 color: isActive
@@ -973,7 +972,7 @@ class _ReferentStatCard extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 value,
-                style: GoogleFonts.fraunces(
+                style: TextStyle(fontFamily: 'Fraunces', 
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
@@ -984,7 +983,7 @@ class _ReferentStatCard extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 label,
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   color: Colors.white.withValues(alpha: 0.80),
@@ -1045,7 +1044,7 @@ class _ReferentStatCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               label,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: isDark
@@ -1159,7 +1158,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                             const SizedBox(width: 6),
                             Text(
                               type,
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(fontFamily: 'Manrope', 
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: isSelected
@@ -1187,13 +1186,13 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                   child: TextField(
                     controller: commentCtrl,
                     maxLines: 3,
-                    style: GoogleFonts.manrope(
+                    style: TextStyle(fontFamily: 'Manrope', 
                       fontSize: 13,
                       color: isDark ? Colors.white : AppColors.lightTextPrimary,
                     ),
                     decoration: InputDecoration(
                       hintText: 'Commentaire (optionnel)…',
-                      hintStyle: GoogleFonts.manrope(
+                      hintStyle: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 13,
                         color: isDark
                             ? Colors.white.withValues(alpha: 0.30)
@@ -1243,7 +1242,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                     child: Text(
                       'Enregistrer',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: selectedType != null
@@ -1323,7 +1322,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                               riskColor != null
                                   ? report.riskLevel!.toUpperCase()
                                   : 'NON ÉVALUÉ',
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(fontFamily: 'Manrope', 
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
                                 color: riskColor ??
@@ -1381,20 +1380,20 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                   if (report.studentName != null) ...[
                                     Icon(Icons.person_outline_rounded, size: 14, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary),
                                     const SizedBox(width: 4),
-                                    Text(report.studentName!, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
+                                    Text(report.studentName!, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
                                     const SizedBox(width: 12),
                                   ],
                                   if (report.studentClass != null) ...[
                                     Icon(Icons.school_outlined, size: 14, color: isDark ? Colors.white.withValues(alpha: 0.50) : AppColors.lightTextSecondary),
                                     const SizedBox(width: 4),
-                                    Text(report.studentClass!, style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
+                                    Text(report.studentClass!, style: TextStyle(fontFamily: 'Manrope', fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.70) : AppColors.lightTextPrimary)),
                                   ],
                                 ]),
                               ],
                               const SizedBox(height: 12),
                               Text(
                                 report.initialText,
-                                style: GoogleFonts.manrope(
+                                style: TextStyle(fontFamily: 'Manrope', 
                                   fontSize: 13,
                                   height: 1.6,
                                   color: isDark
@@ -1457,7 +1456,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                     const SizedBox(width: 6),
                                     Text(
                                       'Signalement résolu',
-                                      style: GoogleFonts.manrope(
+                                      style: TextStyle(fontFamily: 'Manrope', 
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700,
                                         color: const Color(0xFF2EAB7B),
@@ -1495,7 +1494,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                         const SizedBox(width: 4),
                                         Text(
                                           'Ajouter',
-                                          style: GoogleFonts.manrope(
+                                          style: TextStyle(fontFamily: 'Manrope', 
                                             fontSize: 12,
                                             fontWeight: FontWeight.w700,
                                             color: AppColors.primary,
@@ -1515,7 +1514,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                                 child: Center(
                                   child: Text(
                                     'Aucun événement enregistré',
-                                    style: GoogleFonts.manrope(
+                                    style: TextStyle(fontFamily: 'Manrope', 
                                       fontSize: 13,
                                       color: isDark
                                           ? Colors.white.withValues(alpha: 0.30)
@@ -1542,7 +1541,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
 
   Widget _sectionTitle(String title, bool isDark) => Text(
         title,
-        style: GoogleFonts.manrope(
+        style: TextStyle(fontFamily: 'Manrope', 
           fontSize: 11,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
@@ -1590,7 +1589,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
         const SizedBox(width: 6),
         Text(
           label,
-          style: GoogleFonts.manrope(
+          style: TextStyle(fontFamily: 'Manrope', 
             fontSize: 12,
             fontWeight: FontWeight.w600,
             color: color,
@@ -1653,7 +1652,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                         children: [
                           Text(
                             event.type,
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: isDark
@@ -1664,7 +1663,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                           const Spacer(),
                           Text(
                             _fmtEventDate(event.createdAt),
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 11,
                               color: isDark
                                   ? Colors.white.withValues(alpha: 0.35)
@@ -1677,7 +1676,7 @@ class _ReferentDetailPageState extends State<_ReferentDetailPage> {
                         const SizedBox(height: 4),
                         Text(
                           event.comment!,
-                          style: GoogleFonts.manrope(
+                          style: TextStyle(fontFamily: 'Manrope', 
                             fontSize: 12,
                             height: 1.5,
                             color: isDark

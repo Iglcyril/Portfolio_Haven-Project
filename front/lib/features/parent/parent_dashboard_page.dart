@@ -1,7 +1,6 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
@@ -136,7 +135,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
                                     child: Text(
                                       _error!,
                                       textAlign: TextAlign.center,
-                                      style: GoogleFonts.manrope(
+                                      style: TextStyle(fontFamily: 'Manrope', 
                                         fontSize: 14,
                                         color: isDark
                                             ? Colors.white54
@@ -167,7 +166,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
                                           child: Text(
                                             'Aucun signalement trouvé pour vos enfants.',
                                             textAlign: TextAlign.center,
-                                            style: GoogleFonts.manrope(
+                                            style: TextStyle(fontFamily: 'Manrope', 
                                               fontSize: 14,
                                               color: isDark
                                                   ? Colors.white38
@@ -237,7 +236,7 @@ class _ParentAppBar extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 'Déconnexion',
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: isDark
@@ -271,7 +270,7 @@ class _Greeting extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           "Ici, vous suivrez l'avancement des signalements de votre ou vos enfant(s).",
-          style: GoogleFonts.fraunces(
+          style: TextStyle(fontFamily: 'Fraunces', 
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: AppColors.primary,
@@ -474,7 +473,7 @@ class _ParentReportCard extends StatelessWidget {
                   children: [
                     const Icon(Icons.open_in_new_rounded, size: 20, color: AppColors.primary),
                     const SizedBox(width: 14),
-                    Text('Voir le détail', style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.lightTextPrimary)),
+                    Text('Voir le détail', style: TextStyle(fontFamily: 'Manrope', fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white : AppColors.lightTextPrimary)),
                   ],
                 ),
               ),
@@ -507,7 +506,7 @@ class _ParentReportCard extends StatelessWidget {
                         children: [
                           Text(
                             'Archiver',
-                            style: GoogleFonts.manrope(
+                            style: TextStyle(fontFamily: 'Manrope', 
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                               color: canArchive
@@ -518,7 +517,7 @@ class _ParentReportCard extends StatelessWidget {
                           if (!canArchive)
                             Text(
                               'Disponible uniquement si résolu',
-                              style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.30) : AppColors.lightTextSecondary),
+                              style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w500, color: isDark ? Colors.white.withValues(alpha: 0.30) : AppColors.lightTextSecondary),
                             ),
                         ],
                       ),
@@ -567,7 +566,7 @@ class _ParentReportCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Ce signalement disparaîtra de votre tableau de bord. Vous pourrez le retrouver à tout moment depuis votre portail web parent.',
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary,
                   height: 1.5,
@@ -599,7 +598,7 @@ class _ParentReportCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Text(
                     'Annuler',
-                    style: GoogleFonts.manrope(fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary),
+                    style: TextStyle(fontFamily: 'Manrope', fontSize: 15, fontWeight: FontWeight.w600, color: isDark ? Colors.white.withValues(alpha: 0.55) : AppColors.lightTextSecondary),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -658,7 +657,7 @@ class _ParentReportCard extends StatelessWidget {
                       // Nom de l'enfant
                       Text(
                         parentReport.childName,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -681,14 +680,14 @@ class _ParentReportCard extends StatelessWidget {
                                         color: Colors.white.withValues(alpha: 0.10),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: Text(report.caseNumber, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
+                                      child: Text(report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white.withValues(alpha: 0.70))),
                                     ),
                                   ),
                                 )
                               : Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                                   decoration: BoxDecoration(color: AppColors.warmWhite, borderRadius: BorderRadius.circular(8)),
-                                  child: Text(report.caseNumber, style: GoogleFonts.manrope(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
+                                  child: Text(report.caseNumber, style: TextStyle(fontFamily: 'Manrope', fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.lightTextSecondary)),
                                 ),
                           const SizedBox(width: 8),
                           Container(
@@ -711,7 +710,7 @@ class _ParentReportCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         report.title,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -725,7 +724,7 @@ class _ParentReportCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               'Déposé le ${report.date} · Responsable : ${report.counselor}',
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(fontFamily: 'Manrope', 
                                 fontSize: 11,
                                 fontWeight: FontWeight.w500,
                                 color: isDark ? Colors.white.withValues(alpha: 0.45) : AppColors.lightTextSecondary,
@@ -820,7 +819,7 @@ class _ParentProgressTracker extends StatelessWidget {
             final isCurrent = i == ci;
             return Text(
               _labels[i],
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 8,
                 fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
                 color: isCurrent

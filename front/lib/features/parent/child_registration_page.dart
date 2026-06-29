@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/theme/app_shadows.dart';
@@ -120,7 +119,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                             // ── Titre ─────────────────────────────────────
                             Text(
                               'Bienvenue sur Haven !',
-                              style: GoogleFonts.fraunces(
+                              style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 34,
                                 fontWeight: FontWeight.w800,
                                 color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -131,7 +130,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                             const SizedBox(height: 6),
                             Text(
                               'Application de lutte contre le harcèlement.',
-                              style: GoogleFonts.fraunces(
+                              style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.primary,
@@ -145,7 +144,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                             // ── Sous-titre ────────────────────────────────
                             Text(
                               'Veuillez nommer votre ou vos enfant(s) :',
-                              style: GoogleFonts.manrope(
+                              style: TextStyle(fontFamily: 'Manrope', 
                                 fontSize: 17,
                                 fontWeight: FontWeight.w700,
                                 color: isDark ? Colors.white : AppColors.lightTextPrimary,
@@ -233,7 +232,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                                       const SizedBox(width: 6),
                                       Text(
                                         'Ajouter',
-                                        style: GoogleFonts.manrope(
+                                        style: TextStyle(fontFamily: 'Manrope', 
                                           fontSize: 14,
                                           fontWeight: FontWeight.w700,
                                           color: _canAdd
@@ -302,7 +301,7 @@ class _ChildRegistrationPageState extends State<ChildRegistrationPage> {
                               children: [
                                 Text(
                                   'Commencer',
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
                                     color: _canStart
@@ -368,14 +367,14 @@ class _InputField extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        style: GoogleFonts.manrope(
+        style: TextStyle(fontFamily: 'Manrope', 
           fontSize: 15,
           fontWeight: FontWeight.w500,
           color: isDark ? Colors.white : AppColors.lightTextPrimary,
         ),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.manrope(
+          hintStyle: TextStyle(fontFamily: 'Manrope', 
             fontSize: 15,
             fontWeight: FontWeight.w500,
             color: isDark
@@ -450,7 +449,7 @@ class _ChildChip extends StatelessWidget {
           Expanded(
             child: Text(
               '${child.firstName} ${child.lastName}  ·  ${child.className}',
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white.withValues(alpha: 0.90) : AppColors.lightTextPrimary,

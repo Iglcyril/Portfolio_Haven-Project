@@ -1,7 +1,6 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_circle_button.dart';
@@ -326,7 +325,7 @@ class _PortalButton extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: GoogleFonts.fraunces(
+                  style: TextStyle(fontFamily: 'Fraunces', 
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: textColor,
@@ -336,7 +335,7 @@ class _PortalButton extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 12,
                     color: subtitleColor,
                     fontWeight: FontWeight.w500,
@@ -382,7 +381,7 @@ class _EncryptionLabel extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           'Chiffrement de bout en bout  •  Anonymat par défaut',
-          style: GoogleFonts.manrope(
+          style: TextStyle(fontFamily: 'Manrope', 
             fontSize: 11,
             color: color,
             fontWeight: FontWeight.w500,

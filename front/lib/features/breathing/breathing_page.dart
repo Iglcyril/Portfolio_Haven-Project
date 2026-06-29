@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 
 enum _Phase { ready, inhale, exhale, done }
@@ -123,7 +122,7 @@ class _BreathingPageState extends State<BreathingPage>
               // ─── Titre ────────────────────────────────────────────────────
               Text(
                 'Cohérence cardiaque',
-                style: GoogleFonts.fraunces(
+                style: TextStyle(fontFamily: 'Fraunces', 
                   fontSize: 22,
                   fontWeight: FontWeight.w600,
                   color: Colors.white.withValues(alpha: 0.90),
@@ -136,7 +135,7 @@ class _BreathingPageState extends State<BreathingPage>
                 child: Text(
                   isDone ? 'Séance terminée' : '$mins:$secs restantes',
                   key: ValueKey(isDone ? 'done' : '$_cyclesLeft'),
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: AppColors.primary.withValues(alpha: 0.80),
@@ -206,7 +205,7 @@ class _BreathingPageState extends State<BreathingPage>
                             child: Text(
                               '$_countdown',
                               key: ValueKey(_countdown),
-                              style: GoogleFonts.fraunces(
+                              style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 60,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -248,7 +247,7 @@ class _BreathingPageState extends State<BreathingPage>
                   },
                   key: ValueKey(_phase),
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.fraunces(
+                  style: TextStyle(fontFamily: 'Fraunces', 
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -264,7 +263,7 @@ class _BreathingPageState extends State<BreathingPage>
                   _Phase.exhale => '5 secondes',
                   _Phase.done   => 'Tu te sens mieux ? On est là pour toi.',
                 },
-                style: GoogleFonts.manrope(
+                style: TextStyle(fontFamily: 'Manrope', 
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   color: Colors.white.withValues(alpha: 0.40),
@@ -293,7 +292,7 @@ class _BreathingPageState extends State<BreathingPage>
                     ),
                     child: Text(
                       'Retour',
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,

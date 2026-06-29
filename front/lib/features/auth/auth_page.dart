@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_circle_button.dart';
@@ -256,7 +255,7 @@ class _AuthPageState extends State<AuthPage> {
                             Expanded(
                               child: Text(
                                 _error!,
-                                style: GoogleFonts.manrope(
+                                style: TextStyle(fontFamily: 'Manrope', 
                                   fontSize: 13,
                                   color: Colors.red.shade400,
                                   height: 1.4,
@@ -379,7 +378,7 @@ class _Header extends StatelessWidget {
       children: [
         Text(
           isRegister ? 'Créez votre compte.' : 'Bon retour.',
-          style: GoogleFonts.fraunces(
+          style: TextStyle(fontFamily: 'Fraunces', 
             fontSize: isRegister ? 33 : 38,
             fontWeight: FontWeight.w700,
             height: 1.1,
@@ -392,7 +391,7 @@ class _Header extends StatelessWidget {
           isRegister
               ? "C'est rapide, moins d'une minute."
               : 'Connectez-vous à votre espace Haven.',
-          style: GoogleFonts.manrope(
+          style: TextStyle(fontFamily: 'Manrope', 
             fontSize: 14,
             height: 1.5,
             color: isDark
@@ -583,7 +582,7 @@ class _FormFields extends StatelessWidget {
                 onTap: () {}, // placeholder — flux mot de passe oublié à brancher
                 child: Text(
                   'Mot de passe oublié ?',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.primary,
@@ -721,7 +720,7 @@ class _RememberMe extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             'Se souvenir de moi',
-            style: GoogleFonts.manrope(
+            style: TextStyle(fontFamily: 'Manrope', 
               fontSize: 13,
               fontWeight: FontWeight.w500,
               color: isDark
@@ -775,7 +774,7 @@ class _CtaButton extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      style: GoogleFonts.manrope(
+                      style: TextStyle(fontFamily: 'Manrope', 
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                         color: Colors.white,
@@ -841,7 +840,7 @@ class _FooterState extends State<_Footer> {
 
     return Text.rich(
       TextSpan(
-        style: GoogleFonts.manrope(fontSize: 12, color: muted, height: 1.5),
+        style: TextStyle(fontFamily: 'Manrope', fontSize: 12, color: muted, height: 1.5),
         children: [
           const TextSpan(text: 'En continuant, vous acceptez les '),
           TextSpan(

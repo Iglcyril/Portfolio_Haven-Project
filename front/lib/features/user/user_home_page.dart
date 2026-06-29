@@ -1,7 +1,6 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
@@ -121,7 +120,7 @@ class _ThemeToggle extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   'Déconnexion',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: isDark
@@ -190,7 +189,7 @@ class _TopBar extends StatelessWidget {
           children: [
             Text(
               'Bienvenue,',
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: isDark
@@ -237,7 +236,7 @@ class _TopBar extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   'Espace Personnel',
-                  style: GoogleFonts.manrope(
+                  style: TextStyle(fontFamily: 'Manrope', 
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: isDark
@@ -501,7 +500,7 @@ class _ResourceTile extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
-              style: GoogleFonts.manrope(
+              style: TextStyle(fontFamily: 'Manrope', 
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: isDark

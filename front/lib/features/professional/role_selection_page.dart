@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/anchor_background.dart';
 import '../../core/widgets/glass_circle_button.dart';
@@ -137,7 +136,7 @@ class _ProfessionalRoleSelectionPageState
 
                             Text(
                               'Bienvenue sur Haven !',
-                              style: GoogleFonts.fraunces(
+                              style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 34,
                                 fontWeight: FontWeight.w800,
                                 color: isDark
@@ -150,7 +149,7 @@ class _ProfessionalRoleSelectionPageState
                             const SizedBox(height: 6),
                             Text(
                               'Quel est votre poste ?',
-                              style: GoogleFonts.fraunces(
+                              style: TextStyle(fontFamily: 'Fraunces', 
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
                                 color: AppColors.primary,
@@ -277,7 +276,7 @@ class _ProfessionalRoleSelectionPageState
                               children: [
                                 Text(
                                   'Continuer',
-                                  style: GoogleFonts.manrope(
+                                  style: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 15,
                                     fontWeight: FontWeight.w700,
                                     color: _canContinue
@@ -400,7 +399,7 @@ class _RoleCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: GoogleFonts.fraunces(
+                        style: TextStyle(fontFamily: 'Fraunces', 
                           fontSize: 17,
                           fontWeight: FontWeight.w700,
                           color: textColor,
@@ -410,7 +409,7 @@ class _RoleCard extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         subtitle,
-                        style: GoogleFonts.manrope(
+                        style: TextStyle(fontFamily: 'Manrope', 
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                           color: subtitleColor,
@@ -474,7 +473,7 @@ class _RoleCard extends StatelessWidget {
                                 onChanged: onOtherChanged,
                                 textCapitalization:
                                     TextCapitalization.sentences,
-                                style: GoogleFonts.manrope(
+                                style: TextStyle(fontFamily: 'Manrope', 
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                   color: isDark
@@ -483,7 +482,7 @@ class _RoleCard extends StatelessWidget {
                                 ),
                                 decoration: InputDecoration(
                                   hintText: 'Saisissez votre poste…',
-                                  hintStyle: GoogleFonts.manrope(
+                                  hintStyle: TextStyle(fontFamily: 'Manrope', 
                                     fontSize: 14,
                                     color: isDark
                                         ? Colors.white.withValues(alpha: 0.30)

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 
 class PaginationRow extends StatelessWidget {
@@ -32,7 +31,7 @@ class PaginationRow extends StatelessWidget {
           const SizedBox(width: 20),
           Text(
             'Page $page / $totalPages',
-            style: GoogleFonts.manrope(
+            style: TextStyle(fontFamily: 'Manrope', 
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: isDark
