@@ -70,7 +70,29 @@ class _AuthPageState extends State<AuthPage> {
 
   Future<void> _handleRegister() async {
     if (widget.portal == PortalType.professional) {
-      setState(() => _error = 'Contactez votre administrateur pour créer un compte professionnel');
+      final firstName = _firstNameCtrl.text.trim();
+      final lastName  = _lastNameCtrl.text.trim();
+      final email     = _emailCtrl.text.trim();
+      final password  = _passwordCtrl.text;
+      if (firstName.isEmpty || lastName.isEmpty || email.isEmpty || password.isEmpty) {
+        setState(() => _error = 'Veuillez remplir tous les champs');
+        return;
+      }
+      setState(() { _isLoading = true; _error = null; });
+      try {
+        final user = await AuthService.register(
+          email: email,
+          password: password,
+          role: 'SUPERVISOR',
+          firstName: firstName,
+          lastName: lastName,
+        );
+        if (!mounted) return;
+        _navigateByRole(user.role, user.fullName);
+      } catch (e) {
+        if (!mounted) return;
+        setState(() { _error = e.toString(); _isLoading = false; });
+      }
       return;
     }
     if (widget.portal == PortalType.student) {
