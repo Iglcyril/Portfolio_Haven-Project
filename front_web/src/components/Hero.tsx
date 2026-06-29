@@ -7,6 +7,7 @@ const LINE1 = 'Un espace'
 const LINE2 = 'sûr.'
 const SUB = 'Signalez et traitez le harcèlement en toute confidentialité.'
 const CTA = 'Accéder à mon espace'
+const APK_URL = 'https://github.com/Iglcyril/Portfolio_Haven-Project/releases/download/v1.0.0/app-release.apk'
 
 interface CharProps {
   char: string
@@ -63,6 +64,8 @@ interface Props {
 }
 
 export default function Hero({ ready }: Props) {
+  const [apkHovered, setApkHovered] = useState(false)
+
   // stagger global : line1 démarre à 0.1, line2 à ~0.55
   const line1Base = 0.1
   const line2Base = line1Base + LINE1.length * 0.045 + 0.08
@@ -146,38 +149,73 @@ export default function Hero({ ready }: Props) {
           {SUB}
         </motion.p>
 
-        {/* CTA */}
-        <motion.button
-          onClick={() => document.getElementById('portails')?.scrollIntoView({ behavior: 'smooth' })}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '16px 36px',
-            borderRadius: 9999,
-            border: 'none',
-            background: '#00A176',
-            color: '#fff',
-            fontFamily: "'Manrope', system-ui, sans-serif",
-            fontSize: '1.05rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            boxShadow: '0 8px 32px rgba(0,161,118,0.30)',
-          }}
-          initial={{ opacity: 0, y: 24 }}
-          animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
-          transition={{ duration: 0.55, delay: ctaDelay, ease: [0.22, 1, 0.36, 1] }}
-          whileHover={{ scale: 1.05, boxShadow: '0 14px 44px rgba(0,161,118,0.42)' }}
-          whileTap={{ scale: 0.97 }}
-        >
-          {CTA}
-          <motion.span
-            animate={{ x: [0, 4, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        {/* CTAs */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <motion.button
+            onClick={() => document.getElementById('portails')?.scrollIntoView({ behavior: 'smooth' })}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              padding: '18px 38px',
+              borderRadius: 9999,
+              border: 'none',
+              background: '#00A176',
+              color: '#fff',
+              fontFamily: "'Manrope', system-ui, sans-serif",
+              fontSize: '1.05rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 8px 32px rgba(0,161,118,0.30)',
+            }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.55, delay: ctaDelay, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.05, boxShadow: '0 14px 44px rgba(0,161,118,0.42)' }}
+            whileTap={{ scale: 0.97 }}
           >
-            →
-          </motion.span>
-        </motion.button>
+            {CTA}
+            <motion.span
+              animate={{ x: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              →
+            </motion.span>
+          </motion.button>
+
+          <motion.a
+            href={APK_URL}
+            download
+            onMouseEnter={() => setApkHovered(true)}
+            onMouseLeave={() => setApkHovered(false)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '15px 32px',
+              borderRadius: 9999,
+              border: '2px solid #00A176',
+              background: apkHovered ? '#00A176' : 'transparent',
+              color: apkHovered ? '#fff' : '#00A176',
+              fontFamily: "'Manrope', system-ui, sans-serif",
+              fontSize: '0.98rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              textDecoration: 'none',
+              transition: 'background 0.2s ease, color 0.2s ease',
+            }}
+            initial={{ opacity: 0, y: 24 }}
+            animate={ready ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+            transition={{ duration: 0.55, delay: ctaDelay + 0.15, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M17.82 15.64a2.18 2.18 0 0 1 2.18 2.18C20 19.01 19.01 20 17.82 20a2.18 2.18 0 0 1-2.18-2.18a2.18 2.18 0 0 1 2.18-2.18M17.82 10.5a.5.5 0 0 1 .5.5v3.64a.5.5 0 0 1-.5.5a.5.5 0 0 1-.5-.5V11a.5.5 0 0 1 .5-.5m-11.64 0a.5.5 0 0 1 .5.5v3.64a.5.5 0 0 1-.5.5a.5.5 0 0 1-.5-.5V11a.5.5 0 0 1 .5-.5M12 2.3l1.88 3.26l1.94-.56A1 1 0 0 1 17 6H7a1 1 0 0 1 1.18-1l1.94.56L12 2.3M7 7h10v7.5H7V7z"/>
+            </svg>
+            Télécharger l'app Android
+          </motion.a>
+        </div>
       </div>
 
       {/* Scroll indicator */}
