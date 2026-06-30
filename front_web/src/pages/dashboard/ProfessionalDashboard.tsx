@@ -205,6 +205,12 @@ export default function ProfessionalDashboard() {
     })
   }, [reports, status, sort, isDirector, user?.fullName])
 
+  const enrichedTeam = useMemo(() => team.map(m => ({
+    ...m,
+    activeCount:   reports.filter(r => r.status === 'active'   && r.assignedTo === m.fullName).length,
+    resolvedCount: reports.filter(r => r.status === 'resolved' && r.assignedTo === m.fullName).length,
+  })), [team, reports])
+
   const activeCount     = isDirector
     ? reports.filter(r => r.status === 'active' && r.assignedTo).length
     : reports.filter(r => r.status === 'active' && r.assignedTo === user?.fullName).length
@@ -294,7 +300,7 @@ export default function ProfessionalDashboard() {
       navItems={navItems}
       accentColor={PRIMARY}
       sidebarHeaderContent={roleBadge}
-      sidebarFooterContent={<TeamSidebarFooter team={team} />}
+      sidebarFooterContent={<TeamSidebarFooter team={enrichedTeam} />}
     >
       <div style={{ display: 'flex', height: '100%' }}>
 
@@ -345,7 +351,7 @@ export default function ProfessionalDashboard() {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
               <AnimatePresence>
-                {team.map(m => (
+                {enrichedTeam.map(m => (
                   <motion.div
                     key={m.id}
                     layout
