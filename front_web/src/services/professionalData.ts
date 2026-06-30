@@ -206,7 +206,7 @@ function mapProReport(r: BackendReport): ProReport {
     title:           CATEGORIE_LABELS[r.categorie] ?? r.categorie,
     description:     firstUserMsg,
     category:        CATEGORIE_LABELS[r.categorie] ?? r.categorie,
-    severity:        r.severity && r.severity !== 'BAS' ? SEVERITY_MAP[r.severity] : undefined,
+    severity:        r.severity ? SEVERITY_MAP[r.severity] : undefined,
     status:          STATUS_MAP[r.status]           ?? 'active',
     anonymityLevel:  ANONYMITY_MAP[r.anonymatLevel] ?? 'anonymous',
     anonLevel:       ANON_LABEL_MAP[r.anonymatLevel] ?? 'Anonyme',
