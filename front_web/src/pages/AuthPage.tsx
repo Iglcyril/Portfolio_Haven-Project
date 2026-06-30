@@ -356,10 +356,14 @@ const REGISTER_ROUTES: Record<PortalKey, string> = {
 
 import { useEffect } from 'react'
 
-function SuccessScreen({ mode, portalKey }: { mode: Mode; portalKey: PortalKey }) {
+function SuccessScreen({ mode, portalKey, loggedInRole }: { mode: Mode; portalKey: PortalKey; loggedInRole?: string | null }) {
   const navigate = useNavigate()
   const isRegister = mode === 'register'
-  const destination = isRegister ? REGISTER_ROUTES[portalKey] : LOGIN_ROUTES[portalKey]
+  const destination = isRegister
+    ? REGISTER_ROUTES[portalKey]
+    : portalKey === 'professionals'
+      ? `/dashboard/professional?role=${loggedInRole === 'ADMIN' ? 'director' : 'referent'}`
+      : LOGIN_ROUTES[portalKey]
 
   useEffect(() => {
     const timer = setTimeout(() => navigate(destination), 1600)
@@ -466,9 +470,10 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
   const [password, setPassword]   = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe]     = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [loading, setLoading]     = useState(false)
-  const [error, setError]         = useState<string | null>(null)
+  const [submitted, setSubmitted]       = useState(false)
+  const [loading, setLoading]           = useState(false)
+  const [error, setError]               = useState<string | null>(null)
+  const [loggedInRole, setLoggedInRole] = useState<string | null>(null)
   const [legalModal, setLegalModal] = useState<'cgu' | 'privacy' | null>(null)
 
   const { setUser } = useAuth()
@@ -499,6 +504,7 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
         user = await login(email, password, rememberMe)
       }
       setUser(user)
+      setLoggedInRole(user.role)
       setSubmitted(true)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Une erreur est survenue')
@@ -508,7 +514,7 @@ function FormPanel({ mode, config, portalKey, onModeChange }: FormPanelProps) {
   }
 
   if (submitted) {
-    return <SuccessScreen mode={mode} portalKey={portalKey} />
+    return <SuccessScreen mode={mode} portalKey={portalKey} loggedInRole={loggedInRole} />
   }
 
   return (
