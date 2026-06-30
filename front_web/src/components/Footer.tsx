@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import LegalModal from './LegalModal'
+import { useWindowWidth } from '../hooks/useWindowWidth'
 
 export default function Footer() {
-  const year = new Date().getFullYear()
+  const year    = new Date().getFullYear()
   const [modal, setModal] = useState<'cgu' | 'privacy' | null>(null)
+  const width   = useWindowWidth()
+  const isMobile = width < 768
 
   return (
     <footer
@@ -17,30 +20,42 @@ export default function Footer() {
           zIndex: 10,
           maxWidth: 1100,
           margin: '0 auto',
-          padding: '80px 48px 40px',
+          padding: isMobile ? '48px 24px 32px' : '80px 48px 40px',
         }}
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       >
-        {/* Ligne principale — contenu centré + logo absolu à droite */}
         <div
           style={{
             position: 'relative',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 20,
-            paddingBottom: 40,
+            gap: isMobile ? 16 : 20,
+            paddingBottom: isMobile ? 28 : 40,
             borderBottom: '1px solid rgba(255,255,255,0.08)',
           }}
         >
-          {/* Tagline + liens — vraiment centrés */}
+          {/* Logo — en flux sur mobile, absolu à droite sur desktop */}
+          {isMobile && (
+            <img
+              src="/assets/logo.PNG"
+              alt="Haven"
+              style={{
+                width: 52,
+                height: 52,
+                objectFit: 'contain',
+                opacity: 0.85,
+              }}
+            />
+          )}
+
           <p
             style={{
               fontFamily: "'Manrope', system-ui, sans-serif",
-              fontSize: '0.95rem',
+              fontSize: isMobile ? '0.88rem' : '0.95rem',
               color: 'rgba(255,255,255,0.45)',
               lineHeight: 1.65,
               textAlign: 'center',
@@ -49,6 +64,7 @@ export default function Footer() {
           >
             Un espace sûr et confidentiel pour signaler et traiter le harcèlement.
           </p>
+
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
             {[
               { label: "Conditions générales d'utilisation", key: 'cgu' as const },
@@ -76,25 +92,27 @@ export default function Footer() {
             ))}
           </div>
 
-          {/* Logo — absolu à droite */}
-          <img
-            src="/assets/logo.PNG"
-            alt="Haven"
-            style={{
-              position: 'absolute',
-              right: 0,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: 64,
-              height: 64,
-              objectFit: 'contain',
-              opacity: 0.85,
-            }}
-          />
+          {/* Logo desktop — absolu à droite (inchangé) */}
+          {!isMobile && (
+            <img
+              src="/assets/logo.PNG"
+              alt="Haven"
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: 64,
+                height: 64,
+                objectFit: 'contain',
+                opacity: 0.85,
+              }}
+            />
+          )}
         </div>
 
         {/* Copyright */}
-        <div style={{ paddingTop: 24, textAlign: 'center' }}>
+        <div style={{ paddingTop: isMobile ? 18 : 24, textAlign: 'center' }}>
           <p
             style={{
               fontFamily: "'Manrope', system-ui, sans-serif",
@@ -140,8 +158,6 @@ export default function Footer() {
           }}
         >
           <span>HA</span>
-
-          {/* V remplacé par l'ancre */}
           <img
             src="/assets/anchor.png"
             alt="V"
@@ -156,7 +172,6 @@ export default function Footer() {
               margin: '0 -0.18em',
             }}
           />
-
           <span>EN</span>
         </div>
       </motion.div>
