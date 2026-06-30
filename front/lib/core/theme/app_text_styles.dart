@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
 
 abstract final class AppTextStyles {
@@ -7,7 +8,7 @@ abstract final class AppTextStyles {
 
   static TextStyle homeTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 48,
+        fontSize: 48.sp,
         fontWeight: FontWeight.w600,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -1.5,
@@ -16,7 +17,7 @@ abstract final class AppTextStyles {
 
   static TextStyle heroTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 34,
+        fontSize: 34.sp,
         fontWeight: FontWeight.w800,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.5,
@@ -25,7 +26,7 @@ abstract final class AppTextStyles {
 
   static TextStyle dashTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 30,
+        fontSize: 30.sp,
         fontWeight: FontWeight.w800,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.5,
@@ -34,7 +35,7 @@ abstract final class AppTextStyles {
 
   static TextStyle pageTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 26,
+        fontSize: 26.sp,
         fontWeight: FontWeight.w800,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.5,
@@ -43,7 +44,7 @@ abstract final class AppTextStyles {
 
   static TextStyle sheetTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 22,
+        fontSize: 22.sp,
         fontWeight: FontWeight.w700,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.3,
@@ -51,7 +52,7 @@ abstract final class AppTextStyles {
 
   static TextStyle dialogTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 20,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w700,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.3,
@@ -59,7 +60,7 @@ abstract final class AppTextStyles {
 
   static TextStyle sectionHeading(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 18,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w700,
         color: isDark
             ? Colors.white.withValues(alpha: 0.85)
@@ -69,7 +70,7 @@ abstract final class AppTextStyles {
 
   static TextStyle cardTitle(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 17,
+        fontSize: 17.sp,
         fontWeight: FontWeight.w700,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.1,
@@ -77,7 +78,7 @@ abstract final class AppTextStyles {
 
   static TextStyle statValueLG(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 28,
+        fontSize: 28.sp,
         fontWeight: FontWeight.w800,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.5,
@@ -86,16 +87,16 @@ abstract final class AppTextStyles {
 
   static TextStyle statValueMD(bool isDark) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 22,
+        fontSize: 22.sp,
         fontWeight: FontWeight.w800,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         letterSpacing: -0.3,
         height: 1.0,
       );
 
-  static TextStyle tutorialBig() => const TextStyle(
+  static TextStyle tutorialBig() => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 52,
+        fontSize: 52.sp,
         fontWeight: FontWeight.w700,
         height: 1.0,
         letterSpacing: -1.5,
@@ -104,7 +105,7 @@ abstract final class AppTextStyles {
 
   static TextStyle tutorialSub(Color color) => TextStyle(
         fontFamily: 'Fraunces',
-        fontSize: 28,
+        fontSize: 28.sp,
         fontWeight: FontWeight.w500,
         height: 1.2,
         letterSpacing: -0.5,
@@ -115,7 +116,7 @@ abstract final class AppTextStyles {
 
   static TextStyle sectionLabel(bool isDark) => TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: FontWeight.w700,
         color: isDark
             ? Colors.white.withValues(alpha: 0.45)
@@ -126,7 +127,7 @@ abstract final class AppTextStyles {
   static TextStyle overline(Color color, {double letterSpacing = 0.8}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: FontWeight.w700,
         letterSpacing: letterSpacing,
         color: color,
@@ -134,7 +135,7 @@ abstract final class AppTextStyles {
 
   static TextStyle body(bool isDark, {double? height}) => TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 14,
+        fontSize: 14.sp,
         color: isDark
             ? Colors.white.withValues(alpha: 0.65)
             : AppColors.lightTextSecondary,
@@ -144,7 +145,7 @@ abstract final class AppTextStyles {
   static TextStyle bodyPrimary(bool isDark, {double? height = 1.5}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w500,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
         height: height,
@@ -157,7 +158,7 @@ abstract final class AppTextStyles {
   }) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 13,
+        fontSize: 13.sp,
         fontWeight: fontWeight,
         color: isDark
             ? Colors.white.withValues(alpha: 0.50)
@@ -169,7 +170,7 @@ abstract final class AppTextStyles {
           {FontWeight fontWeight = FontWeight.w500}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 12,
+        fontSize: 12.sp,
         fontWeight: fontWeight,
         color: isDark
             ? Colors.white.withValues(alpha: 0.50)
@@ -179,21 +180,21 @@ abstract final class AppTextStyles {
   static TextStyle nameBold(bool isDark, {double fontSize = 14}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: fontSize,
+        fontSize: fontSize.sp,
         fontWeight: FontWeight.w700,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
       );
 
   static TextStyle initials({double fontSize = 14}) => TextStyle(
         fontFamily: 'Manrope',
-        fontSize: fontSize,
+        fontSize: fontSize.sp,
         fontWeight: FontWeight.w700,
         color: Colors.white,
       );
 
   static TextStyle button({double fontSize = 15}) => TextStyle(
         fontFamily: 'Manrope',
-        fontSize: fontSize,
+        fontSize: fontSize.sp,
         fontWeight: FontWeight.w700,
         color: Colors.white,
       );
@@ -201,7 +202,7 @@ abstract final class AppTextStyles {
   static TextStyle badge(Color color, {double fontSize = 10}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: fontSize,
+        fontSize: fontSize.sp,
         fontWeight: FontWeight.w700,
         color: color,
         letterSpacing: 0.3,
@@ -211,7 +212,7 @@ abstract final class AppTextStyles {
           {FontWeight fontWeight = FontWeight.w500}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: fontWeight,
         color: isDark
             ? Colors.white.withValues(alpha: 0.35)
@@ -220,7 +221,7 @@ abstract final class AppTextStyles {
 
   static TextStyle fieldLabel(bool isDark) => TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 10,
+        fontSize: 10.sp,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.9,
         color: isDark
@@ -230,7 +231,7 @@ abstract final class AppTextStyles {
 
   static TextStyle fieldInput(bool isDark) => TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 15,
+        fontSize: 15.sp,
         fontWeight: FontWeight.w500,
         color: isDark ? Colors.white : AppColors.lightTextPrimary,
       );
@@ -238,7 +239,7 @@ abstract final class AppTextStyles {
   static TextStyle tabChip(bool isDark, {required bool active}) =>
       TextStyle(
         fontFamily: 'Manrope',
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: active ? FontWeight.w700 : FontWeight.w500,
         color: active
             ? (isDark ? Colors.white : AppColors.lightTextPrimary)

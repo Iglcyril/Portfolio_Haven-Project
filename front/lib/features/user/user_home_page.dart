@@ -1,6 +1,7 @@
 import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/anchor_background.dart';
@@ -30,17 +31,17 @@ class UserHomePage extends StatelessWidget {
               AnchorBackground(isDark: isDark),
               SafeArea(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       _ThemeToggle(isDark: isDark, onTap: onToggleTheme),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8.h),
                       _TopBar(isDark: isDark, onToggleTheme: onToggleTheme),
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
                       _HeroText(isDark: isDark),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28.h),
                       _ReportCard(
                         title: 'Victime de harcèlement ?',
                         subtitle: 'Signale-le ici, en toute sécurité',
@@ -56,7 +57,7 @@ class UserHomePage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _ReportCard(
                         title: 'Témoin de harcèlement ?',
                         subtitle: "Aide à protéger quelqu'un",
@@ -72,9 +73,9 @@ class UserHomePage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28.h),
                       _ResourcesSection(isDark: isDark),
-                      const SizedBox(height: 24),
+                      SizedBox(height: 24.h),
                     ],
                   ),
                 ),
@@ -87,7 +88,7 @@ class UserHomePage extends StatelessWidget {
   }
 }
 
-// ─── Theme toggle (aligned right, same style as home/auth pages) ──────────────
+// ─── Theme toggle ─────────────────────────────────────────────────────────────
 
 class _ThemeToggle extends StatelessWidget {
   final bool isDark;
@@ -101,10 +102,10 @@ class _ThemeToggle extends StatelessWidget {
         GestureDetector(
           onTap: () => Navigator.of(context).popUntil((route) => route.isFirst),
           child: Container(
-            height: 40,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            height: 40.h,
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
               color: isDark
                   ? Colors.white.withValues(alpha: 0.10)
                   : Colors.black.withValues(alpha: 0.07),
@@ -113,15 +114,16 @@ class _ThemeToggle extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.logout_rounded,
-                    size: 16,
+                    size: 16.sp,
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.70)
                         : AppColors.lightTextSecondary),
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 Text(
                   'Déconnexion',
-                  style: TextStyle(fontFamily: 'Manrope', 
-                    fontSize: 13,
+                  style: TextStyle(
+                    fontFamily: 'Manrope',
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.70)
@@ -140,7 +142,7 @@ class _ThemeToggle extends StatelessWidget {
             child: Icon(
               isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
               color: isDark ? Colors.white.withValues(alpha: 0.90) : Colors.black,
-              size: 20,
+              size: 20.sp,
             ),
           ),
         ),
@@ -168,8 +170,8 @@ class _TopBar extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 42,
-          height: 42,
+          width: 42.r,
+          height: 42.r,
           decoration: BoxDecoration(
             color: isDark
                 ? AppColors.primary.withValues(alpha: 0.45)
@@ -183,14 +185,15 @@ class _TopBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Bienvenue,',
-              style: TextStyle(fontFamily: 'Manrope', 
-                fontSize: 12,
+              style: TextStyle(
+                fontFamily: 'Manrope',
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.45)
@@ -213,12 +216,12 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 9.h),
             decoration: BoxDecoration(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.10)
                   : Colors.black.withValues(alpha: 0.06),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
               border: isDark
                   ? Border.all(color: Colors.white.withValues(alpha: 0.12))
                   : null,
@@ -228,16 +231,17 @@ class _TopBar extends StatelessWidget {
               children: [
                 Icon(
                   Icons.bar_chart_rounded,
-                  size: 16,
+                  size: 16.sp,
                   color: isDark
                       ? Colors.white.withValues(alpha: 0.80)
                       : AppColors.lightTextPrimary,
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 Text(
                   'Espace Personnel',
-                  style: TextStyle(fontFamily: 'Manrope', 
-                    fontSize: 13,
+                  style: TextStyle(
+                    fontFamily: 'Manrope',
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w600,
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.90)
@@ -272,7 +276,7 @@ class _HeroText extends StatelessWidget {
           "À n'importe quel moment !",
           style: AppTextStyles.pageTitle(isDark).copyWith(color: AppColors.primary),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Text(
           "Que tu aies vécu quelque chose toi-même ou en témoin, tu peux le signaler en toute sécurité et anonymat.",
           style: AppTextStyles.body(isDark, height: 1.6),
@@ -346,24 +350,24 @@ class _ReportCard extends StatelessWidget {
     }
 
     final Widget card = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 28.h),
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(28.r),
         boxShadow: shadows,
       ),
       child: Row(
         children: [
           Container(
-            width: 44,
-            height: 44,
+            width: 44.r,
+            height: 44.r,
             decoration: BoxDecoration(
               color: iconBgColor,
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(13.r),
             ),
-            child: Icon(icon, color: iconColor, size: 22),
+            child: Icon(icon, color: iconColor, size: 22.sp),
           ),
-          const SizedBox(width: 14),
+          SizedBox(width: 14.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,15 +376,16 @@ class _ReportCard extends StatelessWidget {
                   title,
                   style: AppTextStyles.cardTitle(isDark).copyWith(color: textColor),
                 ),
-                const SizedBox(height: 3),
+                SizedBox(height: 3.h),
                 Text(
                   subtitle,
-                  style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500).copyWith(color: subtitleColor),
+                  style: AppTextStyles.caption(isDark, fontWeight: FontWeight.w500)
+                      .copyWith(color: subtitleColor),
                 ),
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios_rounded, color: arrowColor, size: 15),
+          Icon(Icons.arrow_forward_ios_rounded, color: arrowColor, size: 15.sp),
         ],
       ),
     );
@@ -389,7 +394,7 @@ class _ReportCard extends StatelessWidget {
       onTap: onTap,
       child: isFilled && isDark
           ? ClipRRect(
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(28.r),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                 child: card,
@@ -415,7 +420,7 @@ class _ResourcesSection extends StatelessWidget {
           'RESSOURCES',
           style: AppTextStyles.sectionLabel(isDark),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Row(
           children: [
             Expanded(
@@ -426,7 +431,7 @@ class _ResourcesSection extends StatelessWidget {
                 onTap: () => showEmergencySheet(context),
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Expanded(
               child: _ResourceTile(
                 label: 'Respiration',
@@ -462,12 +467,12 @@ class _ResourceTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
           color: isDark
               ? Colors.white.withValues(alpha: 0.07)
               : AppColors.lightCard,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           border: isDark
               ? Border.all(color: Colors.white.withValues(alpha: 0.10))
               : null,
@@ -484,24 +489,25 @@ class _ResourceTile extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              width: 40.r,
+              height: 40.r,
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: isDark ? 0.20 : 0.12),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               child: Icon(
                 icon,
                 color: AppColors.primary,
-                size: 20,
+                size: 20.sp,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               label,
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Manrope', 
-                fontSize: 12,
+              style: TextStyle(
+                fontFamily: 'Manrope',
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.80)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/circle_clipper.dart';
@@ -16,7 +17,6 @@ class _HavenAppState extends State<HavenApp> with TickerProviderStateMixin {
   ThemeMode _themeMode = ThemeMode.light;
   bool _showIntro = true;
 
-  // Drives the contracting circle that reveals the home page after the intro.
   late final AnimationController _revealCtrl;
 
   @override
@@ -28,7 +28,6 @@ class _HavenAppState extends State<HavenApp> with TickerProviderStateMixin {
     );
     _revealCtrl.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        // Overlay is gone — force a rebuild so the builder stops drawing it.
         setState(() {});
       }
     });
@@ -48,41 +47,38 @@ class _HavenAppState extends State<HavenApp> with TickerProviderStateMixin {
   }
 
   void _onIntroComplete() {
-    // Swap to the real page, then immediately start the contracting circle.
     setState(() => _showIntro = false);
     _revealCtrl.forward();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Haven',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: _themeMode,
-      // builder adds the contracting-circle overlay on top of every route.
-      // _RevealOverlay manages its own AnimatedBuilder so child! is never
-      // affected by the overlay's rebuilds.
-      builder: (ctx, child) {
-        return Stack(
-          children: [
-            child!,
-            _RevealOverlay(ctrl: _revealCtrl),
-          ],
-        );
-      },
-      home: _showIntro
-          ? IntroScreen(onComplete: _onIntroComplete)
-          : HomePage(onToggleTheme: _toggleTheme),
+    return ScreenUtilInit(
+      designSize: const Size(393, 852),
+      minTextAdapt: true,
+      splitScreenMode: false,
+      builder: (context, child) => MaterialApp(
+        title: 'Haven',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        themeMode: _themeMode,
+        builder: (ctx, child) {
+          return Stack(
+            children: [
+              child!,
+              _RevealOverlay(ctrl: _revealCtrl),
+            ],
+          );
+        },
+        home: _showIntro
+            ? IntroScreen(onComplete: _onIntroComplete)
+            : HomePage(onToggleTheme: _toggleTheme),
+      ),
     );
   }
 }
 
-// Contracting circle that reveals the page underneath after the intro.
-// Only visible while _revealCtrl is actively running (status == forward).
-// When dismissed (value=0, not yet started) it returns nothing — this is
-// what prevented the overlay from covering the screen during the intro.
 class _RevealOverlay extends StatelessWidget {
   final AnimationController ctrl;
   const _RevealOverlay({required this.ctrl});
@@ -92,7 +88,6 @@ class _RevealOverlay extends StatelessWidget {
     return AnimatedBuilder(
       animation: ctrl,
       builder: (ctx, __) {
-        // Hidden when not yet started or already finished
         if (ctrl.status == AnimationStatus.dismissed ||
             ctrl.status == AnimationStatus.completed) {
           return const SizedBox.shrink();
