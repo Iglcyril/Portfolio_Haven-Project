@@ -440,7 +440,7 @@ export default function ProfessionalDashboard() {
                   key={selectedReport.id}
                   report={selectedReport}
                   isDirector={isDirector}
-                  team={team}
+                  team={enrichedTeam}
                   onClose={() => setSelectedId(null)}
                   onAssign={handleAssign}
                   onSetSeverity={handleSetSeverity}
