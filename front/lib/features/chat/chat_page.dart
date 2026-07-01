@@ -419,61 +419,59 @@ class _ChatPageState extends State<ChatPage> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-      child: Container(
-        color: isDark ? AppColors.darkGradientTop : AppColors.warmWhite,
-        child: Material(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              AnchorBackground(isDark: isDark),
-              SafeArea(
-                child: Column(
-                  children: [
-                    _ChatAppBar(
+      child: Scaffold(
+        backgroundColor: isDark ? AppColors.darkGradientTop : AppColors.warmWhite,
+        resizeToAvoidBottomInset: true,
+        body: Stack(
+          children: [
+            AnchorBackground(isDark: isDark),
+            SafeArea(
+              child: Column(
+                children: [
+                  _ChatAppBar(
+                    isDark: isDark,
+                    onBack: () => Navigator.of(context).pop(),
+                    onToggleTheme: widget.onToggleTheme,
+                  ),
+                  _UserBanner(
+                    isDark: isDark,
+                    userName: widget.userName,
+                    userInitials: widget.userInitials,
+                    anonLevel: widget.anonLevel,
+                  ),
+                  Expanded(
+                    child: _ChatList(
                       isDark: isDark,
-                      onBack: () => Navigator.of(context).pop(),
-                      onToggleTheme: widget.onToggleTheme,
+                      messages: _messages,
+                      choiceItems: _choiceItems,
+                      botTyping: _botTyping,
+                      controller: _scrollCtrl,
+                      onChoiceSelected: (r) => _send(text: r),
+                      openedAt: _openedAt,
                     ),
-                    _UserBanner(
-                      isDark: isDark,
-                      userName: widget.userName,
-                      userInitials: widget.userInitials,
-                      anonLevel: widget.anonLevel,
-                    ),
-                    Expanded(
-                      child: _ChatList(
-                        isDark: isDark,
-                        messages: _messages,
-                        choiceItems: _choiceItems,
-                        botTyping: _botTyping,
-                        controller: _scrollCtrl,
-                        onChoiceSelected: (r) => _send(text: r),
-                        openedAt: _openedAt,
-                      ),
-                    ),
-                    _ActionRow(
-                      isDark: isDark,
-                      sendLabel: _userRefusedReport ? 'Terminer' : 'Envoyer',
-                      onEmergency: () {
-                        HapticFeedback.heavyImpact();
-                        showEmergencySheet(context);
-                      },
-                      onSend: _confirmSend,
-                    ),
-                    _InputBar(
-                      isDark: isDark,
-                      controller: _textCtrl,
-                      listening: _listening,
-                      speechReady: _speechReady,
-                      onAttachment: _pickMedia,
-                      onMic: _toggleListening,
-                      onSubmit: () => _send(),
-                    ),
-                  ],
-                ),
+                  ),
+                  _ActionRow(
+                    isDark: isDark,
+                    sendLabel: _userRefusedReport ? 'Terminer' : 'Envoyer',
+                    onEmergency: () {
+                      HapticFeedback.heavyImpact();
+                      showEmergencySheet(context);
+                    },
+                    onSend: _confirmSend,
+                  ),
+                  _InputBar(
+                    isDark: isDark,
+                    controller: _textCtrl,
+                    listening: _listening,
+                    speechReady: _speechReady,
+                    onAttachment: _pickMedia,
+                    onMic: _toggleListening,
+                    onSubmit: () => _send(),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
