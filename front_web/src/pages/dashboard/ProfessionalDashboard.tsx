@@ -207,8 +207,8 @@ export default function ProfessionalDashboard() {
 
   const enrichedTeam = useMemo(() => team.map(m => ({
     ...m,
-    activeCount:   reports.filter(r => r.status === 'active'   && r.assignedTo === m.fullName).length,
-    resolvedCount: reports.filter(r => r.status === 'resolved' && r.assignedTo === m.fullName).length,
+    activeCount:   reports.filter(r => r.status === 'active' && r.assignedTo === m.fullName).length,
+    resolvedCount: reports.filter(r => (r.status === 'resolved' || r.status === 'archived') && r.assignedTo === m.fullName).length,
   })), [team, reports])
 
   const activeCount     = isDirector
@@ -440,7 +440,7 @@ export default function ProfessionalDashboard() {
                   key={selectedReport.id}
                   report={selectedReport}
                   isDirector={isDirector}
-                  team={team}
+                  team={enrichedTeam}
                   onClose={() => setSelectedId(null)}
                   onAssign={handleAssign}
                   onSetSeverity={handleSetSeverity}

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_circle_button.dart';
+import '../../core/widgets/date_input_formatter.dart';
 import '../tutorial/tutorial_page.dart';
 import '../user/user_home_page.dart';
 import '../parent/child_registration_page.dart';
@@ -626,7 +627,8 @@ class _FormFields extends StatelessWidget {
               controller: birthDateCtrl,
               icon: Icons.calendar_today_outlined,
               isDark: isDark,
-              keyboardType: TextInputType.datetime,
+              keyboardType: TextInputType.number,
+              inputFormatters: [DateInputFormatter()],
             ),
             const SizedBox(height: 12),
           ],
@@ -704,6 +706,7 @@ class _HavenField extends StatelessWidget {
   final Widget? suffix;
   final TextInputType? keyboardType;
   final TextCapitalization textCapitalization;
+  final List<TextInputFormatter>? inputFormatters;
 
   const _HavenField({
     required this.label,
@@ -715,6 +718,7 @@ class _HavenField extends StatelessWidget {
     this.suffix,
     this.keyboardType,
     this.textCapitalization = TextCapitalization.none,
+    this.inputFormatters,
   });
 
   @override
@@ -754,6 +758,7 @@ class _HavenField extends StatelessWidget {
                   obscureText: obscureText,
                   keyboardType: keyboardType,
                   textCapitalization: textCapitalization,
+                  inputFormatters: inputFormatters,
                   style: AppTextStyles.fieldInput(isDark),
                   decoration: InputDecoration(
                     hintText: hint,

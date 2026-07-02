@@ -56,8 +56,12 @@ class _EmergencySheetContent extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.50)
         : AppColors.lightTextSecondary;
 
+    final screenHeight = MediaQuery.of(context).size.height;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      constraints: BoxConstraints(maxHeight: screenHeight * 0.82),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(28),
@@ -102,7 +106,7 @@ class _EmergencySheetContent extends StatelessWidget {
                   children: [
                     Text(
                       "Numéros d'urgence",
-                      style: TextStyle(fontFamily: 'Fraunces', 
+                      style: TextStyle(fontFamily: 'Fraunces',
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: textPrimary,
@@ -111,7 +115,7 @@ class _EmergencySheetContent extends StatelessWidget {
                     ),
                     Text(
                       'Appuie sur un numéro pour composer',
-                      style: TextStyle(fontFamily: 'Manrope', 
+                      style: TextStyle(fontFamily: 'Manrope',
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: textSecondary,
@@ -123,18 +127,22 @@ class _EmergencySheetContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Liste des numéros
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Column(
-              children: _contacts.map((c) => _ContactTile(
-                contact: c,
-                isDark: isDark,
-                onTap: () => _call(c.number),
-              )).toList(),
+          // Liste des numéros — scrollable sur petits écrans
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Column(
+                  children: _contacts.map((c) => _ContactTile(
+                    contact: c,
+                    isDark: isDark,
+                    onTap: () => _call(c.number),
+                  )).toList(),
+                ),
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16 + bottomPadding),
         ],
       ),
     );
