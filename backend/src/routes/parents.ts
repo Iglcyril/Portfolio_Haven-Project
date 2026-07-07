@@ -108,7 +108,6 @@ export const parentsRoutes = new Elysia({ prefix: '/parents' })
           lastName:  true,
           email:     true,
           reports: {
-            where:   { hiddenFromParent: false },
             orderBy: { createdAt: 'desc' },
             select: {
               id:             true,

@@ -190,8 +190,8 @@ export const reportService = {
     // STUDENT → uniquement ses propres rapports
     if (role === 'STUDENT' && report.userId === userId) return report
 
-    // PARENT → uniquement les rapports de ses enfants liés, non masqués (signalement anonyme ou contexte domicile = jamais visible)
-    if (role === 'PARENT' && report.user?.parentId === userId && !report.hiddenFromParent) return report
+    // PARENT → uniquement les rapports de ses enfants liés (signalement anonyme = jamais visible par un parent)
+    if (role === 'PARENT' && report.user?.parentId === userId) return report
 
     throw new Error('FORBIDDEN')
   },

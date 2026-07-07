@@ -1969,7 +1969,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}/summary",
-              "body": "{\n  \"tracking_code\": \"{{tracking_code}}\",\n  \"role\": \"{{role}}\",\n  \"type_signalement\": \"{{report_type}}\",\n  \"anonymat_level\": \"{{anonymat_level}}\",\n  \"classe\": \"{{class_level}}\",\n  \"identite\": \"{{identity}}\",\n  \"category\": \"{{category}}\",\n  \"ressenti_initial\": \"{{initial_feeling}}\",\n  \"statut\": \"{{report_status}}\",\n  \"humeur\": \"{{mood}}\",\n  \"is_crisis\": \"{{is_crisis}}\",\n  \"contact_adulte\": \"{{adult_contact}}\",\n  \"interpeller_equipe\": \"{{contact_team}}\",\n  \"establishment_id\": \"{{establishment_id}}\",\n  \"hide_from_parent\": true\n}"
+              "body": "{\n  \"tracking_code\": \"{{tracking_code}}\",\n  \"role\": \"{{role}}\",\n  \"type_signalement\": \"{{report_type}}\",\n  \"anonymat_level\": \"{{anonymat_level}}\",\n  \"classe\": \"{{class_level}}\",\n  \"identite\": \"{{identity}}\",\n  \"category\": \"{{category}}\",\n  \"ressenti_initial\": \"{{initial_feeling}}\",\n  \"statut\": \"{{report_status}}\",\n  \"humeur\": \"{{mood}}\",\n  \"is_crisis\": \"{{is_crisis}}\",\n  \"contact_adulte\": \"{{adult_contact}}\",\n  \"interpeller_equipe\": \"{{contact_team}}\",\n  \"establishment_id\": \"{{establishment_id}}\"\n}"
             }
           }
         }
@@ -2764,7 +2764,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}/summary",
-              "body": "{\n  \"tracking_code\": \"{{tracking_code}}\",\n  \"role\": \"{{role}}\",\n  \"type_signalement\": \"{{report_type}}\",\n  \"anonymat_level\": \"{{anonymat_level}}\",\n  \"classe\": \"{{class_level}}\",\n  \"identite\": \"{{identity}}\",\n  \"category\": \"{{category}}\",\n  \"ressenti_initial\": \"{{initial_feeling}}\",\n  \"statut\": \"{{report_status}}\",\n  \"humeur\": \"{{mood}}\",\n  \"is_crisis\": \"{{is_crisis}}\",\n  \"contact_adulte\": \"{{adult_contact}}\",\n  \"interpeller_equipe\": \"{{contact_team}}\",\n  \"establishment_id\": \"{{establishment_id}}\",\n  \"hide_from_parent\": true\n}"
+              "body": "{\n  \"tracking_code\": \"{{tracking_code}}\",\n  \"role\": \"{{role}}\",\n  \"type_signalement\": \"{{report_type}}\",\n  \"anonymat_level\": \"{{anonymat_level}}\",\n  \"classe\": \"{{class_level}}\",\n  \"identite\": \"{{identity}}\",\n  \"category\": \"{{category}}\",\n  \"ressenti_initial\": \"{{initial_feeling}}\",\n  \"statut\": \"{{report_status}}\",\n  \"humeur\": \"{{mood}}\",\n  \"is_crisis\": \"{{is_crisis}}\",\n  \"contact_adulte\": \"{{adult_contact}}\",\n  \"interpeller_equipe\": \"{{contact_team}}\",\n  \"establishment_id\": \"{{establishment_id}}\"\n}"
             }
           }
         }
@@ -5685,7 +5685,7 @@
             "isCustomBody": true,
             "webhook": {
               "url": "http://localhost:3000/reports/{{tracking_code}}/summary",
-              "body": "{\n  \"tracking_code\": \"{{tracking_code}}\",\n  \"role\": \"{{role}}\",\n  \"anonymat_level\": \"{{anonymat_level}}\",\n  \"classe\": \"{{class_level}}\",\n  \"identite\": \"{{identity}}\",\n  \"category\": \"{{category}}\",\n  \"contexte_vu\": \"{{witness_context}}\",\n  \"infos_victime\": \"{{victim_info}}\",\n  \"identite_victime\": \"{{victim_identity}}\",\n  \"infos_harceleur\": \"{{bully_info}}\",\n  \"identite_harceleur\": \"{{bully_identity}}\",\n  \"description_situation\": \"{{situation_description}}\",\n  \"statut\": \"{{report_status}}\",\n  \"humeur\": \"{{mood}}\",\n  \"establishment_id\": \"{{establishment_id}}\",\n  \"hide_from_parent\": true\n}"
+              "body": "{\n  \"tracking_code\": \"{{tracking_code}}\",\n  \"role\": \"{{role}}\",\n  \"anonymat_level\": \"{{anonymat_level}}\",\n  \"classe\": \"{{class_level}}\",\n  \"identite\": \"{{identity}}\",\n  \"category\": \"{{category}}\",\n  \"contexte_vu\": \"{{witness_context}}\",\n  \"infos_victime\": \"{{victim_info}}\",\n  \"identite_victime\": \"{{victim_identity}}\",\n  \"infos_harceleur\": \"{{bully_info}}\",\n  \"identite_harceleur\": \"{{bully_identity}}\",\n  \"description_situation\": \"{{situation_description}}\",\n  \"statut\": \"{{report_status}}\",\n  \"humeur\": \"{{mood}}\",\n  \"establishment_id\": \"{{establishment_id}}\"\n}"
             }
           }
         }
