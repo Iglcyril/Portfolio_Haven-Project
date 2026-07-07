@@ -17,6 +17,7 @@ import { bearer } from '@elysiajs/bearer'
 import { requireAuth } from '../middlewares/auth.middleware'
 import { handleError } from '../middlewares/error.middleware'
 import { reportService } from '../services/report.service'
+import { prisma } from '../lib/prisma'
 import { wsManager } from '../ws/ws-manager'
 
 // --- Mots clés de crise ---
@@ -296,6 +297,13 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
         situationDescription: body.description_situation
       })
 
+      if (body.hide_from_parent === true) {
+        await prisma.report.update({
+          where: { trackingId: params.code },
+          data:  { hiddenFromParent: true }
+        })
+      }
+
       return {
         trackingCode: params.code,
         statut:       'resume_enregistre',
@@ -328,7 +336,7 @@ export const reportsRoutes = new Elysia({ prefix: '/reports' })
       identite_victime:      t.Optional(t.String()),
       infos_harceleur:       t.Optional(t.String()),
       identite_harceleur:    t.Optional(t.String()),
-      description_situation: t.Optional(t.String())
+      description_situation: t.Optional(t.String()),
+      hide_from_parent:      t.Optional(t.Boolean())
     })
   })
-  

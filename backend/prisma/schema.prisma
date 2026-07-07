@@ -98,6 +98,7 @@ model Report {
   status          ReportStatus  @default(EN_ATTENTE)
   severity        Severity      @default(BAS)
   crisisDetected  Boolean       @default(false)
+  hiddenFromParent Boolean      @default(false)
   etablissementId String
   // Référent (SUPERVISOR/ADMIN) en charge du dossier
   assignedToId    String?
