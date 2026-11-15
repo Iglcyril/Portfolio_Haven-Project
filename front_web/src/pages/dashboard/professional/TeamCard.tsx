@@ -14,53 +14,10 @@ export function TeamCard({ member, isDirector, onRemove, onEdit }: {
       borderRadius: 14, padding: '16px',
       boxShadow: 'var(--c-card-shadow)',
       display: 'flex', flexDirection: 'column', gap: 12,
-      position: 'relative',
       height: '100%', boxSizing: 'border-box',
     }}>
-      {isDirector && (
-        <div style={{ position: 'absolute', top: 12, right: 12, display: 'flex', gap: 6 }}>
-          <button
-            onClick={() => onEdit(member.id)}
-            title="Modifier"
-            style={{
-              background: 'var(--c-badge)', border: 'none', borderRadius: 7,
-              padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
-              display: 'flex', transition: 'background 0.15s, color 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = `${PRIMARY}22`
-              e.currentTarget.style.color = PRIMARY
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'var(--c-badge)'
-              e.currentTarget.style.color = 'var(--c-text-muted)'
-            }}
-          >
-            <Pencil size={13} />
-          </button>
-          <button
-            onClick={() => onRemove(member.id)}
-            title="Retirer du groupe"
-            style={{
-              background: 'var(--c-badge)', border: 'none', borderRadius: 7,
-              padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
-              display: 'flex', transition: 'background 0.15s, color 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = 'rgba(192,57,43,0.15)'
-              e.currentTarget.style.color = '#C0392B'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'var(--c-badge)'
-              e.currentTarget.style.color = 'var(--c-text-muted)'
-            }}
-          >
-            <Trash2 size={13} />
-          </button>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, paddingRight: isDirector ? 60 : 0 }}>
+      {/* Row 1 : avatar + nom + boutons inline */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{
           width: 44, height: 44, borderRadius: '50%', background: PRIMARY,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -69,27 +26,71 @@ export function TeamCard({ member, isDirector, onRemove, onEdit }: {
           {member.avatarInitials}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-text)' }}>{member.fullName}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--c-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{member.fullName}</div>
           <div style={{ fontSize: 12, color: 'var(--c-text-muted)' }}>{member.jobTitle}</div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+        {isDirector && (
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <button
+              onClick={() => onEdit(member.id)}
+              title="Modifier"
+              style={{
+                background: 'var(--c-badge)', border: 'none', borderRadius: 7,
+                padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
+                display: 'flex', transition: 'background 0.15s, color 0.15s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = `${PRIMARY}22`
+                e.currentTarget.style.color = PRIMARY
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'var(--c-badge)'
+                e.currentTarget.style.color = 'var(--c-text-muted)'
+              }}
+            >
+              <Pencil size={13} />
+            </button>
+            <button
+              onClick={() => onRemove(member.id)}
+              title="Retirer du groupe"
+              style={{
+                background: 'var(--c-badge)', border: 'none', borderRadius: 7,
+                padding: 5, cursor: 'pointer', color: 'var(--c-text-muted)',
+                display: 'flex', transition: 'background 0.15s, color 0.15s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(192,57,43,0.15)'
+                e.currentTarget.style.color = '#C0392B'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'var(--c-badge)'
+                e.currentTarget.style.color = 'var(--c-text-muted)'
+              }}
+            >
+              <Trash2 size={13} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Row 2 : badges rôle + co-resp sur leur propre ligne */}
+      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        <span style={{
+          fontSize: 10, fontWeight: 700, color: PRIMARY, background: `${PRIMARY}18`,
+          borderRadius: 6, padding: '2px 8px',
+        }}>
+          {member.roleLabel}
+        </span>
+        {member.isCoRef && (
           <span style={{
-            fontSize: 10, fontWeight: 700, color: PRIMARY, background: `${PRIMARY}18`,
-            borderRadius: 6, padding: '2px 8px',
+            fontSize: 10, fontWeight: 700, color: '#fff',
+            background: PRIMARY, borderRadius: 6, padding: '2px 8px',
+            display: 'flex', alignItems: 'center', gap: 3,
           }}>
-            {member.roleLabel}
+            <Shield size={9} />
+            CO-RESP.
           </span>
-          {member.isCoRef && (
-            <span style={{
-              fontSize: 10, fontWeight: 700, color: '#fff',
-              background: PRIMARY, borderRadius: 6, padding: '2px 8px',
-              display: 'flex', alignItems: 'center', gap: 3,
-            }}>
-              <Shield size={9} />
-              CO-RESP.
-            </span>
-          )}
-        </div>
+        )}
       </div>
 
       <div style={{ display: 'flex', gap: 10 }}>
